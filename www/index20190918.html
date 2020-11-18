@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>HSTL能源管控平台</title>
+	<meta name="viewport"
+		content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<script src="js/vue.js"></script>
+	<script src="js/axios.min.js"></script>
+	<script src="js/echarts.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/display.css?v=0404">
+</head>
+
+<body>
+	<div id="app">
+		<div class="main">
+			<div id="header">
+				<div class="header_left header_div pingfang white font48">
+					{{weather.date}}
+					<span class="address">{{weather.city}}</span>
+				</div>
+				<div class="header_title header_div semibold">
+					HSTL能源管控平台
+				</div>
+				<div class="header_right header_div pingfang white font48">
+					天气:<span>{{weather.wea}}</span>温度:<span>{{weather.tem}}</span>空气质量:<span>{{weather.air_level}}</span>
+				</div>
+			</div>
+
+			<div class="content">
+				<div class="left">
+					<!-- 绿色医院等级 -->
+					<div class="left_1">
+						<p class="white font72 pingfang">绿色医院能源管控系统已正常运行 <span class="font72">{{companyEnergyEfficiency.usingDay+1}}</span> 天</p>
+						<!-- <p class="white font48 pingfang">单位面积综合能耗低于深圳市医疗卫生建筑平均水平<span>{{companyEnergyEfficiency.ranking * 100}} %</span>,能耗水平达到<span>{{energy_level}}</span></p> -->
+					</div>
+					<!-- 康宁医院能效展示 -->
+					<div class="left_2">
+						<header class="white semibold">深圳市康宁医院能效展示</header>
+						<ul>
+							<li>
+								<div>
+									<div class="icon">
+										<img src="img/01.png" alt="">
+									</div>
+									<div class="txt white">
+										<p class="pingfang">综合节能(tce)</p>
+										<strong class="fzhz">{{Math.floor(companyEnergyEfficiency.energyConservationAmount * 100)/100}}</strong>
+									</div>
+								</div>
+							</li>
+							<li>
+								<div>
+									<div class="icon">
+										<img src="img/02.png" alt="">
+									</div>
+									<div class="txt white">
+										<p class="pingfang">碳排放总值(t)</p>
+										<strong class="fzhz">{{Math.floor(companyEnergyEfficiency.carbonEmissionAmount * 100)/100}}</strong>
+									</div>
+								</div>
+							</li>
+							<li>
+								<div>
+									<div class="icon">
+										<img src="img/03.png" alt="">
+									</div>
+									<div class="txt white">
+										<p class="pingfang">相当于种植树(棵)</p>
+										<strong class="fzhz">{{Math.floor(companyEnergyEfficiency.convertOfPlantingAmount * 100)/100}}</strong>
+									</div>
+								</div>
+							</li>
+							<li>
+								<div>
+									<div class="icon">
+										<img src="img/05.png" alt="">
+									</div>
+									<div class="txt white">
+										<p class="pingfang">降低碳粉尘(t)</p>
+										<strong class="fzhz">{{Math.floor(companyEnergyEfficiency.reducePm25Amount * 100)/100}}</strong>
+									</div>
+								</div>
+							</li>
+							<li>
+								<div>
+									<div class="icon">
+										<img src="img/06.png" alt="">
+									</div>
+									<div class="txt white">
+										<p class="pingfang">削减罗湖电力供应量(KW·H)</p>
+										<strong class="fzhz">{{Math.floor(companyEnergyEfficiency.reduceElectricalLoadAmount * 100)/100}}</strong>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+					<!-- 能效对比 -->
+					<div class="left_3">
+						<header class="white font60 pingfang">能效对比</header>
+						<table border="2" style="width:1200px;margin-left: -20px;">
+							<tr>
+								<th width="400">指标名称</th>
+								<!-- <th width="160">绿色医院<br>指标</th> -->
+								<th width="160">改造前<br>指标</th>
+								<th width="130">本院<br>指标</th>
+								<th width="200">节能<br>效果</th>
+							</tr>
+							<tr v-for="(energy,index) in indicator">
+								<td>{{energy.indicatorDesc}}</td>
+								<!-- <td>{{energy.greedHospitalIndicatorValue}}</td> -->
+								<td>{{energy.beforeModifyIndicatorValue}}</td>
+								<td>{{energy.companyIndicatorValue}}</td>
+								<td>
+								{{energy.companyIndicatorValue == 0 ? 0:(Math.floor((energy.beforeModifyIndicatorValue - energy.companyIndicatorValue) / energy.companyIndicatorValue * 10000) / 100)}}%
+								<img src="img/up.png" v-if="energy.companyIndicatorValue < energy.beforeModifyIndicatorValue">
+								<img src="img/low.png" v-else></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<div class="middle">
+					<!-- bim -->
+					<div class="middle_1">
+						<video muted="muted" width="100%" height="100%" autoplay loop="loop">
+						    <source src="http://cdn.szhostiy.com/%E5%BA%B7%E5%AE%81%E5%8C%BB%E9%99%A2%E6%A0%87%E5%87%86%E5%B1%824.9.mp4" type="video/mp4">
+						    您的浏览器不支持 video 标签。
+						</video>
+					</div>
+					<!-- 能源总况 -->
+					<div class="middle_2">
+						<header>
+							{{middle_title}}
+						</header>
+						<div class="item_main" v-bind:style="{ marginLeft: ((nyzk_index == -1)?0:'-100%') }">
+							<div class="middle_item">
+								<div id="nyzk_echarts"></div>
+							</div>
+							<div class="middle_item">
+								<ul class="header_btn">
+									<li v-for="(item,index) in type" v-bind:class="{active:nyzk_index == index}">
+										{{item}}</li>
+								</ul>
+
+								<!-- 能源总况能效分析 -->
+								<div class="nyzknxfx">
+									<header>
+										能源总况
+									</header>
+									<div class="nyzk">
+										<ul v-for="(tp,i) in type" v-if="i == nyzk_index">
+											<li>
+												今年用{{tp}}总量:{{energy.get(tp).yearUsage}}{{types[i]}}
+											</li>
+											<li>
+												本月用{{tp}}总量:{{energy.get(tp).monthUsage}}{{types[i]}}
+											</li>
+											<li>
+												今年月均{{tp}}量:{{energy.get(tp).monthlyAverage}}{{types[i]}}
+											</li>
+											<li>
+												今年日均{{tp}}量:{{energy.get(tp).dailyAverage}}{{types[i]}}
+											</li>
+											<li>
+												今日用{{tp}}总量:{{energy.get(tp).dailyUsage}}{{types[i]}}
+											</li>
+										</ul>
+										<div id="nyzk_echart"></div>
+									</div>
+								</div>
+								<div class="nyzknxfx" style="margin-top:10px;">
+									<header>
+										{{nyzk_title_son}}
+									</header>
+									<div class="nhqs" v-bind:style="{marginLeft:nyzk_index_son}">
+										<div id="nhqs_echart"></div>
+										<div id="nxqs_echart"></div>
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="right">
+					<!-- 资产管理 -->
+					<div class="right_1">
+						<header class="white font60 pingfang">
+							资产管理
+						</header>
+						<div class="bhgl right_item">
+							<p><img src="img/ring.png" alt="">
+								<span class="pingfang white font48">病患管理</span></p>
+							<div id="bhgl_echart"></div>
+							<ul>
+								<li v-for="illnes in illness">
+									{{illnes.name}} <span>{{illnes.data}} </span>人
+								</li>
+							</ul>
+						</div>
+						<div class="ywds right_item">
+							<p><img src="img/ring.png" alt="">
+								<span class="pingfang white font48">运维大师</span></p>
+							<table border="2" v-if="operations.length">
+								<tr>
+									<th width="200">人员编号</th>
+									<th width="180">时间</th>
+									<th width="200">维护位置</th>
+									<th width="200">问题数量</th>
+									<th width="200">平台指令</th>
+									<th width="180">结果</th>
+								</tr>
+								<tr v-for="operation in operations">
+									<td>{{operation.pollingUserId}}</td>
+									<td>{{operation.pollingTime.split(' ')[1]}}</td>
+									<td>{{operation.areaName}}</td>
+									<td>{{operation.questionCount}}</td>
+									<td>{{operation.processMethodStr}}</td>
+									<td>{{operation.processStatusStr}}</td>
+								</tr>
+							</table>
+
+							<table border="2" v-else>
+								<tr>
+									<th width="200">人员编号</th>
+									<th width="180">时间</th>
+									<th width="200">维护位置</th>
+									<th width="200">问题数量</th>
+									<th width="200">平台指令</th>
+									<th width="180">结果</th>
+								</tr>
+								<tr>
+									<td colspan="6" rowspan="2">暂无数据</td>
+								</tr>
+							</table>
+						</div>
+						<div class="right_item">
+							<div id="sbgz_echart"></div>
+						</div>
+					</div>
+					<!-- 今日管控情况 -->
+					<div class="right_2">
+						<header class="white font60 pingfang">
+							今日管控情况
+						</header>
+						<!-- 
+						<div class="hnzs right_item">
+							<p>
+								<div class="txt">
+									<img src="img/ring.png" alt="">
+									<span class="pingfang white font48">耗能指数</span>
+								</div>
+								<div class="level">
+									<div class="level_img">
+										<div class="level_active">
+											<img src="img/level_left.gif" alt="">
+											<img v-bind:style="{width:hnzs_left}" src="img/level.gif" alt=""
+												class="level_active_level">
+											<img src="img/level_right.gif" alt="" class="level_active_right">
+										</div>
+									</div>
+									<div class="leve_txt" v-bind:style="{marginLeft:hnzs_left}">
+										<img src="img/square.gif" alt="">
+										{{hnzs}}
+									</div>
+								</div>
+							</p>
+						</div>
+						-->
+						<div class="ksynsj right_item">
+							<p><img src="img/ring.png" alt="">
+								<span class="pingfang white font48">楼层实时用能数据</span></p>
+							<div class="ksynsj_left">
+								<ul v-for="(item,index) in ksynsj" v-bind:style="{ marginTop: ksynsj_margin + 'px' }">
+									<li v-bind:class="{active:ksynsj_index == index}">{{item.areaName}}</li>
+								</ul>
+							</div>
+							<div class="ksynsj_right">
+								<ul>
+									<li>
+										<p>耗水(t)</p>
+										<strong>{{ksynsj[ksynsj_index].waterConsume}}</strong>
+									</li>
+									<li>
+										<p>耗电(kW·h)</p>
+										<strong>{{ksynsj[ksynsj_index].electricConsume}}</strong>
+									</li>
+									<li>
+										<p>耗冷(kW·h)</p>
+										<strong>{{ksynsj[ksynsj_index].coldConsume}}</strong>
+									</li>
+									<li>
+										<p>耗暖(kj)</p>
+										<strong>{{ksynsj[ksynsj_index].heatConsume}}</strong>
+									</li>
+									<li>
+										<p>耗气(m³)</p>
+										<strong>{{ksynsj[ksynsj_index].cngConsume}}</strong>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div class="kshnjndb right_item">
+							<p><img src="img/ring.png" alt="">
+								<span class="pingfang white font48">楼层耗能综合对比</span></p>
+							<div class="kshnjndb_item">
+								<ul v-bind:style="{ marginTop: kshnjndb_margin + 'px' }">
+									<li v-for="item in ksynsj">
+										<div class="kshnjndb_bar">
+											<div class="kshnjndb_bar_active"
+												v-bind:style="{ width: (item.economyEnergy*100) + '%' }">
+											</div>
+										</div>
+										<div class="txt">
+											{{item.areaName}}
+										</div>
+									</li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="message">
+							<marquee direction="up" scrollamount="2">
+								<div class="item" v-for="item in notice">
+									<p class="pingfang white font48 center">{{item.noticeTitle}}</p>
+									<p class="pingfang white font32" v-html="item.noticeContent"></p>
+								</div>
+							</marquee>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		var baseUrl = 'http://134.175.24.75:28088';
+		var bgWidth = 5760;
+		window.onload = window.onresize = function () {
+			document.body.style.zoom = document.documentElement.clientWidth / bgWidth;
+		}
+		function drawEchart(id, option) {
+			var dom = document.getElementById(id);
+			var myChart = echarts.init(dom);
+			myChart.setOption(option);
+		}
+		var h = new Date().getHours();
+		new Vue({
+			el: '#app',
+			data: {
+				companyId:'',
+				companyEnergyEfficiency:{
+					'energyLevel':0, //节能等级
+					'ranking':0, //节能排名
+					'usingDate':0, //系统启用时间
+					'usingDay':0, //已使用时间
+					'energyConservationAmount':0, //综合节能
+					'carbonEmissionAmount':0, //碳排放总量
+					'convertOfPlantingAmount':0, //转换种植树木
+					'reduceForestCarbonAmount':0, //减少森林碳能
+					'reducePm25Amount':0, //降低PM2.5
+					'reduceElectricalLoadAmount':0, //减少电力负荷值
+					'energyConsumptionIndex':0, //耗能指数
+				},
+				hnzs:0,//耗能指数
+				hnzs_left:0,
+				energy_level:'',//能耗水平
+				notice:[],//公告
+				indicator:[],//能效对比指标
+				nyzk_index: -1,//水电冷暖气到哪个了
+				nyzk_index_son: 0,//能耗趋势跟能效趋势的切换
+				nyzk_title_son:'',
+				type: ['水', '电', '冷', '暖', '气'],
+				types: ["t","kW·h","kW·h","kW·h","m³"],
+				middle_title: '年耗能占比分析',
+				ksynsj_margin: 0,//科室用能margin-top
+				ksynsj_index: 0,
+				//科室用能数据
+				ksynsj: [
+					{
+						name: '情感障碍科',
+						data: {
+							shui: Math.ceil(9*h/12)+Math.ceil(Math.random(1,20)*10),
+							dian: Math.ceil(415*h/12)+Math.ceil(Math.random(1,20)*10),
+							leng: 0,
+							nuan: 0,
+							qi: Math.ceil(6*h/12)+Math.ceil(Math.random(1,20)*10),
+						},
+					}
+				],
+				kshnjndb_margin: 0,//科室用能对比margin-top
+				operations: [],
+				illness: [],
+				weather: {},
+				energy:[],
+				energyCount:0,//总耗能量
+				economyEnergyTotal:0,//总节能量
+			},
+			mounted() {
+				this.companyId = 1;
+				this.getWeather();
+				// this.getIndicator();
+				this.getNotice();
+				this.getCompanyEnergyEfficiency();
+				this.getPatient();
+				this.setNyzk();
+				// this.setNzbfx();
+				// this.setnhqs();
+				this.setnxqs();
+				this.setSbgz();
+				this.setkshnjndb_margin();
+				this.setksynsj_margin();
+				this.getEnergy();
+				this.getareaEnergy();
+				//执行能源总况计时器
+				this.nyzkInterVal();
+			},
+			methods: {
+				//获取能效展示等数据
+				getCompanyEnergyEfficiency(){
+					var that = this;
+					axios.get(baseUrl + '/operation/main/companyEnergyEfficiency/'+that.companyId)
+					.then(function (response) {
+						that.companyEnergyEfficiency = response.data.data;
+						that.indicator = response.data.data.companyEnergyEfficiencyDetailList;
+						that.companyEnergyEfficiency.energyConsumptionIndex = (that.companyEnergyEfficiency.energyConsumptionIndex > 0.9) ? 0.81 : that.companyEnergyEfficiency.energyConsumptionIndex;
+						var enery = that.indicator[that.indicator.length-1].companyIndicatorValue;
+						var hnzs = that.indicator[1].companyIndicatorValue;
+						if(enery > 25){
+							that.energy_level = '不达标'
+						}else if(enery > 16){
+							that.energy_level = '达标'
+						}else if(enery > 6){
+							that.energy_level = '先进'
+						}else{
+							that.energy_level = '领先'
+						}
+						hnzs = hnzs/90/365;
+						console.log(hnzs);
+						if(hnzs < 0.001){
+							that.hnzs = '优'
+							that.hnzs_left = '80%';
+						}else if(hnzs < 0.0012){
+							that.hnzs = '良'
+							that.hnzs_left = '40%';
+						}else{
+							that.hnzs = '差'
+							that.hnzs_left = '10%';
+						}
+					})
+					.catch(function (error) {
+						console.log(error);
+					});
+				},
+				getNotice(){
+					var that = this;
+					axios.get(baseUrl + '/operation/main/notice/'+that.companyId)
+					.then(function (response) {
+						that.notice = response.data.data;
+						console.log(that.notice)
+					})
+					.catch(function (error) {
+						console.log(error);
+					});	
+				},
+				//获取能效对比指标
+				// getIndicator(){
+				// 	var that = this;
+				// 	axios.get(baseUrl + '/operation/main/indicator')
+				// 	.then(function (response) {
+				// 		that.indicator = response.data.data;
+				// 		// console.log(that.indicator)
+				// 	})
+				// 	.catch(function (error) {
+				// 		console.log(error);
+				// 	});					
+				// },
+				//能源总况计时器管理
+				nyzkInterVal() {
+					var that = this;
+					setInterval(function () {
+						that.middle_title = '能源总况/能耗趋势';
+						that.nyzk_index_son = 0;
+						that.nyzk_title_son = '能耗趋势';
+						if (that.nyzk_index < 4) {
+							that.nyzk_index++;
+							that.setNyzk();
+							var xAxis = [];
+							var comparedToLastYear = [];
+							var estimate = [];
+							var isUsing = [];
+							var rated = [];
+							var nyList = (that.energy.get(that.type[that.nyzk_index]));
+							var month = new Date().getMonth()+1;
+							nyList.energyConsumeTrendList.forEach((t)=>{
+								var keys = Object.keys(t);
+								var m = parseInt(keys[0].split('-')[1]);
+								if(m <= month){
+									xAxis.push(m+'月');
+									var item = t[keys[0]];
+									comparedToLastYear.push(item.comparedToLastYear?item.comparedToLastYear:'')
+									estimate.push(item.estimate)
+									isUsing.push(item.isUsing)
+									rated.push(item.rated)
+								}
+							})
+							var data = {
+								xAxis:xAxis,
+								series:[isUsing,rated,estimate,comparedToLastYear]
+							};
+							that.setnhqs(data)
+							
+
+							var deviceList = []
+							console.log(nyList.deviceTypeEnergyVoList)
+							nyList.deviceTypeEnergyVoList.forEach((t)=>{
+								try{
+									deviceList.push({
+										value: t.energyAmount, name: t.deviceTypeDesc
+									})
+								}catch(err){
+									console.log(err)
+								}
+							})
+
+							that.setNyzk(deviceList)
+
+							//删除注释开启能效趋势
+							// setTimeout(() => {
+							// 	that.nyzk_title_son = '能效趋势';
+							// 	that.nyzk_index_son = '-100%';
+							// }, 15000);
+						} else {
+							that.middle_title = '年耗能占比分析';
+							that.nyzk_index = -1;
+						}
+						console.log(that.nyzk_index);
+					}, 30000)
+				},
+				setksynsj_margin() {
+					var that = this;
+					setInterval(function () {
+						if (that.ksynsj_index + 1 == that.ksynsj.length) {
+							that.ksynsj_index = 0;
+							that.ksynsj_margin = 0;
+						} else {
+							that.ksynsj_index++;
+							var top = (that.ksynsj.length - 3 > 0) ? (that.ksynsj.length - 3) : 0;
+							if (that.ksynsj_margin + (top * 84) != 0) { //如果到倒数第三个
+								that.ksynsj_margin -= 84;
+							}
+						}
+					}, 3000);
+				},
+				setkshnjndb_margin() {
+					var that = this;
+					setInterval(function () {
+						var top = (that.ksynsj.length - 3 > 0) ? (that.ksynsj.length - 3) : 0;
+						if (that.kshnjndb_margin + (top * 60) == 0) {
+							that.kshnjndb_margin = 0;
+						} else {
+							that.kshnjndb_margin -= 60;
+						}
+					}, 3000);
+				},
+				// 能耗趋势
+				setnhqs(data) {
+
+					var option = {
+						color: ['#009fc9', '#e24e26', '#11f6e7', '#58c5ed'],
+
+						grid: {
+							top: '13%',
+							bottom: '-3%',
+							containLabel: true
+						},
+						xAxis: [
+							{
+								type: 'category',
+								data: data.xAxis,//['1', '2', '3', '4', '5', '6', '7'],
+								axisTick: {
+									alignWithLabel: true
+								},
+								axisLabel: {
+									textStyle: {
+										color: 'rgba(255,255,255,0.3)',
+										"fontSize": 32
+									}
+								}
+							}
+						],
+						legend: {
+							right: '4%',
+							top:'1%',
+							textStyle: {
+								color: 'rgba(255,255,255,0.3)',
+								"fontSize": 32
+							},
+							data: ['已使用', '额定', '预估', '去年同比']
+						},
+						yAxis: {
+							axisLine: {
+								show: false
+							},
+							axisTick: {
+								show: false
+							},
+							splitLine: {
+								lineStyle: {
+									color: ['rgba(255,255,255,0.3)']
+								}
+							},
+							axisLabel: {
+								textStyle: {
+									color: 'rgba(255,255,255,0.3)',
+									"fontSize": 32
+								}
+							}
+						},
+						series: [
+							{
+								name: '已使用',
+								type: 'bar',
+								barWidth: '10%',
+								data: data.series[0]
+							},
+							{
+								name: '额定',
+								type: 'bar',
+								barWidth: '10%',
+								data: data.series[1]
+							},
+							{
+								name: '预估',
+								type: 'bar',
+								barWidth: '10%',
+								data: data.series[2]
+							},
+							{
+								name: '去年同比',
+								type: 'bar',
+								barWidth: '10%',
+								data: data.series[3]
+							}
+						]
+					};
+
+					drawEchart('nhqs_echart', option);
+				},
+				//能效趋势
+				setnxqs() {
+
+					var option = {
+						xAxis: [
+							{
+								type: 'category',
+								data: ['1', '2', '3', '4', '5', '6', '7', 8, 9, 10, 11, 12, 13],
+								axisTick: {
+									alignWithLabel: true
+								},
+								axisLabel: {
+									textStyle: {
+										color: 'rgba(255,255,255,0.3)',
+										"fontSize": 32
+									}
+								}
+							}
+						],
+						yAxis: {
+							axisLine: {
+								show: false
+							},
+							axisTick: {
+								show: false
+							},
+							splitLine: {
+								lineStyle: {
+									color: ['rgba(0,159,201,0.4)']
+								}
+							},
+							axisLabel: {
+								textStyle: {
+									color: 'rgba(255,255,255,0.3)',
+									"fontSize": 32
+								}
+							}
+						},
+						series: [
+							{
+								name: '已使用',
+								type: 'line',
+
+								itemStyle: {
+									normal: {
+										lineStyle: {
+											color: '#11f7e6'
+										}
+									}
+								}
+								,
+								data: [53, 52, 45, 17, 45, 35, 27, 45, 65, 45, 37, 45, 55]
+							}
+						]
+					};
+
+					drawEchart('nxqs_echart', option);
+				},
+				//能源总况饼图
+				setNyzk(data) {
+					var option = {
+						series: [
+							{
+								name: '能源总况',
+								type: 'pie',
+								center: ['50%', '65%'],
+								radius: ['40%', '60%'],
+								data: data,
+								label: {
+									normal: {
+										fontSize: 36,
+									},
+									emphasis: {
+										show: true,
+										textStyle: {
+											fontSize: '30',
+											fontWeight: 'bold'
+										}
+									}
+								},
+								itemStyle: {
+									emphasis: {
+										shadowBlur: 10,
+										shadowOffsetX: 0,
+										shadowColor: 'rgba(0, 0, 0, 0.5)',
+
+									},
+									normal: {
+										color: function (params) {
+											//自定义颜色
+											var colorList = [
+												'#2971b1', '#cf922d', '#c2462a', '#42afd8', '#12d5cf'
+											];
+											return colorList[params.dataIndex]
+										},
+
+									}
+								}
+							}
+						]
+					};
+
+					drawEchart('nyzk_echart', option);
+				},
+				//生成第一屏年占比分析饼图
+				setNzbfx(data) {
+					var option = {
+						series: [
+							{
+								name: '能源总况',
+								type: 'pie',
+								center: ['50%', '45%'],
+								data: data,
+								label: {
+									normal: {
+										formatter: '{b} {d}%  ',
+										fontSize: 48,
+									},
+									emphasis: {
+										show: true,
+										textStyle: {
+											fontSize: '30',
+											fontWeight: 'bold'
+										}
+									}
+								},
+								itemStyle: {
+									emphasis: {
+										shadowBlur: 10,
+										shadowOffsetX: 0,
+										shadowColor: 'rgba(0, 0, 0, 0.5)',
+
+									},
+									normal: {
+										color: function (params) {
+											//自定义颜色
+											var colorList = [
+												'#2971b1', '#cf922d', '#c2462a', '#42afd8', '#12d5cf'
+											];
+											return colorList[params.dataIndex]
+										},
+
+									}
+								}
+							}
+						]
+					};
+
+					drawEchart('nyzk_echarts', option);
+				},
+				setSbgz() {
+					var that = this;
+					axios.get(baseUrl + '/operation/main/operation/'+that.companyId)
+					.then(function (response) {
+						if(response.data.code === 0){
+							that.operations = response.data.data.operationPersonVoList;
+							var source = [];
+							response.data.data.operationDeviceTypeVoList.forEach((item)=>{
+								source.push({ 
+									product: item.deviceTypeName,
+									'预警': item.earlyWarning, 
+									'保养': item.upkeep
+								})
+							})
+							var option = {
+								color: ['#16c2d8', '#f86206', '#96d9f0'],
+								legend: {
+									right: '4%',
+									top:'top',
+									textStyle: {
+										color: '#a3cccc',
+										"fontSize": 35
+									}
+								},
+
+								dataset: {
+									dimensions: ['product', '预警', '保养'],
+									source: source
+								},
+								xAxis: {
+									type: 'category',
+									axisLabel: {
+										textStyle: {
+											color: '#a3cccc',
+											"fontSize": 35
+										}
+									},
+								},
+								yAxis: {
+									axisLabel: {
+										textStyle: {
+											color: '#a3cccc',
+											"fontSize": 28
+										}
+									},
+								},
+								// Declare several bar series, each will be mapped
+								// to a column of dataset.source by default.
+								series: [
+									{ type: 'bar', barWidth: '15%' },
+									{ type: 'bar', barWidth: '15%' }
+								]
+							};
+
+							drawEchart('sbgz_echart', option);
+						}
+					})
+					.catch(function (error) {
+						console.log(error);
+					});	
+				},
+				//获取病患管理
+				getPatient() {
+					var that = this;
+					axios.get(baseUrl + '/operation/main/patient/'+that.companyId)
+					.then(function (response) {
+						if(response.data.code === 0){
+							that.illness = [ {
+								name: '跨区移动',
+								data: response.data.data.transRegionPerson,
+							}, {
+								name: '异常人员',
+								data: response.data.data.unusualPerson,
+							}]
+							var yAxis = [];
+							var patientDegreeEasy = [];
+							var patientDegreeMedium = [];
+							var patientDegreeSerious = [];
+							response.data.data.patientDetailList.forEach((item)=>{
+								yAxis.push(item.areaName);
+								patientDegreeEasy.push(item.patientDegreeEasy)
+								patientDegreeMedium.push(item.patientDegreeMedium)
+								patientDegreeSerious.push(item.patientDegreeSerious)
+							})
+							var option = {
+							color: ['rgba(0,159,201,0.4)', '#f1a726', '#e24e26'],
+							legend: {
+								right: '4%',
+								data: ['轻', '中', '重'],
+								textStyle: {
+									color: '#a3cccc',
+									"fontSize": 35
+								}
+							},
+							grid: {
+								left: '3%',
+								right: '4%',
+								bottom: '3%',
+								containLabel: true
+							},
+							xAxis: {
+								position: 'top',
+								splitLine: {
+									show: false
+								},
+								axisLine: {
+									show: false
+								},
+								axisTick: {
+									show: false
+								},
+							},
+							yAxis: {
+								axisLine: {
+									lineStyle: {
+										color: '#a3cccc'
+									}
+								},
+								axisLabel: {
+									textStyle: {
+										color: '#a3cccc',
+										"fontSize": 28
+									}
+								},
+								type: 'category',
+								data: yAxis
+							},
+
+							series: [
+								{
+									name: '轻',
+									type: 'bar',
+									barWidth: '30%',
+									stack: '总量',
+									animationDelay: function (idx) {
+										return idx * 10 + 300;
+									},
+									data: patientDegreeEasy
+								},
+								{
+									name: '中',
+									type: 'bar',
+									stack: '总量',
+									animationDelay: function (idx) {
+										return idx * 10 + 500;
+									},
+									data: patientDegreeMedium
+								},
+								{
+									name: '重',
+									type: 'bar',
+									stack: '总量',
+									animationDelay: function (idx) {
+										return idx * 10 + 700;
+									},
+									data: patientDegreeSerious
+								}
+							],
+							animationEasing: 'elasticOut',
+							animationDelayUpdate: function (idx) {
+								return idx * 5;
+							}
+						};
+						drawEchart('bhgl_echart', option);
+						}
+					})
+					.catch(function (error) {
+						console.log(error);
+					});	
+					
+				},
+				//获取能源总况
+				getEnergy(){
+					var that = this;
+					axios.get(baseUrl + '/operation/main/energy/'+that.companyId)
+					.then(function (response) {
+						if(response.data.code === 0){
+							var data = new Map();
+							var energyCount = 0;
+							var Nzbfx = [];
+							response.data.data.forEach((item)=>{
+								energyCount += item.yearUsage;
+								data.set(item.energyTypeDesc,item);
+								Nzbfx.push({
+									value: item.yearUsage, name: item.energyTypeDesc 
+								})
+							})
+							that.setNzbfx(Nzbfx);
+							that.energy = data;
+						}
+					})
+					.catch(function (error) {
+						console.log(error);
+					});	
+				},
+				//获取科室用能
+				getareaEnergy(){
+					var that = this;
+					axios.get(baseUrl + '/operation/main/areaEnergy/'+that.companyId)
+					.then(function (response) {
+						if(response.data.code === 0){
+							that.ksynsj = response.data.data
+							var economyEnergyTotal = 0;
+							response.data.data.forEach((item)=>{
+								economyEnergyTotal += item.economyEnergy;
+							})
+							that.economyEnergyTotal = economyEnergyTotal;
+						}
+					})
+					.catch(function (error) {
+						console.log(error);
+					});	
+				},
+				getWeather() {
+					var that = this;
+					axios.get('https://www.tianqiapi.com/api/?version=v1')
+						.then(function (response) {
+							var data = response.data;
+							that.weather = {
+								date: data.data[0].date,
+								wea: data.data[0].wea,
+								tem: data.data[0].tem,
+								air_level: data.data[0].air_level,
+								city: data.city
+							}
+						})
+						.catch(function (error) {
+							console.log(error);
+						});
+				},
+			}
+
+		})
+	</script>
+</body>
+
+</html>
