@@ -1,0 +1,360 @@
+import json
+import re
+from flask import render_template,request,Blueprint,redirect,url_for
+from flask_login import LoginManager
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+from common.MESLogger import logger,insertSyslog
+from common.BSFramwork import AlchemyEncoder
+from common.system import Organization, Factory, DepartmentManager, Role, Permission, ModulMenus, User, RolePermission, \
+    RoleUser
+from flask_login import current_user, LoginManager
+from database.connect_db import CONNECT_DATABASE
+login_manager = LoginManager()
+# 创建对象的基类
+engine = create_engine(CONNECT_DATABASE)
+Session = sessionmaker(bind=engine)
+db_session = Session()
+Base = declarative_base(engine)
+
+permission_distribution = Blueprint('permission_distribution', __name__, template_folder='templates')
+
+# 权限分配
+@permission_distribution.route('/permission')
+def permission():
+    return render_template('./permission.html')
+
+# 角色列表树形图
+def getRoleList(id=0):
+    sz = []
+    try:
+        roles = db_session.query(Role).filter().all()
+        for obj in roles:
+            if obj.ParentNode == id:
+                sz.append({"id": obj.ID,
+                           "text": obj.RoleName,
+                           "children": getRoleList(obj.ID)})
+        srep = ',' + 'items' + ':' + '[]'
+        return sz
+    except Exception as e:
+        print(e)
+        logger.error(e)
+        insertSyslog("error", "查询角色报错Error：" + str(e), current_user.Name)
+        return json.dumps([{"status": "Error：" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
+
+# 权限分配下的角色列表
+@permission_distribution.route('/Permission/SelectRoles')
+def SelectRoles():
+    if request.method == 'GET':
+        try:
+            data = getRoleList(id=0)
+            jsondata = json.dumps(data, cls=AlchemyEncoder, ensure_ascii=False)
+            return jsondata.encode("utf8")
+        except Exception as e:
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "查询权限分配下的角色列表报错Error：" + str(e), current_user.Name)
+            return json.dumps([{"status": "Error:" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
+
+
+# 权限分配下的用户列表
+@permission_distribution.route('/permission/userlist')
+def userList():
+    # 获取用户列表
+    if request.method == 'GET':
+        data = request.values  # 返回请求中的参数和form
+        # 默认返回所有用户
+        ID = data['ID']
+        if ID == '':
+            try:
+                json_str = json.dumps(data.to_dict())
+                if len(json_str) > 10:
+                    pages = int(data.get("offset"))  # 页数
+                    rowsnumber = int(data.get("limit"))  # 行数
+                    inipage = pages * rowsnumber + 0  # 起始页
+                    endpage = pages * rowsnumber + rowsnumber  # 截止页
+                    total = db_session.query(User).count()
+                    users_data = db_session.query(User)[inipage:endpage]
+                    # ORM模型转换json格式
+                    jsonusers = json.dumps(users_data, cls=AlchemyEncoder, ensure_ascii=False)
+                    jsonusers = '{"total"' + ":" + str(total) + ',"rows"' + ":\n" + jsonusers + "}"
+                    return jsonusers.encode("utf8")
+            except Exception as e:
+                print(e)
+                logger.error(e)
+                insertSyslog("error", "查询权限分配下的用户列表报错Error：" + str(e), current_user.Name)
+                return json.dumps([{"status": "Error:" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
+        if ID != '':
+            data = request.values  # 返回请求中的参数和form
+            try:
+                json_str = json.dumps(data.to_dict())
+                if len(json_str) > 10:
+                    pages = int(data['page'])  # 页数
+                    rowsnumber = int(data['rows'])  # 行数
+                    inipage = (pages - 1) * rowsnumber + 0  # 起始页
+                    endpage = (pages - 1) * rowsnumber + rowsnumber  # 截止页
+                    # 通过角色ID获取当前角色对应的用户
+                    role_id = data['ID']
+                    role_name= db_session.query(Role.RoleName).filter_by(ID=role_id).first()
+                    if role_name is None:  # 判断当前角色是否存在
+                        return
+                    total = db_session.query(User).filter_by(RoleName=role_name).count()
+                    users_data = db_session.query(User).filter_by(RoleName=role_name).all()[
+                                 inipage:endpage]
+                    # ORM模型转换json格式
+                    jsonusers = json.dumps(users_data, cls=AlchemyEncoder, ensure_ascii=False)
+                    jsonusers = '{"total"' + ":" + str(total) + ',"rows"' + ":\n" + jsonusers + "}"
+                    return jsonusers
+            except Exception as e:
+                print(e)
+                logger.error(e)
+                insertSyslog("error", "通过点击角色查询用户报错Error：" + str(e), current_user.Name)
+                return json.dumps([{"status": "Error:" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
+
+def trueOrFalse(obj,user_menus):
+    dic = {}
+    if str(obj.ModulMenuName) in user_menus:
+        dic["checked"] = True
+        return dic
+    else:
+        dic["checked"] = False
+    return dic
+
+# 权限分配下的功能模块列表
+def getMenuList(user_menus, id=0):
+    sz = []
+    try:
+        menus = db_session.query(ModulMenus).filter_by(ParentNode=id).all()
+        for obj in menus:
+            if obj.ParentNode == id:
+                    sz.append({"id": obj.ID,
+                               "text": obj.ModulMenuName,
+                               "ModulMenuName":obj.ModulMenuName,
+                               "MenuType":obj.MenuType,
+                               "ModulMenuCode":obj.ModulMenuCode,
+                               "state":trueOrFalse(obj, user_menus),
+                               "nodes": getMenuList(user_menus, obj.ID)})
+        return sz
+    except Exception as e:
+        print(e)
+        insertSyslog("error", "查询权限分配下的功能模块列表Error：" + str(e), current_user.Name)
+        return json.dumps([{"status": "Error：" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
+
+
+# 菜单权限查询
+@permission_distribution.route('/Permission/SelectMenus', methods=['POST', 'GET'])
+def SelectMenus():
+    if request.method == 'GET':
+        data = request.values
+        try:
+            MenuType = data.get("MenuType")
+            Name = current_user.Name
+            if Name == "系统管理员":
+                oclass = db_session.query(ModulMenus).all()
+                count = db_session.query(ModulMenus).count()
+                return {"code": "200", "message": "请求成功", "data": {"total": count, "rows": oclass}}
+            periss = db_session.query(Permission).filter(Permission.Name == current_user.Name, Permission.MenuType == MenuType).all()
+            flag = 'OK'
+            dic = []
+            for i in periss:
+                oclass = db_session.query(ModulMenus).filter(
+                    ModulMenus.ResourceMenuName.like("%" + i.MenuName + "%")).first()
+                dic.append(oclass)
+                # if MenuType == "资源级":
+                #     oclass = db_session.query(ResourceMenus).filter(ResourceMenus.ModulMenuName.like("%"+i.MenuName+"%")).first()
+                #     dic.append(oclass)
+                # else:
+                #     oclass = db_session.query(ModulMenus).filter(
+                #         ModulMenus.ResourceMenuName.like("%" + i.MenuName + "%")).first()
+                #     dic.append(oclass)
+            return {"code": "200", "message": "请求成功", "data": {"total": len(dic), "rows": dic}}
+        except Exception as e:
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "菜单权限查询报错Error：" + str(e), current_user.Name)
+            return {"code": "500", "message": "请求错误", "data": "菜单权限查询报错Error：" + str(e)}
+
+# 增加菜单父节点查询
+@permission_distribution.route('/Permission/SelectParentMenus', methods=['POST', 'GET'])
+def SelectParentMenus():
+    if request.method == 'GET':
+        data = request.values
+        try:
+            pages = int(data.get("offset"))  # 页数
+            rowsnumber = int(data.get("limit"))  # 行数
+            inipage = pages * rowsnumber + 0  # 起始页
+            endpage = pages * rowsnumber + rowsnumber  # 截止页
+            total = db_session.query(ModulMenus).filter(ModulMenus.MenuType.in_(("系统级", "模块级"))).count()
+            oclass = db_session.query(ModulMenus).filter(ModulMenus.MenuType.in_(("系统级", "模块级"))).all()[inipage:endpage]
+            jsonoclass = json.dumps(oclass, cls=AlchemyEncoder, ensure_ascii=False)
+            return '{"total"' + ":" + str(total) + ',"rows"' + ":\n" + jsonoclass + "}"
+        except Exception as e:
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "增加菜单父节点查询报错Error：" + str(e), current_user.Name)
+            return json.dumps([{"status": "Error:" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
+
+# 加载菜单列表
+@permission_distribution.route('/permission/menulisttree', methods=['POST', 'GET'])
+def menulisttree():
+    if request.method == 'GET':
+        data = request.values
+        try:
+            WorkNumber = data.get("WorkNumber")
+            user_menus = []
+            usermenus = db_session.query(Permission.MenuName).filter(Permission.WorkNumber == WorkNumber).all()
+            for menu in usermenus:
+                user_menus.append(menu[0])
+            data = getMenuList(user_menus, id=0)
+            jsondata = json.dumps(data, cls=AlchemyEncoder, ensure_ascii=False)
+            return jsondata.encode("utf8")
+        except Exception as e:
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "加载菜单列表Error：" + str(e), current_user.Name)
+            return json.dumps([{"status": "Error:" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
+
+# 加载菜单列表
+@permission_distribution.route('/permission/PermissionsSave', methods=['POST', 'GET'])
+def PermissionsSave():
+    if request.method == 'POST':
+        data = request.values
+        try:
+            datastr = json.loads(data.get("data"))
+            #删除之前的权限
+            perss = db_session.query(Permission).filter(Permission.WorkNumber == datastr[0].get("WorkNumber")).all()
+            for pe in perss:
+                db_session.delete(pe)
+            db_session.commit()
+            for i in datastr:
+                per = Permission()
+                per.MenuName = i.get("MenuName")
+                per.MenuType = i.get("MenuType")
+                per.MenuCode = i.get("MenuCode")
+                per.Name = i.get("Name")
+                per.WorkNumber = i.get("WorkNumber")
+                db_session.add(per)
+            db_session.commit()
+            return 'OK'
+        except Exception as e:
+            db_session.rollback()
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "添加用户报错Error：" + str(e), current_user.Name)
+            return json.dumps([{"status": "Error:" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
+
+# 加载菜单列表
+@permission_distribution.route('/permission/PermissionsMenus', methods=['POST', 'GET'])
+def PermissionsMenus():
+    if request.method == 'GET':
+        data = request.values
+        try:
+            MenuName = data.get("MenuName")
+            MenuType = data.get("MenuType")
+            if MenuName == None:
+                MenuNames = db_session.query(Permission.MenuName).filter(Permission.WorkNumber == current_user.WorkNumber, Permission.MenuType == MenuType).all()
+            else:
+                ParentNode = db_session.query(ModulMenus.ID).filter(ModulMenus.ModulMenuName == MenuName).first()
+                pmenus = db_session.query(ModulMenus.ModulMenuName).filter(ModulMenus.ParentNode == ParentNode,ModulMenus.MenuType == MenuType).all()
+                cmenus = db_session.query(Permission.MenuName).filter(Permission.WorkNumber == current_user.WorkNumber).all()
+                MenuNames = list(set(pmenus).intersection(set(cmenus)))
+            dir = []
+            for mn in MenuNames:
+                meu = db_session.query(ModulMenus).filter(ModulMenus.ModulMenuName == mn).first()
+                dir.append(meu)
+            if dir:
+                dir = sorted(dir, key=lambda aa: aa.ID)
+            return json.dumps(dir, cls=AlchemyEncoder, ensure_ascii=False)
+        except Exception as e:
+            db_session.rollback()
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "添加用户报错Error：" + str(e), current_user.Name)
+            return json.dumps([{"status": "Error:" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
+
+@permission_distribution.route('/permission/saverolepermission', methods=['POST', 'GET'])
+def saverolepermission():
+    '''
+    角色添加权限
+    :return:
+    '''
+    if request.method == 'POST':
+        data = request.values
+        try:
+            roleID = data.get("roleID")
+            permissionIDs = data.get("permissionIDs")
+            if permissionIDs:
+                permissionIDs = eval(permissionIDs)
+            roleclass = db_session.query(Role).filter(Role.ID == int(roleID)).first()
+            sql = "delete from RolePermission where RoleID = " + roleID
+            db_session.execute(sql)
+            db_session.commit()
+            for pid in permissionIDs:
+                permissioncalss = db_session.query(Permission).filter(Permission.ID == int(pid)).first()
+                rpclas = db_session.query(RolePermission).filter(RolePermission.RoleID == roleclass.ID, RolePermission.PermissionID == permissioncalss.ID).first()
+                if not rpclas:
+                    rp = RolePermission()
+                    rp.RoleID = roleclass.ID
+                    rp.RoleName = roleclass.RoleName
+                    rp.PermissionID = permissioncalss.ID
+                    rp.PermissionName = permissioncalss.PermissionName
+                    db_session.add(rp)
+                    db_session.commit()
+            return json.dumps("OK", cls=AlchemyEncoder, ensure_ascii=False)
+        except Exception as e:
+            db_session.rollback()
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "角色添加权限Error：" + str(e), current_user.Name)
+
+@permission_distribution.route('/permission/selectpermissionbyrole', methods=['POST', 'GET'])
+def selectpermissionbyrole():
+    '''
+    根据角色查询权限
+    :return:
+    '''
+    if request.method == 'GET':
+        data = request.values
+        try:
+            dir = {}
+            roleID = data.get("roleID")
+            pids = db_session.query(RolePermission).filter(RolePermission.RoleID == int(roleID)).all()
+            perids_list = []
+            for pid in pids:
+                perids_list.append(pid.PermissionID)
+            if len(perids_list) > 0:
+                existingRows = db_session.query(Permission).filter(Permission.ID.in_(perids_list)).all()
+                dir["existingRows"] = existingRows
+            else:
+                dir["existingRows"] = []
+            notHaveRows = db_session.query(Permission).filter().all()
+            dir["notHaveRows"] = notHaveRows
+            return json.dumps(dir, cls=AlchemyEncoder, ensure_ascii=False)
+        except Exception as e:
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "根据角色查询权限Error：" + str(e), current_user.Name)
+
+@permission_distribution.route('/permission/selectpermissionbyuser', methods=['POST', 'GET'])
+def selectpermissionbyuser():
+    '''
+    根据用户查询权限
+    :return:
+    '''
+    if request.method == 'GET':
+        data = request.values
+        try:
+            userid = db_session.query(User.ID).filter(User.WorkNumber == current_user.WorkNumber).first()[0]
+            rolecos = db_session.query(RoleUser).filter(RoleUser.UserID == userid).all()
+            permission_list = []
+            for ro in rolecos:
+                rps = db_session.query(RolePermission).filter(RolePermission.RoleID == ro.RoleID).all()
+                for rp in rps:
+                    permission_list.append(rp.PermissionName)
+            return json.dumps({"code": "200", "message": "请求成功", "data": {"total": len(permission_list), "rows": permission_list}})
+        except Exception as e:
+            print(e)
+            logger.error(e)
+            insertSyslog("error", "根据用户查询权限Error：" + str(e), current_user.Name)
+            return {"code": "500", "message": "请求错误", "data": "根据用户查询权限报错Error：" + str(e)}
