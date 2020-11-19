@@ -1,6 +1,4 @@
-./database/config.ini
-./database/config_db.ini
+database/config.ini
+database/config_db.ini
 .idea/
-tools/
-common/
 __pycache__/
