@@ -9,7 +9,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = CONNECT_DATABASE
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 CORS(app, supports_credentials=True)
-app.register_blueprint(energy, url_prefix='/work')
+app.register_blueprint(energy)
 
 
 def main():
