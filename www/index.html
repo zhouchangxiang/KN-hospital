@@ -7,11 +7,16 @@
 		content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 	<script src="js/vue.js"></script>
 	<script src="js/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/v-charts/lib/index.min.js"></script>
-    <script src="http://cdn.staticfile.org/moment.js/2.24.0/moment.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/v-charts/lib/style.min.css">
+	<script src="js/echarts.min.js"></script>
+	<script src="js/v-charts.min.js"></script>
+	<script src="js/moment.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/v-charts.min.css">
 	<link rel="stylesheet" type="text/css" href="css/display.css?v=0404">
+    <script>
+		window.onload = window.onresize = function () {
+			document.body.style.zoom = document.documentElement.clientWidth / 5760;
+		}
+    </script>
 </head>
 
 <body>
@@ -132,9 +137,7 @@
 					</div>
 					<!-- 能源总况 -->
 					<div class="middle_2">
-						<header>
-							{{middle_title}}
-						</header>
+						<header>能耗实时趋势</header>
 						<div class="item_main" :style="{ marginLeft: ((nyzk_index == -1)?0:'-100%') }">
 							<div class="middle_item">
 								<div id="nyzk_echarts"></div>
@@ -145,9 +148,7 @@
                                 </ul>
 								<!-- 能源总况能效分析 -->
 								<div class="nyzknxfx">
-									<header>
-										能源实时趋势 <span style="margin-left: 50px;">{{ nyzk_index }}实时总量{{ energyTotal }}</span>
-									</header>
+									<header>{{ nyzk_index }}实时总量{{ energyTotal }}</header>
 									<div class="nyzk">
 										<ve-line :data="chartData" :extend="ChartExtend" height="900px"></ve-line>
 									</div>
@@ -217,91 +218,12 @@
 						<header class="white font60 pingfang">
 							今日管控情况
 						</header>
-						<!-- 
-						<div class="hnzs right_item">
-							<p>
-								<div class="txt">
-									<img src="img/ring.png" alt="">
-									<span class="pingfang white font48">耗能指数</span>
-								</div>
-								<div class="level">
-									<div class="level_img">
-										<div class="level_active">
-											<img src="img/level_left.gif" alt="">
-											<img v-bind:style="{width:hnzs_left}" src="img/level.gif" alt=""
-												class="level_active_level">
-											<img src="img/level_right.gif" alt="" class="level_active_right">
-										</div>
-									</div>
-									<div class="leve_txt" v-bind:style="{marginLeft:hnzs_left}">
-										<img src="img/square.gif" alt="">
-										{{hnzs}}
-									</div>
-								</div>
-							</p>
-						</div>
-						-->
 						<div class="ksynsj right_item">
 							<p><img src="img/ring.png" alt="">
-								<span class="pingfang white font48">楼层实时用能数据</span></p>
-							<div class="ksynsj_left">
-								<ul v-for="(item,index) in ksynsj" :style="{ marginTop: ksynsj_margin + 'px' }">
-									<li :class="{active:ksynsj_index == index}">{{item.areaName}}</li>
-								</ul>
-							</div>
-							<div class="ksynsj_right">
-								<ul>
-									<li>
-										<p>耗水(t)</p>
-										<strong>{{ksynsj[ksynsj_index].waterConsume}}</strong>
-									</li>
-									<li>
-										<p>耗电(kW·h)</p>
-										<strong>{{ksynsj[ksynsj_index].electricConsume}}</strong>
-									</li>
-									<li>
-										<p>耗冷(kW·h)</p>
-										<strong>{{ksynsj[ksynsj_index].coldConsume}}</strong>
-									</li>
-									<li>
-										<p>耗暖(kj)</p>
-										<strong>{{ksynsj[ksynsj_index].heatConsume}}</strong>
-									</li>
-									<li>
-										<p>耗气(m³)</p>
-										<strong>{{ksynsj[ksynsj_index].cngConsume}}</strong>
-									</li>
-								</ul>
-							</div>
+								<span class="pingfang white font48">楼层实时用能数据</span>
+                            </p>
+							<ve-bar :data="tierChartData" :settings="chartSettings" :extend="ChartExtend"></ve-bar>
 						</div>
-						<div class="kshnjndb right_item">
-							<p><img src="img/ring.png" alt="">
-								<span class="pingfang white font48">楼层耗能综合对比</span></p>
-							<div class="kshnjndb_item">
-								<ul v-bind:style="{ marginTop: kshnjndb_margin + 'px' }">
-									<li v-for="item in ksynsj">
-										<div class="kshnjndb_bar">
-											<div class="kshnjndb_bar_active"
-												v-bind:style="{ width: (item.economyEnergy*100) + '%' }">
-											</div>
-										</div>
-										<div class="txt">
-											{{item.areaName}}
-										</div>
-									</li>
-								</ul>
-							</div>
-						</div>
-
-						<div class="message">
-							<marquee direction="up" scrollamount="2">
-								<div class="item" v-for="item in notice">
-									<p class="pingfang white font48 center">{{item.noticeTitle}}</p>
-									<p class="pingfang white font32" v-html="item.noticeContent"></p>
-								</div>
-							</marquee>
-						</div>
-
 					</div>
 				</div>
 			</div>
@@ -309,22 +231,12 @@
 	</div>
 
 	<script>
-		var baseUrl = 'http://134.175.24.75:28088';
-		var bgWidth = 5760;
-		window.onload = window.onresize = function () {
-			document.body.style.zoom = document.documentElement.clientWidth / bgWidth;
-		}
-		function drawEchart(id, option) {
-			var dom = document.getElementById(id);
-			var myChart = echarts.init(dom);
-			myChart.setOption(option);
-		}
-		var h = new Date().getHours();
 		new Vue({
 			el: '#app',
 			data(){
 			    return {
 			        websockVarData:{},
+                    chartSettings:{},
                     ChartExtend: {
 			            tooltip:{
 			                show:false
@@ -356,6 +268,7 @@
                         top:'2%'
                       },
                       series:{
+                        barMaxWidth : 50,
                         smooth: false,
                         label:{
                           show: false,
@@ -394,37 +307,36 @@
                     },
                     energyTotal:0,
                     tagListData:[
-                        {name:"空调智能电表1F",tag:"COM2.KT1F.总有功电量",type:"电"},
-                        {name:"空调智能电表2F",tag:"COM2.KT2F.总有功电量",type:"电"},
-                        {name:"空调智能电表3F",tag:"COM2.KT3F.总有功电量",type:"电"},
-                        {name:"空调智能电表4F",tag:"COM2.KT4F.总有功电量",type:"电"},
-                        {name:"空调智能电表5F",tag:"COM2.KT5F.总有功电量",type:"电"},
-                        {name:"空调智能电表6F",tag:"COM2.KT6F.总有功电量",type:"电"},
-                        {name:"空调智能电表7F",tag:"COM2.KT7F.总有功电量",type:"电"},
-                        {name:"空调智能电表8F",tag:"COM2.KT8F.总有功电量",type:"电"},
-                        {name:"空调智能电表9F",tag:"COM2.KT9F.总有功电量",type:"电"},
-                        {name:"空调智能电表10F",tag:"COM2.KT10F.总有功电量",type:"电"},
-                        {name:"空调智能电表11F",tag:"COM2.KT11F.总有功电量",type:"电"},
-                        {name:"空调智能电表12F",tag:"COM2.KT12F.总有功电量",type:"电"},
-                        {name:"照明智能电表1F",tag:"COM2.LIGHT1F.总有功电量",type:"电"},
-                        {name:"照明智能电表2F",tag:"COM2.LIGHT2F.总有功电量",type:"电"},
-                        {name:"照明智能电表3F",tag:"COM2.LIGHT3F.总有功电量",type:"电"},
-                        {name:"照明智能电表4F",tag:"COM2.LIGHT4F.总有功电量",type:"电"},
-                        {name:"照明智能电表5F",tag:"COM2.LIGHT5F.总有功电量",type:"电"},
-                        {name:"照明智能电表6F",tag:"COM2.LIGHT6F.总有功电量",type:"电"},
-                        {name:"照明智能电表7F",tag:"COM2.LIGHT7F.总有功电量",type:"电"},
-                        {name:"照明智能电表8F",tag:"COM2.LIGHT8F.总有功电量",type:"电"},
-                        {name:"照明智能电表9F",tag:"COM2.LIGHT9F.总有功电量",type:"电"},
-                        {name:"照明智能电表10F",tag:"COM2.LIGHT10F.总有功电量",type:"电"},
-                        {name:"照明智能电表11F",tag:"COM2.LIGHT11F.总有功电量",type:"电"},
-                        {name:"照明智能电表12F",tag:"COM2.LIGHT12F.总有功电量",type:"电"},
+                        {name:"空调智能电表1F",tag:"COM2.KT1F.总有功电量",type:"电",tier:"1楼"},
+                        {name:"空调智能电表2F",tag:"COM2.KT2F.总有功电量",type:"电",tier:"2楼"},
+                        {name:"空调智能电表3F",tag:"COM2.KT3F.总有功电量",type:"电",tier:"3楼"},
+                        {name:"空调智能电表4F",tag:"COM2.KT4F.总有功电量",type:"电",tier:"4楼"},
+                        {name:"空调智能电表5F",tag:"COM2.KT5F.总有功电量",type:"电",tier:"5楼"},
+                        {name:"空调智能电表6F",tag:"COM2.KT6F.总有功电量",type:"电",tier:"6楼"},
+                        {name:"空调智能电表7F",tag:"COM2.KT7F.总有功电量",type:"电",tier:"7楼"},
+                        {name:"空调智能电表8F",tag:"COM2.KT8F.总有功电量",type:"电",tier:"8楼"},
+                        {name:"空调智能电表9F",tag:"COM2.KT9F.总有功电量",type:"电",tier:"9楼"},
+                        {name:"空调智能电表10F",tag:"COM2.KT10F.总有功电量",type:"电",tier:"10楼"},
+                        {name:"空调智能电表11F",tag:"COM2.KT11F.总有功电量",type:"电",tier:"11楼"},
+                        {name:"空调智能电表12F",tag:"COM2.KT12F.总有功电量",type:"电",tier:"12楼"},
+                        {name:"照明智能电表1F",tag:"COM2.LIGHT1F.总有功电量",type:"电",tier:"1楼"},
+                        {name:"照明智能电表2F",tag:"COM2.LIGHT2F.总有功电量",type:"电",tier:"2楼"},
+                        {name:"照明智能电表3F",tag:"COM2.LIGHT3F.总有功电量",type:"电",tier:"3楼"},
+                        {name:"照明智能电表4F",tag:"COM2.LIGHT4F.总有功电量",type:"电",tier:"4楼"},
+                        {name:"照明智能电表5F",tag:"COM2.LIGHT5F.总有功电量",type:"电",tier:"5楼"},
+                        {name:"照明智能电表6F",tag:"COM2.LIGHT6F.总有功电量",type:"电",tier:"6楼"},
+                        {name:"照明智能电表7F",tag:"COM2.LIGHT7F.总有功电量",type:"电",tier:"7楼"},
+                        {name:"照明智能电表8F",tag:"COM2.LIGHT8F.总有功电量",type:"电",tier:"8楼"},
+                        {name:"照明智能电表9F",tag:"COM2.LIGHT9F.总有功电量",type:"电",tier:"9楼"},
+                        {name:"照明智能电表10F",tag:"COM2.LIGHT10F.总有功电量",type:"电",tier:"10楼"},
+                        {name:"照明智能电表11F",tag:"COM2.LIGHT11F.总有功电量",type:"电",tier:"11楼"},
+                        {name:"照明智能电表12F",tag:"COM2.LIGHT12F.总有功电量",type:"电",tier:"12楼"},
                         {name:"中央空调智能电表1",tag:"COM2.KTCTR1.总有功电量",type:"电"},
                         {name:"中央空调智能电表2",tag:"COM2.KTCTR2.总有功电量",type:"电"},
                         {name:"辅助设备智能电表",tag:"COM2.KTCTRADD.总有功电量",type:"电"},
-                        {name:"8楼水表",tag:"COM1.WATER8F.今日累积流量",type:"水"},
-                        {name:"9楼水表",tag:"COM1.WATER9F.今日累积流量",type:"水"},
+                        {name:"8楼水表",tag:"COM1.WATER8F.今日累积流量",type:"水",tier:"8楼"},
+                        {name:"9楼水表",tag:"COM1.WATER9F.今日累积流量",type:"水",tier:"9楼"},
                     ],
-                    companyId:'',
                     companyEnergyEfficiency:{
                         'energyLevel':0, //节能等级
                         'ranking':0, //节能排名
@@ -441,30 +353,15 @@
                     hnzs:0,//耗能指数
                     hnzs_left:0,
                     energy_level:'',//能耗水平
-                    notice:[],//公告
                     indicator:[],//能效对比指标
                     nyzk_index: "电",//水电冷暖气到哪个了
-                    nyzk_index_son: 0,//能耗趋势跟能效趋势的切换
                     nyzk_title_son:'',
                     type: [ '电','水' ],
                     types: ["t","kW·h","kW·h","kW·h","m³"],
-                    middle_title: '年耗能占比分析',
-                    ksynsj_margin: 0,//科室用能margin-top
-                    ksynsj_index: 0,
-                    //科室用能数据
-                    ksynsj: [
-                        {
-                            name: '情感障碍科',
-                            data: {
-                                shui: Math.ceil(9*h/12)+Math.ceil(Math.random(1,20)*10),
-                                dian: Math.ceil(415*h/12)+Math.ceil(Math.random(1,20)*10),
-                                leng: 0,
-                                nuan: 0,
-                                qi: Math.ceil(6*h/12)+Math.ceil(Math.random(1,20)*10),
-                            },
-                        }
-                    ],
-                    kshnjndb_margin: 0,//科室用能对比margin-top
+                    tierChartData:{
+			            columns: ['楼层', '能耗量'],
+                        rows:[]
+                    },
                     operations: [
 
                     ],
@@ -476,24 +373,11 @@
                 }
 			},
 			mounted() {
-				this.companyId = 1;
 				this.initWebSocket()
-				//this.getWeather();
-				// this.getIndicator();
-				//this.getNotice();
+				this.getWeather();
+				this.getNotice();
 				//this.getCompanyEnergyEfficiency();
-				//this.getPatient();
-				//this.setNyzk();
-				// this.setNzbfx();
-				// this.setnhqs();
-				//this.setnxqs();
-				//this.setSbgz();
-				//this.setkshnjndb_margin();
-				//this.setksynsj_margin();
-				//this.getEnergy();
-				//this.getareaEnergy();
-				//执行能源总况计时器
-				//this.nyzkInterVal();
+				this.getPatient();
 			},
 			methods: {
 				//获取能效展示等数据
@@ -534,351 +418,6 @@
 				},
 				getNotice(){ //通知栏
 					var that = this;
-					axios.get(baseUrl + '/operation/main/notice/'+that.companyId)
-					.then(function (response) {
-						that.notice = response.data.data;
-						console.log(that.notice)
-					})
-					.catch(function (error) {
-						console.log(error);
-					});	
-				},
-				//获取能效对比指标
-				// getIndicator(){
-				// 	var that = this;
-				// 	axios.get(baseUrl + '/operation/main/indicator')
-				// 	.then(function (response) {
-				// 		that.indicator = response.data.data;
-				// 		// console.log(that.indicator)
-				// 	})
-				// 	.catch(function (error) {
-				// 		console.log(error);
-				// 	});					
-				// },
-				//能源总况计时器管理
-				nyzkInterVal() {
-
-				},
-				setksynsj_margin() {
-					var that = this;
-					setInterval(function () {
-						if (that.ksynsj_index + 1 == that.ksynsj.length) {
-							that.ksynsj_index = 0;
-							that.ksynsj_margin = 0;
-						} else {
-							that.ksynsj_index++;
-							var top = (that.ksynsj.length - 3 > 0) ? (that.ksynsj.length - 3) : 0;
-							if (that.ksynsj_margin + (top * 84) != 0) { //如果到倒数第三个
-								that.ksynsj_margin -= 84;
-							}
-						}
-					}, 3000);
-				},
-				setkshnjndb_margin() {
-					var that = this;
-					setInterval(function () {
-						var top = (that.ksynsj.length - 3 > 0) ? (that.ksynsj.length - 3) : 0;
-						if (that.kshnjndb_margin + (top * 60) == 0) {
-							that.kshnjndb_margin = 0;
-						} else {
-							that.kshnjndb_margin -= 60;
-						}
-					}, 3000);
-				},
-				// 能耗趋势
-				setnhqs(data) {
-					var option = {
-						color: ['#009fc9', '#e24e26', '#11f6e7', '#58c5ed'],
-						grid: {
-							top: '13%',
-							bottom: '-3%',
-							containLabel: true
-						},
-						xAxis: [
-							{
-								type: 'category',
-								data: data.xAxis,//['1', '2', '3', '4', '5', '6', '7'],
-								axisTick: {
-									alignWithLabel: true
-								},
-								axisLabel: {
-									textStyle: {
-										color: 'rgba(255,255,255,0.3)',
-										"fontSize": 32
-									}
-								}
-							}
-						],
-						legend: {
-							right: '4%',
-							top:'1%',
-							textStyle: {
-								color: 'rgba(255,255,255,0.3)',
-								"fontSize": 32
-							},
-							data: ['已使用', '额定', '预估', '去年同比']
-						},
-						yAxis: {
-							axisLine: {
-								show: false
-							},
-							axisTick: {
-								show: false
-							},
-							splitLine: {
-								lineStyle: {
-									color: ['rgba(255,255,255,0.3)']
-								}
-							},
-							axisLabel: {
-								textStyle: {
-									color: 'rgba(255,255,255,0.3)',
-									"fontSize": 32
-								}
-							}
-						},
-						series: [
-							{
-								name: '已使用',
-								type: 'bar',
-								barWidth: '10%',
-								data: data.series[0]
-							},
-							{
-								name: '额定',
-								type: 'bar',
-								barWidth: '10%',
-								data: data.series[1]
-							},
-							{
-								name: '预估',
-								type: 'bar',
-								barWidth: '10%',
-								data: data.series[2]
-							},
-							{
-								name: '去年同比',
-								type: 'bar',
-								barWidth: '10%',
-								data: data.series[3]
-							}
-						]
-					};
-
-					drawEchart('nhqs_echart', option);
-				},
-				//能效趋势
-				setnxqs() {
-					var option = {
-						xAxis: [
-							{
-								type: 'category',
-								data: ['1', '2', '3', '4', '5', '6', '7', 8, 9, 10, 11, 12, 13],
-								axisTick: {
-									alignWithLabel: true
-								},
-								axisLabel: {
-									textStyle: {
-										color: 'rgba(255,255,255,0.3)',
-										"fontSize": 32
-									}
-								}
-							}
-						],
-						yAxis: {
-							axisLine: {
-								show: false
-							},
-							axisTick: {
-								show: false
-							},
-							splitLine: {
-								lineStyle: {
-									color: ['rgba(0,159,201,0.4)']
-								}
-							},
-							axisLabel: {
-								textStyle: {
-									color: 'rgba(255,255,255,0.3)',
-									"fontSize": 32
-								}
-							}
-						},
-						series: [
-							{
-								name: '已使用',
-								type: 'line',
-
-								itemStyle: {
-									normal: {
-										lineStyle: {
-											color: '#11f7e6'
-										}
-									}
-								}
-								,
-								data: [53, 52, 45, 17, 45, 35, 27, 45, 65, 45, 37, 45, 55]
-							}
-						]
-					};
-
-					drawEchart('nxqs_echart', option);
-				},
-				//能源总况饼图
-				setNyzk(data) {
-					var option = {
-						series: [
-							{
-								name: '能源总况',
-								type: 'pie',
-								center: ['50%', '65%'],
-								radius: ['40%', '60%'],
-								data: data,
-								label: {
-									normal: {
-										fontSize: 36,
-									},
-									emphasis: {
-										show: true,
-										textStyle: {
-											fontSize: '30',
-											fontWeight: 'bold'
-										}
-									}
-								},
-								itemStyle: {
-									emphasis: {
-										shadowBlur: 10,
-										shadowOffsetX: 0,
-										shadowColor: 'rgba(0, 0, 0, 0.5)',
-
-									},
-									normal: {
-										color: function (params) {
-											//自定义颜色
-											var colorList = [
-												'#2971b1', '#cf922d', '#c2462a', '#42afd8', '#12d5cf'
-											];
-											return colorList[params.dataIndex]
-										},
-
-									}
-								}
-							}
-						]
-					};
-
-					drawEchart('nyzk_echart', option);
-				},
-				//生成第一屏年占比分析饼图
-				setNzbfx(data) {
-					var option = {
-						series: [
-							{
-								name: '能源总况',
-								type: 'pie',
-								center: ['50%', '45%'],
-								data: data,
-								label: {
-									normal: {
-										formatter: '{b} {d}%  ',
-										fontSize: 48,
-									},
-									emphasis: {
-										show: true,
-										textStyle: {
-											fontSize: '30',
-											fontWeight: 'bold'
-										}
-									}
-								},
-								itemStyle: {
-									emphasis: {
-										shadowBlur: 10,
-										shadowOffsetX: 0,
-										shadowColor: 'rgba(0, 0, 0, 0.5)',
-
-									},
-									normal: {
-										color: function (params) {
-											//自定义颜色
-											var colorList = [
-												'#2971b1', '#cf922d', '#c2462a', '#42afd8', '#12d5cf'
-											];
-											return colorList[params.dataIndex]
-										},
-
-									}
-								}
-							}
-						]
-					};
-
-					drawEchart('nyzk_echarts', option);
-				},
-				setSbgz() {
-					var that = this;
-					//axios.get(baseUrl + '/operation/main/operation/'+that.companyId)
-					//.then(function (response) {
-						//if(response.data.code === 0){
-							//that.operations = response.data.data.operationPersonVoList;
-							var source = [
-							    {product: "1",'预警': 111,'保养': 123},
-							    {product: "2",'预警': 142,'保养': 163},
-                            ];
-							//response.data.data.operationDeviceTypeVoList.forEach((item)=>{
-								//source.push({
-									//product: item.deviceTypeName,
-									//'预警': item.earlyWarning,
-									//'保养': item.upkeep
-								//})
-							 //})
-							var option = {
-								color: ['#16c2d8', '#f86206', '#96d9f0'],
-								legend: {
-									right: '4%',
-									top:'top',
-									textStyle: {
-										color: '#a3cccc',
-										"fontSize": 35
-									}
-								},
-
-								dataset: {
-									dimensions: ['product', '预警', '保养'],
-									source: source
-								},
-								xAxis: {
-									type: 'category',
-									axisLabel: {
-										textStyle: {
-											color: '#a3cccc',
-											"fontSize": 35
-										}
-									},
-								},
-								yAxis: {
-									axisLabel: {
-										textStyle: {
-											color: '#a3cccc',
-											"fontSize": 28
-										}
-									},
-								},
-								// Declare several bar series, each will be mapped
-								// to a column of dataset.source by default.
-								series: [
-									{ type: 'bar', barWidth: '15%' },
-									{ type: 'bar', barWidth: '15%' }
-								]
-							};
-
-							drawEchart('sbgz_echart', option);
-						//}
-					 //})
-					//.catch(function (error) {
-						//console.log(error);
-					 //});
 				},
 				//获取病患管理
 				getPatient() {
@@ -914,86 +453,6 @@
 								patientDegreeMedium.push(item.patientDegreeMedium)
 								patientDegreeSerious.push(item.patientDegreeSerious)
 							})
-							var option = {
-                                color: ['rgba(0,159,201,0.4)', '#f1a726', '#e24e26'],
-                                legend: {
-                                    right: '4%',
-                                    data: ['轻', '中', '重'],
-                                    textStyle: {
-                                        color: '#a3cccc',
-                                        "fontSize": 35
-                                    }
-                                },
-                                grid: {
-                                    left: '3%',
-                                    right: '4%',
-                                    bottom: '3%',
-                                    containLabel: true
-                                },
-                                xAxis: {
-                                    position: 'top',
-                                    splitLine: {
-                                        show: false
-                                    },
-                                    axisLine: {
-                                        show: false
-                                    },
-                                    axisTick: {
-                                        show: false
-                                    },
-                                },
-                                yAxis: {
-                                    axisLine: {
-                                        lineStyle: {
-                                            color: '#a3cccc'
-                                        }
-                                    },
-                                    axisLabel: {
-                                        textStyle: {
-                                            color: '#a3cccc',
-                                            "fontSize": 28
-                                        }
-                                    },
-                                    type: 'category',
-                                    data: yAxis
-                                },
-
-                                series: [
-                                    {
-                                        name: '轻',
-                                        type: 'bar',
-                                        barWidth: '30%',
-                                        stack: '总量',
-                                        animationDelay: function (idx) {
-                                            return idx * 10 + 300;
-                                        },
-                                        data: patientDegreeEasy
-                                    },
-                                    {
-                                        name: '中',
-                                        type: 'bar',
-                                        stack: '总量',
-                                        animationDelay: function (idx) {
-                                            return idx * 10 + 500;
-                                        },
-                                        data: patientDegreeMedium
-                                    },
-                                    {
-                                        name: '重',
-                                        type: 'bar',
-                                        stack: '总量',
-                                        animationDelay: function (idx) {
-                                            return idx * 10 + 700;
-                                        },
-                                        data: patientDegreeSerious
-                                    }
-                                ],
-                                animationEasing: 'elasticOut',
-                                animationDelayUpdate: function (idx) {
-                                    return idx * 5;
-                                }
-                            };
-						    drawEchart('bhgl_echart', option);
 						//}
 					//})
 					//.catch(function (error) {
@@ -1001,68 +460,8 @@
 					//});
 					
 				},
-				//获取能源总况
-				getEnergy(){
-					var that = this;
-					//axios.get(baseUrl + '/operation/main/energy/'+that.companyId)
-					//.then(function (response) {
-						//if(response.data.code === 0){
-							var data = new Map();
-							//var energyCount = 0;
-							var Nzbfx = [];
-							//response.data.data.forEach((item)=>{
-								//energyCount += item.yearUsage;
-								//data.set(item.energyTypeDesc,item);
-								//Nzbfx.push({
-									//value: item.yearUsage, name: item.energyTypeDesc
-								//})
-							//})
-                            Nzbfx = [
-                                {value:1,name:"wer"},
-                                {value:2,name:"erw"},
-                            ]
-							that.setNzbfx(Nzbfx);
-							that.energy = data;
-						//}
-					//})
-					//.catch(function (error) {
-						//console.log(error);
-					//});
-				},
-				//获取科室用能
-				getareaEnergy(){
-					var that = this;
-					axios.get(baseUrl + '/operation/main/areaEnergy/'+that.companyId)
-					.then(function (response) {
-						if(response.data.code === 0){
-							that.ksynsj = response.data.data
-							var economyEnergyTotal = 0;
-							response.data.data.forEach((item)=>{
-								economyEnergyTotal += item.economyEnergy;
-							})
-							that.economyEnergyTotal = economyEnergyTotal;
-						}
-					})
-					.catch(function (error) {
-						console.log(error);
-					});	
-				},
 				getWeather() {
 					var that = this;
-					axios.get('https://www.tianqiapi.com/api/?version=v1')
-						.then(function (response) {
-							var data = response.data;
-							that.weather = {
-								date: data.data[0].date,
-								wea: data.data[0].wea,
-								tem: data.data[0].tem,
-								air_level: data.data[0].air_level,
-								city: data.city
-							}
-						})
-						.catch(function (error) {
-							console.log(error);
-						});
 				},
                 initWebSocket(){ //初始化weosocket
                     // this.websock = new WebSocket('ws://' + location.host + '/socket');
@@ -1082,12 +481,18 @@
 				    var that = this
                     this.websockVarData = JSON.parse(e.data)
                       this.energyTotal = 0
+                      this.tierChartData.rows = []
                       for(var key in this.websockVarData){
                           this.tagListData.forEach(item =>{
                               if(item.tag === key ){
                                   if(item.type === this.nyzk_index){
                                       that.energyTotal += Number(this.websockVarData[key])
                                   }
+                                  that.tierChartData.rows.push({
+                                      '楼层':item.tier,
+                                      '能耗':Number(this.websockVarData[key])
+                                  })
+
                               }
                           })
                       }
