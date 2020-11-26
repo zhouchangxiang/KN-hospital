@@ -65,11 +65,6 @@
       this.currentTime = setInterval(() =>{
         _this.currentTime = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
       },1000);
-      // this.energyMenulist.forEach(item =>{
-      //   if(item.url === this.$route.path){
-      //
-      //   }
-      // })
       this.routeLocation = this.$route.path
     },
     created(){
@@ -137,8 +132,8 @@
   }
   .header-title-list li{
     display: inline-block;
-    height: 90px;
-    line-height: 90px;
+    height: 80px;
+    line-height: 80px;
     padding: 0 30px;
     margin: 0 5px;
     background: #0B5474;
@@ -171,6 +166,7 @@
     color:#fff;
     margin: 30px 5px 0;
     vertical-align: bottom;
+    border-radius: 4px;
     cursor: pointer;
   }
   .menu-ul li.active{
