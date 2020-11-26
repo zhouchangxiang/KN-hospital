@@ -1,0 +1,295 @@
+* {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
+body {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+  letter-spacing: 3px;
+}
+/* 公共导航菜单 */
+.navOptionsItem{
+  width:100%;
+  background:#0B5474;
+  clear: both;
+  overflow: hidden;
+  border-radius:4px;
+  margin-bottom: 15px;
+}
+.navOptionsItem ul li{
+  float:left;
+  margin:10px 20px;
+}
+.navOptionsItem ul li a{
+  display: block;
+  color:#fff;
+  font-size:14px;
+  background:#0B5474;
+  text-decoration: none;
+  padding:10px 20px;
+  border-radius:4px;
+}
+.navOptionsItem ul li a.active{
+  color:#0B5474;
+  background:#fff;
+}
+/* element 组件样式自定义 */
+/* 分页 */
+.el-pagination{
+  float: right;
+  margin-top: 15px;
+}
+/* 公用组件样式 */
+.platformContainer{
+  width: 100%;
+  background: #0B5474;
+  color: #fff;
+  border-radius: 4px;
+  padding: 15px;
+  margin-bottom: 15px;
+  clear: both;
+  overflow: hidden;
+}
+.tableContainer{
+  width: 100%;
+  background: #E4E4E4;
+  color: #fff;
+  border-radius: 4px;
+  padding: 15px;
+  margin-bottom: 15px;
+  clear: both;
+  overflow: hidden;
+}
+.floatLeft{
+  float: left;
+}
+.floatRight{
+  float: right;
+}
+.page-title{
+  width: 100%;
+  margin-bottom:15px;
+  background: #3D4048;
+  color: #fff;
+  font-size: 18px;
+  height: 48px;
+  line-height: 48px;
+  padding: 0 10px;
+  border-radius:4px;
+}
+.page-title .page-title-radio{
+  float: right;
+  line-height: 48px;
+}
+/* 自定义表格样式 用于报修单等页面 */
+.elementTable{
+  width: 100%;
+  border-bottom: 1px solid #1B1E27;
+  border-right: 1px solid #1B1E27;
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin:0;
+  padding:0;
+}
+.elementTable th,.elementTable td{
+  border-left: 1px solid #1B1E27;
+  border-top: 1px solid #1B1E27;
+  font-weight: normal;
+  padding: 10px;
+}
+/* 字体大小 */
+.text-size-12{
+  font-size: 12px;
+}
+.text-size-14{
+  font-size: 14px;
+}
+.text-size-16{
+  font-size: 16px;
+}
+.text-size-18{
+  font-size: 18px;
+}
+.text-size-20{
+  font-size: 20px;
+}
+.text-size-24{
+  font-size: 24px;
+}
+/* 字体颜色 */
+.color-white{
+  color:#fff;
+}
+.color-offwhite{
+  color:#F9F9F9;
+}
+.color-grayblack{
+  color: #9B9B9B;
+}
+.color-darkblue{
+  color:#228AD5;
+}
+.color-lightgreen{
+  color:#00FAE7;
+}
+.color-success{
+  color: #15CC48;
+}
+.color-orange{
+  color:#FA7D00;
+}
+.color-red{
+  color:#FB3A06;
+}
+/* 背景颜色 */
+.bg-grayblack{
+  background-color:#34383E;
+}
+.bg-black{
+  background-color:#1B1E27;
+}
+.bg-success{
+  background-color:#15CC48;
+}
+.bg-red{
+  background-color:#FB3A06;
+}
+.bg-lightgreen{
+  background-color:#00FAE7;
+}
+.bg-darkblue{
+  background-color:#228AD5;
+}
+/* 间距 */
+.marginTop{
+  margin-top: 15px;
+}
+.marginBottom{
+  margin-bottom: 15px;
+}
+.marginBottomS{
+  margin-bottom: 10px;
+}
+/* 文本位置 */
+.vertical-align-middle{
+  vertical-align: middle;
+}
+.vertical-align-top{
+  vertical-align: top;
+}
+.vertical-align-bottom{
+  vertical-align: bottom;
+}
+.text-center{
+  text-align: center;
+}
+/* 圆点 */
+.dotState{
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  vertical-align: middle;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+/* 可滚动 */
+.scrollable{
+  width: 100%;
+  height: 100%;
+  scrollbar-width: none; /* firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.scrollable::-webkit-scrollbar {
+  display: none; /* Chrome Safari */
+}
+
+.MainContain{
+  position: relative;
+  width: 1450px;
+  height: 887px;
+}
+.hf-6{
+  position: absolute;
+  width: 76px;
+  height: 62px;
+  border-radius: 4px;
+}
+.smalllbox{
+  width: 76px;
+  height: 31px;
+  line-height: 31px;
+  text-align: center;
+}
+.sfs{
+  position: absolute;
+  margin:0 auto;
+  padding:0px 14px;
+  width: 50px;
+  line-height: 95px;
+  height: 282px;
+  font-size: 18px;
+  color:#fff;
+}
+.text-box{
+  position: absolute;
+  width:75px;
+  height:33px;
+  padding: 6px;
+  color: #fff;
+  font-size: 18px;
+  letter-spacing: 2px;
+  text-align:center;
+}
+.lqt{
+  position: absolute;
+  width:160px;
+  height:120px;
+  padding: 6px;
+  color: #fff;
+  font-size: 18px;
+  letter-spacing: 2px;
+  text-align:center;
+  cursor: pointer;
+}
+.jz{
+  position: absolute;
+  width:105px;
+  height:105px;
+  padding: 6px;
+  color: #fff;
+  font-size: 18px;
+  letter-spacing: 2px;
+  text-align:center;
+  cursor: pointer;
+}
+.lqb{
+  position: absolute;
+  width:65px;
+  height:65px;
+  padding: 6px;
+  color: #fff;
+  font-size: 18px;
+  letter-spacing: 2px;
+  text-align:center;
+  cursor: pointer;
+}
+.wd{
+  position: absolute;
+  width:80px;
+  height:25px;
+  line-height: 25px;
+  color: #15CC48;
+  font-size: 12px;
+  letter-spacing: 2px;
+  background: #000;
+  border-radius: 4px;
+  text-align:center;
+  cursor: pointer;
+}
+
+
