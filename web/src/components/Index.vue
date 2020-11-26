@@ -139,7 +139,7 @@
     display: inline-block;
     height: 90px;
     line-height: 90px;
-    padding: 0 15px;
+    padding: 0 30px;
     margin: 0 5px;
     background: #0B5474;
     color:#fff;
