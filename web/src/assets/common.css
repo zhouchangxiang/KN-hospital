@@ -1,123 +1,51 @@
+* {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
+body {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+  letter-spacing: 3px;
+}
 /* 公共导航菜单 */
 .navOptionsItem{
   width:100%;
-  background:#34383E;
+  background:#0B5474;
   clear: both;
   overflow: hidden;
   border-radius:4px;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 .navOptionsItem ul li{
   float:left;
-  margin:10px;
+  margin:10px 20px;
 }
 .navOptionsItem ul li a{
   display: block;
   color:#fff;
-  font-size:18px;
-  background:#34383E;
+  font-size:14px;
+  background:#0B5474;
   text-decoration: none;
-  padding:5px 20px;
+  padding:10px 20px;
   border-radius:4px;
 }
 .navOptionsItem ul li a.active{
-  color:#34383E;
+  color:#0B5474;
   background:#fff;
 }
 /* element 组件样式自定义 */
-/* 表格 */
-.blackComponents .el-table{
-  color: #fff;
-}
-.blackComponents .el-table__body tr:hover>td{
-  background-color:#3D4048
-}
-.blackComponents .el-table, .el-table__expanded-cell{
-  background-color: #3D4048;
-}
-.blackComponents .el-table th,.blackComponents .el-table tr{
-  background-color: #373B44;
-}
-.blackComponents .el-table--border,.el-table--group{
-  border: 1px solid #303339;
-}
-.blackComponents .el-table td,.blackComponents .el-table th.is-leaf{
-  border: 1px solid #303339;
-}
-.blackComponents .el-table--border::after,.blackComponents .el-table--group::after,.blackComponents .el-table::before{
-  background-color: #303339;
-}
-.blackComponents .el-table thead{
-  color: #E4E4E4;
-}
-/* 输入框 */
-.blackComponents .el-input__inner,.blackComponents .el-textarea__inner{
-  background-color: #585B62;
-  border: 1px solid #585B62;
-  color: #fff;
-}
-/* 单选框 */
-.blackComponents .el-radio{
-  color: #ffffff;
-}
-/* 复选框 */
-.blackComponents .el-checkbox{
-  color: #ffffff;
-}
-/* 表单样式 */
-.blackComponents .el-form-item__label{
-  color: #ffffff;
-}
 /* 分页 */
-.blackComponents .paginationClass{
-  text-align: right;
+.el-pagination{
+  float: right;
   margin-top: 15px;
-}
-.blackComponents .el-pagination.is-background .btn-next,.blackComponents .el-pagination.is-background .btn-prev,.blackComponents .el-pagination.is-background .el-pager li{
-  background-color: #585B62;
-}
-.blackComponents .el-pagination__total{
-  color: #E4E4E4;
-}
-.blackComponents .el-pagination__jump{
-  color: #E4E4E4;
-}
-.blackComponents .el-pagination.is-background .btn-next, .el-pagination.is-background .btn-prev, .el-pagination.is-background .el-pager li{
-  color: #fff;
-}
-.blackComponents .fc-unthemed .fc-today {
-  background: #727786;
-}
-/* 树形控件 */
-.blackComponents .el-tree{
-  background-color: #3D4048;
-  color: #fff;
-}
-.blackComponents .el-tree-node:focus>.el-tree-node__content,.blackComponents .el-tree-node__content:hover{
-  background-color: #727786;
-}
-.blackComponents .el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content{
-  background-color: #727786;
-}
-/* 分割线 */
-.blackComponents .el-divider{
-  background-color: #727786;
-}
-.blackComponents .el-divider__text{
-  background: #3D4048;
-  color: #ffffff;
-}
-/* 时间线 */
-.blackComponents .el-timeline .el-timeline-item__content{
-  color: #ffffff;
-}
-.blackComponents .el-timeline-item__timestamp{
-  color: #00FAE7;
 }
 /* 公用组件样式 */
 .platformContainer{
   width: 100%;
-  background: #3D4048;
+  background: #0B5474;
   color: #fff;
   border-radius: 4px;
   padding: 15px;
@@ -125,16 +53,9 @@
   clear: both;
   overflow: hidden;
 }
-.scheduleContainer{
+.tableContainer{
   width: 100%;
-  background: #3D4048;
-  color: #fff;
-  border-radius: 4px;
-  padding: 15px;
-}
-.cardContainer{
-  width: 100%;
-  background: #585B62;
+  background: #E4E4E4;
   color: #fff;
   border-radius: 4px;
   padding: 15px;
@@ -180,23 +101,23 @@
   padding: 10px;
 }
 /* 字体大小 */
+.text-size-12{
+  font-size: 12px;
+}
+.text-size-14{
+  font-size: 14px;
+}
+.text-size-16{
+  font-size: 16px;
+}
+.text-size-18{
+  font-size: 18px;
+}
+.text-size-20{
+  font-size: 20px;
+}
 .text-size-24{
   font-size: 24px;
-}
-.text-size-36{
-  font-size: 36px;
-}
-.text-size-48{
-  font-size: 48px;
-}
-.text-size-60{
-  font-size: 60px;
-}
-.text-size-72{
-  font-size: 72px;
-}
-.text-size-84{
-  font-size: 84px;
 }
 /* 字体颜色 */
 .color-white{
@@ -261,6 +182,9 @@
 }
 .vertical-align-bottom{
   vertical-align: bottom;
+}
+.text-center{
+  text-align: center;
 }
 /* 圆点 */
 .dotState{
@@ -367,3 +291,5 @@
   text-align:center;
   cursor: pointer;
 }
+
+

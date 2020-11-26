@@ -9,7 +9,6 @@ import qs from 'qs'
 Vue.use(ElementUI)
 import 'element-ui/lib/theme-chalk/index.css'
 import './assets/common.css'
-import './assets/board.css'
 import 'font-awesome/css/font-awesome.min.css'
 import VCharts from 'v-charts'
 import store from './store'

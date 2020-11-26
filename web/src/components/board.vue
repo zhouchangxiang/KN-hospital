@@ -206,7 +206,6 @@
 		</div>
   </div>
 </template>
-
 <script>
   var moment = require('moment');
   export default {
@@ -344,6 +343,12 @@
         energy:[],
         energyCount:0,//总耗能量
         economyEnergyTotal:0,//总节能量
+      }
+    },
+    created(){
+      document.body.style.zoom = document.documentElement.clientWidth / 5760;
+      window.onresize = function () {
+        document.body.style.zoom = document.documentElement.clientWidth / 5760;
       }
     },
     mounted() {
@@ -513,6 +518,7 @@
 </script>
 
 <style scoped>
+  @import "../assets/board.css";
   .boardContent{
     width: 5760px;
 	  height: 3240px;

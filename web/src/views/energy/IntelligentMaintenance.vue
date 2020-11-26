@@ -4,7 +4,7 @@
       <TabControl :TabControl="TabControl"></TabControl>
       <el-row :gutter="15" v-if="TabControl.TabControlCurrent === '设备台账'">
         <el-col :span="24" v-if="!showRepairsForm && !showMaintainForm && !showKeepPlanForm">
-          <div class="platformContainer">
+          <div class="tableContainer">
             <tableView class="blackComponents" :tableData="TableData" @getTableData="getEQTable" @repairs="repairs" @handleEQRowClick="handleEQRowClick" @drawUpKeepPlan="drawUpKeepPlan" @seeKeepPlan="seeKeepPlan"></tableView>
           </div>
           <el-dialog :title="TableData.rowClickData.EquipmentCode + '保养计划'" :visible.sync="keepPlandialogVisible" width="70%">
@@ -16,14 +16,14 @@
             </span>
           </el-dialog>
           <el-form :inline="true" class="marginBottom">
-            <el-radio-group v-model="showLogTypeValue" size="mini" :border="false">
+            <el-radio-group v-model="showLogTypeValue" :border="false">
               <el-radio-button v-for="item in showLogType" :key="item.label" :label="item.label"></el-radio-button>
             </el-radio-group>
           </el-form>
-          <div class="platformContainer blackComponents" v-if="showLogTypeValue === '维修记录'">
+          <div class="tableContainer blackComponents" v-if="showLogTypeValue === '维修记录'">
             <el-form :inline="true">
               <el-form-item>
-                <el-button type="primary" icon="el-icon-s-claim" size="small" @click="seeMaintainForm">查看维修单</el-button>
+                <el-button type="primary" icon="el-icon-s-claim" @click="seeMaintainForm">查看维修单</el-button>
               </el-form-item>
             </el-form>
             <el-table :data="repairsLogTableData.data" border ref="multipleTableRepairsLog" @selection-change="handleRepairsLogSelectionChange" @row-click="handleRepairsLogRowClick">
@@ -59,7 +59,7 @@
           </div>
         </el-col>
         <el-col :span="24" v-if="showRepairsForm">
-          <el-button @click="showRepairsForm = false" icon="el-icon-back" size="small" class="marginBottom">返回列表</el-button>
+          <el-button @click="showRepairsForm = false" icon="el-icon-back" class="marginBottom">返回列表</el-button>
           <div class="platformContainer blackComponents">
             <el-divider>设备报修信息</el-divider>
             <table class="elementTable marginBottom">
@@ -70,12 +70,12 @@
                 <td colspan="4"><p class="marginBottom">故障阐述：</p><el-input type="textarea" v-model="faultCondition"></el-input></td>
               </tr>
             </table>
-            <el-button @click="submitRepairs" type="primary" size="small">提交报修信息</el-button>
+            <el-button @click="submitRepairs" type="primary">提交报修信息</el-button>
           </div>
         </el-col>
         <el-col :span="24" v-if="showMaintainForm">
-          <el-button @click="showMaintainForm = false" icon="el-icon-back" size="small" class="marginBottom">返回列表</el-button>
-          <div class="platformContainer blackComponents">
+          <el-button @click="showMaintainForm = false" icon="el-icon-back" class="marginBottom">返回列表</el-button>
+          <div class="platformContainer">
             <el-divider>设备维修记录单</el-divider>
             <table class="elementTable marginBottom">
               <tr>
@@ -98,7 +98,7 @@
           </div>
         </el-col>
         <el-col :span="24" v-if="showKeepPlanForm">
-          <el-button @click="showKeepPlanForm = false" icon="el-icon-back" size="small" class="marginBottom">返回列表</el-button>
+          <el-button @click="showKeepPlanForm = false" icon="el-icon-back" class="marginBottom">返回列表</el-button>
           <div class="platformContainer blackComponents">
             <el-divider>制定保养计划</el-divider>
             <table class="elementTable marginBottom">
@@ -107,7 +107,7 @@
               </tr>
               <tr>
                 <td>
-                  任务开始时间：<el-date-picker v-model="keepTaskStartTime" type="datetime" size="mini" :clearable="false" :editable="false"></el-date-picker>
+                  任务开始时间：<el-date-picker v-model="keepTaskStartTime" type="datetime" :clearable="false" :editable="false"></el-date-picker>
                 </td>
                 <td>
                   制定类型：
@@ -152,23 +152,23 @@
                 </td>
               </tr>
             </table>
-            <el-button @click="submitKeekPlan" type="primary" size="small">提交保养计划</el-button>
+            <el-button @click="submitKeekPlan" type="primary">提交保养计划</el-button>
           </div>
         </el-col>
       </el-row>
       <el-row :gutter="15" v-if="TabControl.TabControlCurrent === '设备维修任务'">
         <el-col :span="24">
-          <div class="platformContainer">
-            <tableView class="blackComponents" :tableData="RepairTableData" @getTableData="getRepairTable" @takeOrder="takeOrder" @maintainOK="maintainOK"></tableView>
+          <div class="tableContainer">
+            <tableView :tableData="RepairTableData" @getTableData="getRepairTable" @takeOrder="takeOrder" @maintainOK="maintainOK"></tableView>
           </div>
         </el-col>
       </el-row>
       <el-row :gutter="15" v-if="TabControl.TabControlCurrent === '设备保养任务'">
         <el-col :span="24">
-          <div class="platformContainer blackComponents">
+          <div class="tableContainer">
             <el-form :inline="true">
               <el-form-item>
-                <el-button type="primary" size="small" @click="KeepOK" v-has="['设备保养工作']">保养完成</el-button>
+                <el-button type="primary" @click="KeepOK" v-has="['设备保养工作']">保养完成</el-button>
               </el-form-item>
             </el-form>
             <el-table :data="KeepTaskTableData.data" border ref="multipleTableKeepTask" @selection-change="handleKeepTaskSelectionChange" @row-click="handleKeepTaskRowClick">

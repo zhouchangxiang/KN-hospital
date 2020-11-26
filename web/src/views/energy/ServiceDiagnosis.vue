@@ -1,9 +1,6 @@
 <template>
   <el-row :gutter="15">
     <el-col :span="24">
-      <div class="page-title">
-        <span style="margin-left: 10px;" class="text-size-normol">服务诊断</span>
-      </div>
       <el-row :gutter="25">
         <el-col :span="10">
           <p class="color-white text-size-18 marginBottom">websocket 服务</p>
