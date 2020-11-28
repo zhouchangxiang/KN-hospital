@@ -8,6 +8,9 @@
         </el-radio-group>
       </el-col>
       <el-col :span="6">
+        <div class="platformContainer">12F</div>
+        <div class="platformContainer">11F</div>
+        <div class="platformContainer">10F</div>
         <div class="platformContainer">9F</div>
         <div class="platformContainer">8F</div>
         <div class="platformContainer">7F</div>
