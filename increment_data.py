@@ -20,7 +20,7 @@ while True:
             value = float(data) - float(old_data)
             if value < 500:
                 db_session.add(
-                    IncrementElectricTable(IncremenValue=str(value), IncremenType='电', CollectionDate=datetime.now(),
+                    IncrementElectricTable(IncremenValue=str(value), IncremenType='电', CollectionDate=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                                            Address=tag.Address))
                 db_session.commit()
                 redis_coon.hset(REDIS_TABLENAME, tag.Address + '_old', data)
@@ -30,7 +30,7 @@ while True:
                 pass
         if tag.Type == '水表':
             db_session.add(
-                IncrementWaterTable(IncremenValue=data, IncremenType='水', CollectionDate=datetime.now(),
+                IncrementWaterTable(IncremenValue=data, IncremenType='水', CollectionDate=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                                     Address=tag.Address))
             db_session.commit()
         else:
