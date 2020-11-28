@@ -314,6 +314,9 @@
             {name:"8楼水表",tag:"COM1.WATER8F.今日累积流量",type:"水",tier:"8楼"},
             {name:"9楼水表",tag:"COM1.WATER9F.今日累积流量",type:"水",tier:"9楼"},
         ],
+        today_energy:"", //今天已经运行小时数的能耗
+        yesterday_energy:"", //昨天相同时间小时数的能耗
+        yesterday_total_energy:"", //昨天的总能耗
         companyEnergyEfficiency:{
             'energyLevel':0, //节能等级
             'ranking':0, //节能排名
@@ -458,24 +461,28 @@
       },
       websocketonmessage(e){ //数据接收
         var that = this
-          this.websockVarData = JSON.parse(e.data)
-          this.energyTotal = 0
-          for(var key in this.websockVarData){
-              this.tagListData.forEach(item =>{
-                  if(item.tag === key ){
-                      if(item.type === this.nyzk_index){
-                          that.energyTotal += Number(this.websockVarData[key])
-                      }
+        this.websockVarData = JSON.parse(e.data)
+        this.today_energy = this.websockVarData.today_energy
+        this.yesterday_energy = this.websockVarData.yesterday_energy
+        this.yesterday_total_energy = this.websockVarData.yesterday_total_energy
+        console.log(this.today_energy,this.yesterday_energy,this.yesterday_total_energy)
+        this.energyTotal = 0
+        for(var key in this.websockVarData){
+            this.tagListData.forEach(item =>{
+                if(item.tag === key ){
+                    if(item.type === this.nyzk_index){
+                        that.energyTotal += Number(this.websockVarData[key])
+                    }
 
-                  }
-              })
-          }
-          that.chartData.rows.push({
-            "时间": moment().format("HH:mm:ss"),
-            "能耗量": that.energyTotal
-          })
-          that.chartData.rows.shift()
-        },
+                }
+            })
+        }
+        that.chartData.rows.push({
+          "时间": moment().format("HH:mm:ss"),
+          "能耗量": that.energyTotal
+        })
+        that.chartData.rows.shift()
+      },
       websocketsend(Data){//数据发送
         this.websock.send(Data);
       },
