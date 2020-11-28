@@ -18,7 +18,7 @@
 				<div class="left">
 					<!-- 绿色医院等级 -->
 					<div class="left_1">
-						<p class="white font72 pingfang">绿色医院能源管控系统已正常运行 <span class="font72">{{companyEnergyEfficiency.usingDay+1}}</span> 天</p>
+						<p class="white font72 pingfang" style="line-height: 120px;">绿色医院能源管控系统已正常运行 <span class="font72">{{usingDay}}</span> 天</p>
 						<!-- <p class="white font48 pingfang">单位面积综合能耗低于深圳市医疗卫生建筑平均水平<span>{{companyEnergyEfficiency.ranking * 100}} %</span>,能耗水平达到<span>{{energy_level}}</span></p> -->
 					</div>
 					<!-- 康宁医院能效展示 -->
@@ -28,7 +28,18 @@
 							<li>
 								<div>
 									<div class="icon">
-										<img src="img/01.png" alt="">
+                    <i class="fa fa-bolt white font72"></i>
+									</div>
+									<div class="txt white">
+										<p class="pingfang">今日预估能耗(tce)</p>
+										<strong class="fzhz">{{Math.floor(today_energy * yesterday_total_energy/yesterday_energy)}}</strong>
+									</div>
+								</div>
+							</li>
+							<li>
+								<div>
+									<div class="icon">
+                    <i class="el-icon-s-opportunity white font72"></i>
 									</div>
 									<div class="txt white">
 										<p class="pingfang">综合节能(tce)</p>
@@ -39,7 +50,7 @@
 							<li>
 								<div>
 									<div class="icon">
-										<img src="img/02.png" alt="">
+                    <i class="fa fa-fire white font72"></i>
 									</div>
 									<div class="txt white">
 										<p class="pingfang">碳排放总值(t)</p>
@@ -50,7 +61,7 @@
 							<li>
 								<div>
 									<div class="icon">
-										<img src="img/03.png" alt="">
+                    <i class="fa fa-tree white font72"></i>
 									</div>
 									<div class="txt white">
 										<p class="pingfang">相当于种植树(棵)</p>
@@ -61,22 +72,11 @@
 							<li>
 								<div>
 									<div class="icon">
-										<img src="img/05.png" alt="">
+                    <i class="el-icon-cloudy white font72"></i>
 									</div>
 									<div class="txt white">
 										<p class="pingfang">降低碳粉尘(t)</p>
 										<strong class="fzhz">{{Math.floor(companyEnergyEfficiency.reducePm25Amount * 100)/100}}</strong>
-									</div>
-								</div>
-							</li>
-							<li>
-								<div>
-									<div class="icon">
-										<img src="img/06.png" alt="">
-									</div>
-									<div class="txt white">
-										<p class="pingfang">削减罗湖电力供应量(KW·H)</p>
-										<strong class="fzhz">{{Math.floor(companyEnergyEfficiency.reduceElectricalLoadAmount * 100)/100}}</strong>
 									</div>
 								</div>
 							</li>
@@ -85,25 +85,20 @@
 					<!-- 能效对比 -->
 					<div class="left_3">
 						<header class="white font60 pingfang">能效对比</header>
-						<table border="2" style="width:100%;margin-top: 100px;">
-							<tr>
-								<th width="400">指标名称</th>
-								<!-- <th width="160">绿色医院<br>指标</th> -->
-								<th width="160">改造前<br>指标</th>
-								<th width="130">本院<br>指标</th>
-								<th width="200">节能<br>效果</th>
-							</tr>
-							<tr v-for="(energy,index) in indicator">
-								<td>{{energy.indicatorDesc}}</td>
-								<!-- <td>{{energy.greedHospitalIndicatorValue}}</td> -->
-								<td>{{energy.beforeModifyIndicatorValue}}</td>
-								<td>{{energy.companyIndicatorValue}}</td>
-								<td>
-								{{energy.companyIndicatorValue == 0 ? 0:(Math.floor((energy.beforeModifyIndicatorValue - energy.companyIndicatorValue) / energy.companyIndicatorValue * 10000) / 100)}}%
-								<img src="img/up.png" v-if="energy.companyIndicatorValue < energy.beforeModifyIndicatorValue">
-								<img src="img/low.png" v-else></td>
-							</tr>
-						</table>
+            <ul style="margin-top: 150px;">
+              <li style="margin-bottom: 80px;">
+                <span class="pingfang white font60">本日能耗：{{ Math.floor(today_energy) }}</span>
+              </li>
+              <li style="margin-bottom: 80px;">
+                <span class="pingfang white font60">昨日同期能耗：{{ Math.floor(yesterday_energy) }}</span>
+              </li>
+              <li style="margin-bottom: 80px;">
+                <span class="pingfang white font60">昨日总能耗：{{ Math.floor(yesterday_total_energy) }}</span>
+              </li>
+              <li style="margin-bottom: 80px;">
+                <span class="pingfang white font60">对比：</span><span class="pingfang font60" :class="today_energy-yesterday_energy>0?'danger':'success'">{{ compareYesterday }}</span>
+              </li>
+            </ul>
 					</div>
 				</div>
 				<div class="middle">
@@ -314,6 +309,7 @@
             {name:"8楼水表",tag:"COM1.WATER8F.今日累积流量",type:"水",tier:"8楼"},
             {name:"9楼水表",tag:"COM1.WATER9F.今日累积流量",type:"水",tier:"9楼"},
         ],
+        usingDay:moment(moment().format("YYYY-MM-DD")).diff("2020-11-28", 'day'),
         today_energy:"", //今天已经运行小时数的能耗
         yesterday_energy:"", //昨天相同时间小时数的能耗
         yesterday_total_energy:"", //昨天的总能耗
@@ -333,7 +329,6 @@
         hnzs:0,//耗能指数
         hnzs_left:0,
         energy_level:'',//能耗水平
-        indicator:[],//能效对比指标
         nyzk_index: "电",//水电冷暖气到哪个了
         nyzk_title_son:'',
         type: [ '电','水' ],
@@ -360,6 +355,24 @@
       this.getNotice();
       //this.getCompanyEnergyEfficiency();
       this.getPatient();
+    },
+    computed:{
+      compareYesterday(){
+        if(this.today_energy > 0){
+          var compare = (this.today_energy - this.yesterday_energy) / this.today_energy * 100
+          if(this.today_energy - this.yesterday_energy > 0){
+            return "+" + compare.toFixed(2) + "%"
+          }else{
+            return compare.toFixed(2) + "%"
+          }
+        }else{
+          if(this.yesterday_energy > 0){
+            return "-" + 100 + "%"
+          }else{
+            return 0 + "%"
+          }
+        }
+      },
     },
     methods: {
       //获取能效展示等数据
@@ -465,7 +478,6 @@
         this.today_energy = this.websockVarData.today_energy
         this.yesterday_energy = this.websockVarData.yesterday_energy
         this.yesterday_total_energy = this.websockVarData.yesterday_total_energy
-        console.log(this.today_energy,this.yesterday_energy,this.yesterday_total_energy)
         this.energyTotal = 0
         for(var key in this.websockVarData){
             this.tagListData.forEach(item =>{
@@ -473,7 +485,6 @@
                     if(item.type === this.nyzk_index){
                         that.energyTotal += Number(this.websockVarData[key])
                     }
-
                 }
             })
         }
