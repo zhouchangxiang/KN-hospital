@@ -2,7 +2,7 @@
   <el-row :gutter="15">
     <el-col :span="24">
       <el-row :gutter="25">
-        <el-col :span="10">
+        <el-col :span="9">
           <p class="color-white text-size-18 marginBottom">websocket 服务</p>
           <div class="platformContainer" style="height: 400px;">
             <div class="scrollable" style="padding-bottom: 36px;">
@@ -16,40 +16,40 @@
             </div>
           </div>
         </el-col>
-        <el-col :span="7">
+        <el-col :span="5">
           <p class="color-white text-size-18 marginBottom">OPC 服务</p>
           <div class="platformContainer" style="height: 400px;">
             <p>
-              <i class="dotState bg-grayblack" v-if="opcState === ''"></i>
-              <i class="dotState bg-lightgreen" v-if="opcState === true"></i>
-              <i class="dotState bg-red" v-if="opcState === false"></i>
+              <i class="dotState bg-grayblack" v-if="opcState != '执行正常'"></i>
+              <i class="dotState bg-lightgreen" v-if="opcState === '执行正常'"></i>
               <span class="color-white">运行状态</span>
-              <span class="floatRight color-grayblack" v-if="opcState === ''"></span>
-              <span class="floatRight color-lightgreen" v-if="opcState === true">运行正常</span>
-              <span class="floatRight color-red" v-if="opcState === false">服务未启动</span>
+              <span class="floatRight color-grayblack" v-if="opcState != '执行正常'">{{ opcState }}</span>
+              <span class="floatRight color-lightgreen" v-if="opcState === '执行正常'">{{ opcState }}</span>
             </p>
           </div>
         </el-col>
-        <el-col :span="7">
-          <p class="color-white text-size-18 marginBottom">节能服务</p>
+        <el-col :span="5">
+          <p class="color-white text-size-18 marginBottom">历史数据采集服务</p>
           <div class="platformContainer" style="height: 400px;">
-            <p class="marginBottom">
-              <i class="dotState bg-grayblack" v-if="jnState === ''"></i>
-              <i class="dotState bg-lightgreen" v-if="jnState === true"></i>
-              <i class="dotState bg-red" v-if="jnState === false"></i>
+            <p>
+              <i class="dotState bg-grayblack" v-if="History_Stutus != '执行正常'"></i>
+              <i class="dotState bg-lightgreen" v-if="History_Stutus === '执行正常'"></i>
               <span class="color-white">运行状态</span>
-              <span class="floatRight color-grayblack" v-if="jnState === ''"></span>
-              <span class="floatRight color-lightgreen" v-if="jnState === true">运行正常</span>
-              <span class="floatRight color-red" v-if="jnState === false">服务未启动</span>
+              <span class="floatRight color-grayblack" v-if="History_Stutus != '执行正常'">{{ History_Stutus }}</span>
+              <span class="floatRight color-lightgreen" v-if="History_Stutus === '执行正常'">{{ History_Stutus }}</span>
+            </p>
+          </div>
+        </el-col>
+        <el-col :span="5">
+          <p class="color-white text-size-18 marginBottom">采集服务统计</p>
+          <div class="platformContainer" style="height: 400px;">
+            <p>
+              <span class="color-white">运行成功次数</span>
+              <span class="floatRight color-lightgreen">{{ Sucesscount }}</span>
             </p>
             <p>
-              <i class="dotState bg-grayblack" v-if="jnValue === ''"></i>
-              <i class="dotState bg-lightgreen" v-if="jnValue === '1'"></i>
-              <i class="dotState bg-black" v-if="jnValue === '0'"></i>
-              <span class="color-white">节能状态</span>
-              <span class="floatRight" v-if="jnValue === ''"></span>
-              <span class="floatRight color-lightgreen" v-if="jnValue === '1'">开启</span>
-              <span class="floatRight color-grayblack" v-if="jnValue === '0'">关闭</span>
+              <span class="color-white">运行总次数</span>
+              <span class="floatRight color-lightgreen">{{ Totalcount }}</span>
             </p>
           </div>
         </el-col>
@@ -82,8 +82,9 @@
         newArrNum:0,
         showNewArr:false,
         opcState:'',
-        jnState:'',
-        jnValue:'',
+        History_Stutus:'',
+        Sucesscount:'',
+        Totalcount:'',
       }
     },
     created(){
@@ -124,8 +125,9 @@
         that.newArrNum = 0
         that.showNewArr=false
         that.opcState=''
-        that.jnState=''
-        that.jnValue=''
+        that.History_Stutus=''
+        that.Sucesscount=''
+        that.Totalcount=''
         for(var key in that.websockVarData){//循环返回的对象，并转成数组格式
           that.arr.push({[key]:that.websockVarData[key]})
         }
@@ -146,29 +148,23 @@
                   })
                   that.newArrErrorNum++
                 }
-                if(skey === 'LS_JN_FLAG'){  //判断节能的tag值
-                  if(item[skey].toLowerCase() != 'NONE' || item[skey].toLowerCase() != 'INIT'){
-                    that.jnState = true
-                    that.jnValue = item[skey]
-                  }else{
-                    that.jnState = false
-                  }
+                if(skey === 'History_Stutus'){  //历史数据采集的tag值
+                  that.History_Stutus = item[skey]
                 }
-                if(skey === 'SCADA.AI.E119LS__LS1AI07' || 'SCADA.AI.E119LS__LS1AI01'){
-                  if(item[skey].toLowerCase() != 'NONE' || item[skey].toLowerCase() != 'INIT'){
-                    that.opcState = true
-                  }else{
-                    that.opcState = false
-                  }
+                if(skey === 'Stutus'){ //opc服务的tag值
+                  that.opcState = item[skey]
+                }
+                if(skey === 'Sucesscount'){ //成功次数
+                  that.Sucesscount = item[skey]
+                }
+                if(skey === 'Totalcount'){ //总运行次数
+                  that.Totalcount = item[skey]
                 }
                 var scrollHeight = $('.scrollable').prop("scrollHeight");
                 $(".scrollable").scrollTop(scrollHeight) //将滚动条移动到最底部
               }
               if(index === that.arr.length -1){
                 that.showNewArr = true
-                if(that.opcState === ''){
-                  that.opcState = false
-                }
               }
             }, (index + 1) * 50);
           })(index)
