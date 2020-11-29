@@ -32,7 +32,8 @@
 									</div>
 									<div class="txt white">
 										<p class="pingfang">今日预估能耗(tce)</p>
-										<strong class="fzhz">{{Math.floor(today_energy * yesterday_total_energy/yesterday_energy)}}</strong>
+										<strong class="fzhz" v-if="yesterday_energy != 0">{{Math.floor(today_energy * yesterday_total_energy/yesterday_energy)}}</strong>
+										<strong class="fzhz" v-else>未知</strong>
 									</div>
 								</div>
 							</li>

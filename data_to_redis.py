@@ -20,14 +20,15 @@ while True:
     # 今日运行小时能耗
     sql1 = f'select sum(IncremenValue) as value from IncrementElectricTable where CollectionDate between {today_start_time} and {today_end_time} '
     # 昨日同等小时能耗
-    sql2 = f'select sum(IncremenValue) as value from IncrementElectricTable where CollectionDate between {yesterday_start_time} and {yesterday_start_time} '
+    sql2 = f'select sum(IncremenValue) as value from IncrementElectricTable where CollectionDate between {yesterday_start_time} and {yesterday_end_time} '
     # 昨日总能耗
     sql3 = f'select sum(IncremenValue) as value from IncrementElectricTable where CollectionDate between {yesterday_start_time} and {yesterday_last_time} '
     result1 = db_session.execute(sql1).fetchall()
     result2 = db_session.execute(sql2).fetchall()
     result3 = db_session.execute(sql3).fetchall()
-    print(result1[0]['value'])
-    redis_coon.hset(REDIS_TABLENAME, 'today_energy', result1[0]['value'])
+    if result1[0]['value'] is not None:
+        print(result1[0]['value'])
+        redis_coon.hset(REDIS_TABLENAME, 'today_energy', result1[0]['value'])
     if result2[0]['value'] is not None:
         print(result2[0]['value'])
         redis_coon.hset(REDIS_TABLENAME, 'yesterday_energy', result2[0]['value'])
