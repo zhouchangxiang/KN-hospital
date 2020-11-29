@@ -193,8 +193,25 @@
 						<header class="white font60 pingfang">
 							今日管控情况
 						</header>
+            <ul style="margin-top: 150px;">
+              <li style="margin-bottom: 50px;">
+                <span class="pingfang white font48">websocket服务：</span><span class="pingfang font60 floatRight" :class="websocket_status === '执行成功'?'success':'danger'">{{ websocket_status }}</span>
+              </li>
+              <li style="margin-bottom: 50px;">
+                <span class="pingfang white font48">OPC服务：</span><span class="pingfang font60 floatRight" :class="Stutus === '执行正常'?'success':'danger'">{{ Stutus }}</span>
+              </li>
+              <li style="margin-bottom: 50px;">
+                <span class="pingfang white font48">历史数据采集服务：</span><span class="pingfang font60 floatRight" :class="History_Stutus === '执行正常'?'success':'danger'">{{ History_Stutus }}</span>
+              </li>
+              <li style="margin-bottom: 50px;">
+                <span class="pingfang white font48">运行成功次数：</span><span class="pingfang success font60 floatRight">{{ Successcount }}</span>
+              </li>
+              <li style="margin-bottom: 50px;">
+                <span class="pingfang white font48">运行总次数：</span><span class="pingfang success font60 floatRight">{{ Totalcount }}</span>
+              </li>
+            </ul>
 						<div class="ksynsj right_item" style="text-align: center;">
-               <el-button type="primary" class="button" style="margin-top: 400px;" @click="$router.push('/Index')">空调照明管理系统</el-button>
+               <el-button type="primary" class="button" style="margin-top: 100px;" @click="$router.push('/Index')">空调照明管理系统</el-button>
 						</div>
 					</div>
 				</div>
@@ -209,6 +226,11 @@
     data(){
       return {
         websockVarData:{},
+        websocket_status:"",
+        Stutus:"",
+        History_Stutus:"",
+        Successcount:"",
+        Totalcount:"",
         chartSettings:{},
         ChartExtend: {
           tooltip:{
@@ -476,6 +498,11 @@
       websocketonmessage(e){ //数据接收
         var that = this
         this.websockVarData = JSON.parse(e.data)
+        this.websocket_status = this.websockVarData.websocket_status
+        this.Stutus = this.websockVarData.Stutus
+        this.History_Stutus = this.websockVarData.History_Stutus
+        this.Successcount = this.websockVarData.Successcount
+        this.Totalcount = this.websockVarData.Totalcount
         this.today_energy = this.websockVarData.today_energy
         this.yesterday_energy = this.websockVarData.yesterday_energy
         this.yesterday_total_energy = this.websockVarData.yesterday_total_energy

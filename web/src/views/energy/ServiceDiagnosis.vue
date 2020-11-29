@@ -45,7 +45,7 @@
           <div class="platformContainer" style="height: 400px;">
             <p>
               <span class="color-white">运行成功次数</span>
-              <span class="floatRight color-lightgreen">{{ Sucesscount }}</span>
+              <span class="floatRight color-lightgreen">{{ Successcount }}</span>
             </p>
             <p>
               <span class="color-white">运行总次数</span>
@@ -83,7 +83,7 @@
         showNewArr:false,
         opcState:'',
         History_Stutus:'',
-        Sucesscount:'',
+        Successcount:'',
         Totalcount:'',
       }
     },
@@ -126,7 +126,7 @@
         that.showNewArr=false
         that.opcState=''
         that.History_Stutus=''
-        that.Sucesscount=''
+        that.Successcount=''
         that.Totalcount=''
         for(var key in that.websockVarData){//循环返回的对象，并转成数组格式
           that.arr.push({[key]:that.websockVarData[key]})
@@ -154,8 +154,8 @@
                 if(skey === 'Stutus'){ //opc服务的tag值
                   that.opcState = item[skey]
                 }
-                if(skey === 'Sucesscount'){ //成功次数
-                  that.Sucesscount = item[skey]
+                if(skey === 'Successcount'){ //成功次数
+                  that.Successcount = item[skey]
                 }
                 if(skey === 'Totalcount'){ //总运行次数
                   that.Totalcount = item[skey]
