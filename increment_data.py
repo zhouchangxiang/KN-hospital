@@ -15,9 +15,9 @@ while True:
     for tag in address:
         print(tag.Address)
         data = redis_coon.hget(REDIS_TABLENAME, tag.Address)
-        if tag.Type == '电表' and data is not None and data != 'init':
+        if tag.Type == '电表' and data != 'None' and data != 'init':
             old_data = redis_coon.hget(REDIS_TABLENAME, tag.Address + '_old')
-            if data is not None and old_data is not None:
+            if data != 'None' or old_data != 'None':
                 value = float(data) - float(old_data)
                 if value < 500:
                     db_session.add(
