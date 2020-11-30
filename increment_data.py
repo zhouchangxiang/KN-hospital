@@ -14,10 +14,12 @@ while True:
     address = db_session.query(TagDetail).all()
     for tag in address:
         print(tag.Address)
-        data = redis_coon.hget(REDIS_TABLENAME, tag.Address)
+        data = redis_coon.hget(REDIS_TABLENAME, 'COM2.LIGHT10F.总有功电量')
         if tag.Type == '电表' and data != 'None' and data != 'init':
             old_data = redis_coon.hget(REDIS_TABLENAME, tag.Address + '_old')
-            if data != 'None' or old_data != 'None':
+            if data == 'None' or old_data == 'None' or data is None or old_data is None:
+                pass
+            else:
                 value = float(data) - float(old_data)
                 if value < 500:
                     db_session.add(
