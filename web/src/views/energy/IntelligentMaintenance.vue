@@ -217,7 +217,7 @@
             {prop:"Quantity",label:"数量",type:"input",value:""},
             {prop:"Power",label:"功率",type:"input",value:""},
             {prop:"Comment",label:"描述",type:"input",value:"",dataJudge:[]},
-            {prop:"Status",label:"设备状态",type:"input",value:"",dataJudge:[{value:"维修中",color:"#228AD5"},{value:"待接单",color:"#FA7D00"},{value:"运行中",color:"#00FAE7"}]},
+            {prop:"Status",label:"设备状态",type:"input",value:"",dataJudge:[{value:"维修中",color:"#228AD5"},{value:"待接单",color:"#FA7D00"},{value:"正常",color:"#00FAE7"}]},
           ],
           data:[],
           limit:5,
@@ -229,8 +229,8 @@
           searchProp:"",
           searchVal:"",
           handleType:[
-            {type:"warning",label:"快速报修",clickEvent:"repairs",hasPermissions:['设备报修']},
-            {type:"primary",label:"制定保养计划",clickEvent:"drawUpKeepPlan",hasPermissions:['设备制定保养计划']},
+            {type:"warning",label:"快速报修",clickEvent:"repairs"},
+            {type:"primary",label:"制定保养计划",clickEvent:"drawUpKeepPlan"},
             {type:"primary",label:"查看保养计划",clickEvent:"seeKeepPlan"},
           ],
           rowClick:"handleEQRowClick",
@@ -279,8 +279,8 @@
           searchProp:"",
           searchVal:"",
           handleType:[
-            {type:"primary",label:"我要接单",clickEvent:"takeOrder",hasPermissions:['设备维修工作']},
-            {type:"success",label:"维修完成",clickEvent:"maintainOK",hasPermissions:['设备维修工作']},
+            {type:"primary",label:"我要接单",clickEvent:"takeOrder"},
+            {type:"success",label:"维修完成",clickEvent:"maintainOK"},
           ],
         },
         showRepairsForm:false,
@@ -377,9 +377,8 @@
         this.axios.get("/api/CUID",{
           params: params
         }).then(res =>{
-          var data = JSON.parse(res.data)
-          that.TableData.data = data.rows
-          that.TableData.total = data.total
+          that.TableData.data = res.data.data.rows
+          that.TableData.total = res.data.data.total
         },res =>{
           console.log("请求错误")
         })
@@ -555,9 +554,8 @@
         this.axios.get("/api/CUID",{
           params: params
         }).then(res =>{
-          var data = JSON.parse(res.data)
-          that.RepairTableData.data = data.rows
-          that.RepairTableData.total = data.total
+          that.RepairTableData.data = res.data.data.rows
+          that.RepairTableData.total = res.data.data.total
         },res =>{
           console.log("请求错误")
         })

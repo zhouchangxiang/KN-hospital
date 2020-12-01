@@ -16,10 +16,9 @@ from common.BSFramwork import AlchemyEncoder
 from common.system import Organization, Factory, DepartmentManager, Role
 from database import connect_db
 
-from database.connect_db import CONNECT_DATABASE
-login_manager = LoginManager()
-# 创建对象的基类
-engine = create_engine(CONNECT_DATABASE)
+DB_URL = 'mysql+pymysql://root:Hstl_2020@127.0.0.1:3306/hstl?charset=utf8'
+
+engine = create_engine(DB_URL)#Qcsw@758@192.168.2.123  root@127.0.0.1
 Session = sessionmaker(bind=engine)
 db_session = Session()
 

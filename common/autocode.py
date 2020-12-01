@@ -16,8 +16,9 @@ app = Flask(__name__)
 
 logger = MESLogger('../equipment_backend/logs', 'log')
 
-from database.connect_db import CONNECT_DATABASE
-engine = create_engine(CONNECT_DATABASE, deprecate_large_types=True)
+DB_URL = 'mysql+pymysql://root:Hstl_2020@127.0.0.1:3306/hstl?charset=utf8'
+
+engine = create_engine(DB_URL)#Qcsw@758@192.168.2.123  root@127.0.0.1
 Session = sessionmaker(bind=engine)
 db_session = Session()
 

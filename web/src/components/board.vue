@@ -31,7 +31,7 @@
                     <i class="fa fa-bolt white font72"></i>
 									</div>
 									<div class="txt white">
-										<p class="pingfang">今日预估能耗(tce)</p>
+										<p class="pingfang">今日预估能耗(KWH)</p>
 										<strong class="fzhz" v-if="yesterday_energy != 0">{{Math.floor(today_energy * yesterday_total_energy/yesterday_energy)}}</strong>
 										<strong class="fzhz" v-else>未知</strong>
 									</div>
@@ -44,7 +44,7 @@
 									</div>
 									<div class="txt white">
 										<p class="pingfang">综合节能(tce)</p>
-										<strong class="fzhz">{{Math.floor(companyEnergyEfficiency.energyConservationAmount * 100)/100}}</strong>
+										<strong class="fzhz">{{ Math.floor(save_energy * 0.3619) }}</strong>
 									</div>
 								</div>
 							</li>
@@ -55,7 +55,29 @@
 									</div>
 									<div class="txt white">
 										<p class="pingfang">碳排放总值(t)</p>
-										<strong class="fzhz">{{Math.floor(companyEnergyEfficiency.carbonEmissionAmount * 100)/100}}</strong>
+										<strong class="fzhz">{{ Math.floor(save_energy * 0.6379) }}</strong>
+									</div>
+								</div>
+							</li>
+							<li>
+								<div>
+									<div class="icon">
+                    <i class="fa fa-leaf white font72"></i>
+									</div>
+									<div class="txt white">
+										<p class="pingfang">减排二氧化碳(kg)</p>
+										<strong class="fzhz">{{ Math.floor(save_energy * 0.997) }}</strong>
+									</div>
+								</div>
+							</li>
+							<li>
+								<div>
+									<div class="icon">
+                    <i class="el-icon-cloudy white font72"></i>
+									</div>
+									<div class="txt white">
+										<p class="pingfang">降低碳粉尘(kg)</p>
+										<strong class="fzhz">{{ Math.floor(save_energy * 0.272) }}</strong>
 									</div>
 								</div>
 							</li>
@@ -66,18 +88,7 @@
 									</div>
 									<div class="txt white">
 										<p class="pingfang">相当于种植树(棵)</p>
-										<strong class="fzhz">{{Math.floor(companyEnergyEfficiency.convertOfPlantingAmount * 100)/100}}</strong>
-									</div>
-								</div>
-							</li>
-							<li>
-								<div>
-									<div class="icon">
-                    <i class="el-icon-cloudy white font72"></i>
-									</div>
-									<div class="txt white">
-										<p class="pingfang">降低碳粉尘(t)</p>
-										<strong class="fzhz">{{Math.floor(companyEnergyEfficiency.reducePm25Amount * 100)/100}}</strong>
+										<strong class="fzhz">{{ Math.floor(save_energy * 0.6379 / 5.023) }}</strong>
 									</div>
 								</div>
 							</li>
@@ -336,6 +347,7 @@
         today_energy:"", //今天已经运行小时数的能耗
         yesterday_energy:"", //昨天相同时间小时数的能耗
         yesterday_total_energy:"", //昨天的总能耗
+        save_energy:"", //已节约能耗
         companyEnergyEfficiency:{
             'energyLevel':0, //节能等级
             'ranking':0, //节能排名
@@ -396,6 +408,11 @@
           }
         }
       },
+    },
+    destroyed() {
+      if(this.websock){
+        this.websock.close() //离开路由之后断开websocket连接
+      }
     },
     methods: {
       //获取能效展示等数据
@@ -506,6 +523,7 @@
         this.today_energy = this.websockVarData.today_energy
         this.yesterday_energy = this.websockVarData.yesterday_energy
         this.yesterday_total_energy = this.websockVarData.yesterday_total_energy
+        this.save_energy = this.websockVarData.save_energy
         this.energyTotal = 0
         for(var key in this.websockVarData){
             this.tagListData.forEach(item =>{

@@ -7,10 +7,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from flask_login import LoginManager
 
-from database.connect_db import CONNECT_DATABASE
+from database.db_operate import DB_URL
+
 login_manager = LoginManager()
 # 创建对象的基类
-engine = create_engine(CONNECT_DATABASE)
+engine = create_engine(DB_URL)
 Session = sessionmaker(bind=engine)
 db_session = Session()
 Base = declarative_base(engine)
@@ -673,27 +674,6 @@ class plantCalendarScheduling(Base):
     end = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
 
-class TechnologicalProcess(Base):
-    '''流程'''
-    __tablename__ = "TechnologicalProcess"
-
-    # ID:
-    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
-
-    # 流程名:
-    ProcessName = Column(Unicode(80), primary_key=False, autoincrement=False, nullable=True)
-
-    # 流程结构:
-    ProcessStructure = Column(Unicode(MAX), primary_key=False, autoincrement=False, nullable=True)
-
-    # 流程结构:
-    Icon = Column(Unicode(50), primary_key=False, autoincrement=False, nullable=True)
-
-    # 注释:
-    Describtion = Column(Unicode(100), primary_key=False, autoincrement=False, nullable=True)
-
-    # 录入时间:
-    InputDate = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
 # 模块菜单表
 class ModulMenus(Base):
@@ -762,6 +742,7 @@ class HomeModule(Base):
 
     # 存储时间
     CreateDate = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'), nullable=True)
+
 
 
 

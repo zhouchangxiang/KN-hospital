@@ -13,16 +13,15 @@
           </el-form>
         </el-col>
         <el-col :span="24">
-          <div class="platformContainer text-size-large text-color-info" style="margin-bottom:2px;">
+          <div class="tableContainer text-size-large color-grayblack" style="margin-bottom:2px;">
             <span>电能报表</span>
             <el-button type="primary" size="mini" style="float: right;" @click="exportExcel">导出报表</el-button>
           </div>
-          <div class="platformContainer">
-            <el-table :data="tableData" border tooltip-effect="dark" v-loading="loading">
+          <div class="tableContainer">
+            <el-table :data="tableData" border tooltip-effect="dark" v-loading="loading" size="small">
               <el-table-column prop="AreaName" label="区域"></el-table-column>
-              <el-table-column prop="TagClassValue" label="采集点"></el-table-column>
-              <el-table-column prop="Equipment" label="用电设备"></el-table-column>
-              <el-table-column prop="IncremenValue" label="增量值"></el-table-column>
+              <el-table-column prop="Address" label="设备"></el-table-column>
+              <el-table-column prop="Value" label="能耗值"></el-table-column>
               <el-table-column prop="Unit" label="单位"></el-table-column>
               <el-table-column prop="StartTime" label="开始时间" width="200"></el-table-column>
               <el-table-column prop="EndTime" label="结束时间" width="200"></el-table-column>
@@ -41,16 +40,15 @@
           </el-form>
         </el-col>
         <el-col :span="24">
-          <div class="platformContainer text-size-large text-color-info" style="margin-bottom:2px;">
+          <div class="tableContainer text-size-large color-grayblack" style="margin-bottom:2px;">
             <span>水能报表</span>
             <el-button type="primary" size="mini" style="float: right;" @click="exportWaterExcel">导出报表</el-button>
           </div>
-          <div class="platformContainer">
-            <el-table :data="tableWaterData" border tooltip-effect="dark" v-loading="loading">
+          <div class="tableContainer">
+            <el-table :data="tableWaterData" border tooltip-effect="dark" v-loading="loading" size="small">
               <el-table-column prop="AreaName" label="区域"></el-table-column>
-              <el-table-column prop="TagClassValue" label="采集点"></el-table-column>
-              <el-table-column prop="Equipment" label="用电设备"></el-table-column>
-              <el-table-column prop="IncremenValue" label="增量值"></el-table-column>
+              <el-table-column prop="Address" label="设备"></el-table-column>
+              <el-table-column prop="Value" label="能耗值"></el-table-column>
               <el-table-column prop="Unit" label="单位"></el-table-column>
               <el-table-column prop="StartTime" label="开始时间" width="200"></el-table-column>
               <el-table-column prop="EndTime" label="结束时间" width="200"></el-table-column>
@@ -92,8 +90,7 @@
       }
     },
     created(){
-      this.searchElcetricityTime()
-      this.searchWaterTime()
+
     },
     methods:{
       exportExcel(){
@@ -123,7 +120,6 @@
             end_time:moment(this.formParameters.endDate).format("YYYY-MM-DD HH:mm:ss"),
           }
         }).then(res =>{
-          console.log(res.data)
           if(res.data.code === "200"){
             var data = res.data
             this.tableData = data.data
@@ -140,10 +136,9 @@
             end_time:moment(this.formParameters.endDate).format("YYYY-MM-DD HH:mm:ss"),
           }
         }).then(res =>{
-          console.log(res.data)
           if(res.data.code === "200"){
             var data = res.data
-            this.tableData = data.data
+            this.tableWaterData = data.data
             this.loading = false
           }
         })
