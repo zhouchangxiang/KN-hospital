@@ -31,16 +31,16 @@ def energys():
             # print(results)
             for result in results:
                 value = '%.2f' % result[2] if result[2] is not None else '0.0'
-                data.append({"AreaName": result[0], "Address": result[1], "Value": value, "StartTime": request.values.get('start_time'), "EndTime": request.values.get('start_time'), "Unit": "KW/h"})
+                data.append({"AreaName": result[0], "Address": result[1], "Value": value, "StartTime": request.values.get('start_time'), "EndTime": request.values.get('end_time'), "Unit": "KW/h"})
         else:
-            sql = f'select AreaName,Address, sum(IncremenValue) as value from IncrementWaterTable where CollectionDate between {start_time} and {end_time} group by Address'
+            sql = f'select AreaName,Address, IncremenValue as value from IncrementWaterTable where CollectionDate between {start_time} and {end_time} order by CollectionDate desc limit 2'
             results = db_session.execute(sql).fetchall()
             db_session.close()
             # print(results)
             for result in results:
-                value = '%.2f' % result[2] if result[2] is not None else '0.0'
+                value = '%.2f' % float(result[2]) if result[2] is not None else '0.0'
                 data.append({"AreaName": result[0], "Address": result[1], "Value": value,
-                             "StartTime": request.values.get('start_time'), "EndTime": request.values.get('start_time'), "Unit": "m³"})
+                             "StartTime": request.values.get('start_time'), "EndTime": request.values.get('end_time'), "Unit": "m³"})
             # data = [(result[0], result[1], '%.2f' % result[2], request.values.get('start_time'), request.values.get('end_time'), 'm³') for result in results]
         return json.dumps({'code': '200', 'mes': '查询成功', 'data': data}, ensure_ascii=False)
     # except InvalidRequestError:
@@ -101,7 +101,7 @@ def exportx(start_time, end_time, energy_type):
         if energy_type == '电':
             sql = "select AreaName,Address, sum(IncremenValue) as value from IncrementElectricTable where CollectionDate between"+ start_time + " and " + end_time + " group by Address"
         if energy_type == '水':
-            sql = "select AreaName,Address, sum(IncremenValue) as value from IncrementWaterTable where CollectionDate between" + start_time + " and " + end_time + " group by Address"
+            sql = "select AreaName,Address, IncremenValue as value from IncrementWaterTable where CollectionDate between" + start_time + " and " + end_time + " order by CollectionDate desc limit 2"
         all_data = db_session.execute(sql).fetchall()
         print(all_data)
         i = 1
@@ -112,7 +112,7 @@ def exportx(start_time, end_time, energy_type):
                 if cum == '设备':
                     worksheet.write(i, columns.index(cum), ta[1])
                 if cum == '能耗值':
-                    value = '%.2f' % ta[2] if ta[2] is not None else '0.0'
+                    value = '%.2f' % float(ta[2]) if ta[2] is not None else '0.0'
                     worksheet.write(i, columns.index(cum), value)
                 if cum == '单位' and energy_type == '电':
                     worksheet.write(i, columns.index(cum), 'KW/h')

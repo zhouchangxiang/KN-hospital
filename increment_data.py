@@ -14,26 +14,28 @@ while True:
     address = db_session.query(TagDetail).all()
     for tag in address:
         print(tag.Address)
-        data = redis_coon.hget(REDIS_TABLENAME, 'COM2.LIGHT10F.总有功电量')
+        data = redis_coon.hget(REDIS_TABLENAME, tag.Address)
         if tag.Type == '电表' and data != 'None' and data != 'init':
             old_data = redis_coon.hget(REDIS_TABLENAME, tag.Address + '_old')
             if data == 'None' or old_data == 'None' or data is None or old_data is None:
                 pass
             else:
                 value = float(data) - float(old_data)
-                if value < 500:
-                    db_session.add(
-                        IncrementElectricTable(IncremenValue=str(value), IncremenType='电', CollectionDate=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                                               Address=tag.Address))
-                    db_session.commit()
-                    redis_coon.hset(REDIS_TABLENAME, tag.Address + '_old', data)
-                    redis_coon.hset(REDIS_TABLENAME, tag.Address + '_old_time',
-                                    datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-                else:
-                    pass
+                db_session.add(
+                    IncrementElectricTable(AreaName=tag.AreaName, IncremenValue=str(value), IncremenType='电',
+                                           CollectionDate=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                                           Address=tag.Address))
+                db_session.commit()
+                redis_coon.hset(REDIS_TABLENAME, tag.Address + '_old', data)
+                redis_coon.hset(REDIS_TABLENAME, tag.Address + '_old_time',
+                                datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+                # if value < 500:
+                #
+                # else:
+                #     pass
         if tag.Type == '水表':
             db_session.add(
-                IncrementWaterTable(IncremenValue=data, IncremenType='水', CollectionDate=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                IncrementWaterTable(AreaName=tag.AreaName, IncremenValue=data, IncremenType='水', CollectionDate=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                                     Address=tag.Address))
             db_session.commit()
         else:

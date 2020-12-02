@@ -7,8 +7,8 @@
           <el-form :model="formParameters">
             <el-form-item>
               <el-date-picker type="datetime" v-model="formParameters.startDate" :picker-options="pickerOptions" size="mini" format="yyyy-MM-dd HH:mm:ss"  style="width: 180px;" :clearable="false"></el-date-picker> ~
-              <el-date-picker type="datetime" v-model="formParameters.endDate" :picker-options="pickerOptions" size="mini" format="yyyy-MM-dd HH:mm:ss" style="width: 180px;" :clearable="false" @blur="searchElcetricityTime"></el-date-picker>
-              <span class="text-size-mini text-color-info-shallow">（选择结束时间后刷新数据）</span>
+              <el-date-picker type="datetime" v-model="formParameters.endDate" :picker-options="pickerOptions" size="mini" format="yyyy-MM-dd HH:mm:ss" style="width: 180px;" :clearable="false"></el-date-picker>
+              <el-button type="primary" @click="searchElcetricityTime"></el-button>
             </el-form-item>
           </el-form>
         </el-col>
@@ -34,8 +34,8 @@
           <el-form :model="formParameters">
             <el-form-item>
               <el-date-picker type="datetime" v-model="formParameters.startDate" :picker-options="pickerOptions" size="mini" format="yyyy-MM-dd HH:mm:ss"  style="width: 180px;" :clearable="false"></el-date-picker> ~
-              <el-date-picker type="datetime" v-model="formParameters.endDate" :picker-options="pickerOptions" size="mini" format="yyyy-MM-dd HH:mm:ss" style="width: 180px;" :clearable="false" @blur="searchWaterTime"></el-date-picker>
-              <span class="text-size-mini text-color-info-shallow">（选择结束时间后刷新数据）</span>
+              <el-date-picker type="datetime" v-model="formParameters.endDate" :picker-options="pickerOptions" size="mini" format="yyyy-MM-dd HH:mm:ss" style="width: 180px;" :clearable="false"></el-date-picker>
+              <el-button type="primary" @click="searchWaterTime"></el-button>
             </el-form-item>
           </el-form>
         </el-col>

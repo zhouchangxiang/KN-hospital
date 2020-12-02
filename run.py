@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 
-import repair
+from repair import repair
 from database.connect_db import CONNECT_DATABASE
 from energy import energy
 from energy_api import electric
