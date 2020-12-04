@@ -85,7 +85,7 @@
           if(this.relatedTableData) { //关联子表
             this.relatedTableData.searchProp = this.tableData.relatedChildTableField
             this.relatedTableData.searchVal = val[0][this.tableData.relatedTableField]
-            this.axios.get("/api/CUID",{
+            this.axios.get("/system-api/CUID",{
               params: {
                 tableName: this.relatedTableData.tableName,
                 field:this.relatedTableData.searchProp,
@@ -116,7 +116,7 @@
         }
       },
       searchTab(){
-        this.axios.get("/api/CUID",{
+        this.axios.get("/system-api/CUID",{
           params: {
             tableName: this.tableData.tableName,
             field:this.tableData.searchProp,
@@ -165,7 +165,7 @@
               distinguishCancelAndClose:true,
               type: 'warning'
             }).then(()  => {
-              this.axios.delete("/api/CUID",{
+              this.axios.delete("/system-api/CUID",{
                 params: params
               }).then(res =>{
                 if(res.data == "OK"){
@@ -203,7 +203,7 @@
                 limit:100000000,
                 offset:0
               }
-              this.axios.get("/api/CUID",{
+              this.axios.get("/system-api/CUID",{
                 params: params
               }).then(res =>{
                 var data = JSON.parse(res.data)
@@ -222,7 +222,7 @@
               if(item.childProp){  //判断是否有联动的子字段表单
                 this.tableData.column.forEach((childItem,index) =>{
                   if(childItem.prop === item.childProp){  //判断是否是点击项的子节点表单
-                    this.axios.get("/api/CUID",{
+                    this.axios.get("/system-api/CUID",{
                       params: {
                         tableName: childItem.Downtable,
                         field:childItem.showDownField,
@@ -253,7 +253,7 @@
               params[item.prop] = item.value
             }
           })
-          this.axios.post("/api/CUID",this.qs.stringify(params)).then(res =>{
+          this.axios.post("/system-api/CUID",this.qs.stringify(params)).then(res =>{
             if(res.data == "OK"){
               this.$message({
                 type: 'success',
@@ -275,7 +275,7 @@
           this.tableData.column.forEach(item =>{
             params[item.prop] = item.value
           })
-          this.axios.put("/api/CUID",this.qs.stringify(params)).then(res =>{
+          this.axios.put("/system-api/CUID",this.qs.stringify(params)).then(res =>{
             if(res.data == "OK"){
               this.$message({
                 type: 'success',

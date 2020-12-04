@@ -18,6 +18,13 @@ module.exports = {
           '^/api': '/' //路径重写
           }
       },
+      '/system-api': {  //使用"/system-api"来代替"http://xxx"
+        target: 'http://127.0.0.1:5008', //源地址
+        changeOrigin: true, //请求头
+        pathRewrite: {
+          '^/system-api': '/' //路径重写
+          }
+      },
       '/socket': {
         target: 'ws://127.0.0.1:5002',
         changeOrigin: true,
