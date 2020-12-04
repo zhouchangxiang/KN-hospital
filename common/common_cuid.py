@@ -4,17 +4,24 @@ from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import sessionmaker
 from flask_login import current_user
 import re
+from common.repair_model import *
 
 from werkzeug.security import generate_password_hash
 
-from database.connect_db import CONNECT_DATABASE
 import socket
 import datetime
 from common.system import SysLog, User, AuditTrace
 from common.MESLogger import MESLogger
 from common.BSFramwork import AlchemyEncoder
+from database.db_operate import DB_URL
 
-engine = create_engine(CONNECT_DATABASE, deprecate_large_types=True)
+engine = create_engine(DB_URL,max_overflow=0,  # 超过连接池大小外最多创建的连接
+            pool_size=5,  # 连接池大小
+            pool_timeout=30,  # 池中没有线程最多等待的时间，否则报错
+            pool_recycle=-1,  # 多久之后对线程池中的线程进行一次连接的回收（重置）
+            echo=True
+         )
+conn = engine.connect()
 Session = sessionmaker(bind=engine)
 db_session = Session()
 
@@ -100,7 +107,7 @@ def delete(data):
             jsonnumber = re.findall(r"\d+\.?\d*", jstr)
             for key in jsonnumber:
                 try:
-                    sql = "delete from "+"[LIMS].[dbo].["+tableName+"] where ID = "+str(key)
+                    sql = "delete from "+""+tableName+" where ID = "+str(key)
                     db_session.execute(sql)
                     aud = AuditTrace()
                     aud.TableName = tableName
@@ -179,15 +186,16 @@ def select(data):
         if pages == None or pages == "":
             pages = ""
         else:
-            pages = int(data.get("offset")) + 1
+
             rowsnumber = int(data.get("limit"))
+            pages = int(data.get("offset"))*rowsnumber+1
         newTable = Table(tableName, metadata, autoload=True, autoload_with=engine)
         columns = ""
         for column in newTable.columns:
             if columns == "":
-                columns = "[" + str(column).split(".")[1] + "]"
+                columns = str(column).split(".")[1]
             else:
-                columns = columns + ",[" + str(column).split(".")[1] + "]"
+                columns = columns + "," + str(column).split(".")[1]
         params = ""
         searchModes = data.get("searchModes")
         for key in data.keys():
@@ -206,35 +214,36 @@ def select(data):
                             params = params + " AND " + key + " = '" + data[key] + "'"
         if pages == "":
             if params == "":
-                sql = "select " + columns + " from [LIMS].[dbo].[" + tableName + "] ORDER BY ID DESC"
-                sqlcount = "select count(ID) from [LIMS].[dbo].[" + tableName + "]"
+                sql = "select " + columns + " from " + tableName + " ORDER BY ID DESC"
+                sqlcount = "select count(ID) from " + tableName
             else:
-                sql = "select " + columns + " from [LIMS].[dbo].[" + tableName + "] where " + params + " ORDER BY ID DESC"
-                sqlcount = "select count(ID) from [LIMS].[dbo].[" + tableName + "] where " + params
+                sql = "select " + columns + " from " + tableName + " where " + params + " ORDER BY ID DESC"
+                sqlcount = "select count(ID) from " + tableName + " where " + params
         else:
             if params == "":
-                sql = "select top " + str(
-                    rowsnumber) + " " + columns + " from [LIMS].[dbo].[" + tableName + "] where ID not in (select top " + str(
-                    (pages - 1) * rowsnumber) + " ID FROM [LIMS].[dbo].[" + tableName + "] ORDER BY ID DESC) ORDER BY ID DESC"
-                sqlcount = "select count(ID) from [LIMS].[dbo].[" + tableName + "]"
+                sql = "select " + columns + " from " + tableName + "  ORDER BY ID DESC LIMIT "+str(pages)+","+str(rowsnumber)
+                sqlcount = "select count(ID) from " + tableName
             else:
-                sql = "select top " + str(
-                    rowsnumber) + " " + columns + " from [LIMS].[dbo].[" + tableName + "] where " + params + \
-                      "AND ID not in (select top " + str(
-                    (pages - 1) * rowsnumber) + " ID FROM [LIMS].[dbo].[" + tableName + "] where " + params +" ORDER BY ID DESC) ORDER BY ID DESC"
-                sqlcount = "select count(ID) from [LIMS].[dbo].[" + tableName + "] where " + params
+                sql = "select " + columns + " from " + tableName + " where " + params + "ORDER BY ID DESC LIMIT "+str(pages)+","+str(rowsnumber)
+                sqlcount = "select count(ID) from " + tableName + " where " + params
         re = db_session.execute(sql).fetchall()
         recount = db_session.execute(sqlcount).fetchall()
         dict_list = []
+        y = 0
         for i in re:
+            y = y + 1
+            if y == 1:
+                continue
             dir = {}
-            column_list = columns.split(",")
-            for column in column_list:
-                if isinstance(i[column[1:-1]], datetime.datetime) == True:
-                    dir[column[1:-1]] = datetime.datetime.strftime(i[column[1:-1]],'%Y-%m-%d %H:%M:%S')
+            j = 0
+            for column in newTable.columns:
+                if isinstance(i[j], datetime.datetime) == True:
+                    dir[str(column).split(".")[1]] = datetime.datetime.strftime(i[j],'%Y-%m-%d %H:%M:%S')
                 else:
-                    dir[column[1:-1]] = i[column[1:-1]]
+                    dir[str(column).split(".")[1]] = i[j]
+                j = j+1
             dict_list.append(dir)
+
         return {"code": "200", "message": "请求成功", "data": {"total": recount[0][0], "rows": dict_list}}
     except Exception as e:
         print(e)
