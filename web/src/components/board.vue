@@ -315,7 +315,7 @@
           },
           yAxis:{
             axisLabel:{
-              fontSize:48,
+              fontSize:40,
               margin:30,
               color:"#c3dbff"
             },
