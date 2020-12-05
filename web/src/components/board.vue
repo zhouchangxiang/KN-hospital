@@ -123,20 +123,17 @@
 					</div>
 					<!-- 能源总况 -->
 					<div class="middle_2">
-						<header>能耗实时趋势</header>
-						<div class="item_main" :style="{ marginLeft: ((nyzk_index == -1)?0:'-100%') }">
+						<header>能源总况能效分析</header>
+						<div class="item_main">
 							<div class="middle_item">
-								<div id="nyzk_echarts"></div>
-							</div>
-							<div class="middle_item">
-                <ul class="header_btn">
-                    <li v-for="(item,index) in type" v-bind:class="{active:nyzk_index == item}" @click="energyActiveChange(item)">{{item}}</li>
-                </ul>
+                <!--<ul class="header_btn">-->
+                    <!--<li v-for="(item,index) in type" v-bind:class="{active:nyzk_index == item}" @click="energyActiveChange(item)">{{item}}</li>-->
+                <!--</ul>-->
 								<!-- 能源总况能效分析 -->
 								<div class="nyzknxfx">
-									<header>{{ nyzk_index }}实时总量{{ energyTotal }}</header>
+									<header>对比昨日能耗趋势</header>
 									<div class="nyzk">
-										<ve-line :data="chartData" :extend="ChartExtend" height="900px"></ve-line>
+										<ve-line :data="chartData" :extend="ChartExtend" height="980px" width="100%"></ve-line>
 									</div>
 								</div>
 							</div>
@@ -196,7 +193,7 @@
 							</table>
 						</div>
 						<div class="right_item">
-							<div id="sbgz_echart"></div>
+              <ve-bar :data="floorChartData" :extend="floorChartExtend" height="380px" width="100%"></ve-bar>
 						</div>
 					</div>
 					<!-- 今日管控情况 -->
@@ -245,103 +242,189 @@
         chartSettings:{},
         ChartExtend: {
           tooltip:{
-              show:false
-                },
-                legend:{
             show:false
-                },
-                xAxis:{
-              splitLine:{
-                  show:false
-                    },
-                    axisLabel: {
-                       show: true,
-                        textStyle: {
-                          color: '#c3dbff',  //更改坐标轴文字颜色
-                          fontSize : 56      //更改坐标轴文字大小
-                        }
-                     },
-                },
-                yAxis:{
-              splitLine:{
-                  show:false
-                    }
-                },
-              grid:{
-                left:'2%',
-                right:'2%',
-                bottom:'2%',
-                top:'2%'
-              },
-              series:{
-                barMaxWidth : 50,
-                smooth: false,
-                label:{
-                  show: false,
-                  position: "top",
-                  fontSize:56
-                },
-                  lineStyle:{
-                    width:5
-                  }
+          },
+          legend:{
+            show:false
+          },
+          xAxis:{
+            type: 'category',
+            axisLabel: {
+              margin:30,
+              textStyle: {
+                color: '#c3dbff',  //更改坐标轴文字颜色
+                fontSize : 56      //更改坐标轴文字大小
               }
             },
+            axisTick:{
+              show:true,
+              length:10,
+              lineStyle:{
+                width:5,
+                color:"#fff"
+              }
+            },
+            axisLine:{
+              show:true,
+              lineStyle: {
+                width:5,
+                color: '#c3dbff',
+              }
+            },
+            splitLine:{
+              show:false
+            }
+          },
+          yAxis:{
+            type: 'value',
+            axisLabel:{
+              fontSize:48,
+              margin:30,
+              color:"#c3dbff"
+            },
+            axisLine:{
+              show:true,
+              lineStyle: {
+                width:3,
+                color: '#c3dbff',
+              }
+            },
+            axisTick:{
+              show:true,
+              length:10,
+              lineStyle:{
+                width:5,
+                color:"#fff"
+              }
+            },
+            splitLine:{
+              show:false,
+            }
+          },
+          grid:{
+            left:'2%',
+            right:'2%',
+            bottom:'1%',
+            top:'6%'
+          },
+          series:{
+            smooth: false,
+            label:{
+              show:true,
+              position:"top",
+              color:"#ffffff",
+              fontSize:48,
+            },
+            lineStyle:{
+              width:8
+            }
+          }
+        },
         chartData: {
-          columns: ['时间', '能耗量'],
+          columns: ['时间', '今日能耗','昨日能耗'],
           rows: [
-              { '时间': moment().subtract(40, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(38, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(36, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(34, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(32, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(30, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(28, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(26, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(24, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(22, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(20, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(18, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(16, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(14, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(12, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(10, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(8, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(6, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(4, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(2, 's').format("HH:mm:ss"), '能耗量': null}
+            {"时间":"00:00","今日能耗":123,"昨日能耗":321},
+            {"时间":"01:00","今日能耗":113,"昨日能耗":121},
+            {"时间":"02:00","今日能耗":163,"昨日能耗":341},
+            {"时间":"03:00","今日能耗":311,"昨日能耗":321},
           ]
+        },
+        floorChartExtend:{
+          tooltip:{
+            show:false
+          },
+          legend:{
+            show:false
+          },
+          xAxis:{
+            axisLabel: {
+              show:false,
+            },
+            axisTick:{
+              show:false,
+            },
+            axisLine:{
+              show:false,
+            },
+            splitLine:{
+              show:false
+            }
+          },
+          yAxis:{
+            axisLabel:{
+              fontSize:48,
+              margin:30,
+              color:"#c3dbff"
+            },
+            axisLine:{
+              show:true,
+              lineStyle: {
+                width:3,
+                color: '#c3dbff',
+              }
+            },
+            axisTick:{
+              show:true,
+              length:10,
+              lineStyle:{
+                width:5,
+                color:"#fff"
+              }
+            },
+            splitLine:{
+              show:false,
+            }
+          },
+          grid:{
+            left:'2%',
+            right:'2%',
+            bottom:'1%',
+            top:'6%'
+          },
+          series:{
+            label:{
+              show:true,
+              position:"right",
+              color:"#ffffff",
+              fontSize:48,
+            },
+          }
+        },
+        floorChartData: {
+          columns: ['楼层', '能耗'],
+          rows: []
         },
         energyTotal:0,
         tagListData:[
-            {name:"空调智能电表1F",tag:"COM2.KT1F.总有功电量",type:"电",tier:"1楼"},
-            {name:"空调智能电表2F",tag:"COM2.KT2F.总有功电量",type:"电",tier:"2楼"},
-            {name:"空调智能电表3F",tag:"COM2.KT3F.总有功电量",type:"电",tier:"3楼"},
-            {name:"空调智能电表4F",tag:"COM2.KT4F.总有功电量",type:"电",tier:"4楼"},
-            {name:"空调智能电表5F",tag:"COM2.KT5F.总有功电量",type:"电",tier:"5楼"},
-            {name:"空调智能电表6F",tag:"COM2.KT6F.总有功电量",type:"电",tier:"6楼"},
-            {name:"空调智能电表7F",tag:"COM2.KT7F.总有功电量",type:"电",tier:"7楼"},
-            {name:"空调智能电表8F",tag:"COM2.KT8F.总有功电量",type:"电",tier:"8楼"},
-            {name:"空调智能电表9F",tag:"COM2.KT9F.总有功电量",type:"电",tier:"9楼"},
-            {name:"空调智能电表10F",tag:"COM2.KT10F.总有功电量",type:"电",tier:"10楼"},
-            {name:"空调智能电表11F",tag:"COM2.KT11F.总有功电量",type:"电",tier:"11楼"},
-            {name:"空调智能电表12F",tag:"COM2.KT12F.总有功电量",type:"电",tier:"12楼"},
-            {name:"照明智能电表1F",tag:"COM2.LIGHT1F.总有功电量",type:"电",tier:"1楼"},
-            {name:"照明智能电表2F",tag:"COM2.LIGHT2F.总有功电量",type:"电",tier:"2楼"},
-            {name:"照明智能电表3F",tag:"COM2.LIGHT3F.总有功电量",type:"电",tier:"3楼"},
-            {name:"照明智能电表4F",tag:"COM2.LIGHT4F.总有功电量",type:"电",tier:"4楼"},
-            {name:"照明智能电表5F",tag:"COM2.LIGHT5F.总有功电量",type:"电",tier:"5楼"},
-            {name:"照明智能电表6F",tag:"COM2.LIGHT6F.总有功电量",type:"电",tier:"6楼"},
-            {name:"照明智能电表7F",tag:"COM2.LIGHT7F.总有功电量",type:"电",tier:"7楼"},
-            {name:"照明智能电表8F",tag:"COM2.LIGHT8F.总有功电量",type:"电",tier:"8楼"},
-            {name:"照明智能电表9F",tag:"COM2.LIGHT9F.总有功电量",type:"电",tier:"9楼"},
-            {name:"照明智能电表10F",tag:"COM2.LIGHT10F.总有功电量",type:"电",tier:"10楼"},
-            {name:"照明智能电表11F",tag:"COM2.LIGHT11F.总有功电量",type:"电",tier:"11楼"},
-            {name:"照明智能电表12F",tag:"COM2.LIGHT12F.总有功电量",type:"电",tier:"12楼"},
+            {name:"空调智能电表1F",tag:"COM2.KT1F.总有功电量",type:"电"},
+            {name:"空调智能电表2F",tag:"COM2.KT2F.总有功电量",type:"电"},
+            {name:"空调智能电表3F",tag:"COM2.KT3F.总有功电量",type:"电"},
+            {name:"空调智能电表4F",tag:"COM2.KT4F.总有功电量",type:"电"},
+            {name:"空调智能电表5F",tag:"COM2.KT5F.总有功电量",type:"电"},
+            {name:"空调智能电表6F",tag:"COM2.KT6F.总有功电量",type:"电"},
+            {name:"空调智能电表7F",tag:"COM2.KT7F.总有功电量",type:"电"},
+            {name:"空调智能电表8F",tag:"COM2.KT8F.总有功电量",type:"电"},
+            {name:"空调智能电表9F",tag:"COM2.KT9F.总有功电量",type:"电"},
+            {name:"空调智能电表10F",tag:"COM2.KT10F.总有功电量",type:"电"},
+            {name:"空调智能电表11F",tag:"COM2.KT11F.总有功电量",type:"电"},
+            {name:"空调智能电表12F",tag:"COM2.KT12F.总有功电量",type:"电"},
+            {name:"照明智能电表1F",tag:"COM2.LIGHT1F.总有功电量",type:"电"},
+            {name:"照明智能电表2F",tag:"COM2.LIGHT2F.总有功电量",type:"电"},
+            {name:"照明智能电表3F",tag:"COM2.LIGHT3F.总有功电量",type:"电"},
+            {name:"照明智能电表4F",tag:"COM2.LIGHT4F.总有功电量",type:"电"},
+            {name:"照明智能电表5F",tag:"COM2.LIGHT5F.总有功电量",type:"电"},
+            {name:"照明智能电表6F",tag:"COM2.LIGHT6F.总有功电量",type:"电"},
+            {name:"照明智能电表7F",tag:"COM2.LIGHT7F.总有功电量",type:"电"},
+            {name:"照明智能电表8F",tag:"COM2.LIGHT8F.总有功电量",type:"电"},
+            {name:"照明智能电表9F",tag:"COM2.LIGHT9F.总有功电量",type:"电"},
+            {name:"照明智能电表10F",tag:"COM2.LIGHT10F.总有功电量",type:"电"},
+            {name:"照明智能电表11F",tag:"COM2.LIGHT11F.总有功电量",type:"电"},
+            {name:"照明智能电表12F",tag:"COM2.LIGHT12F.总有功电量",type:"电"},
             {name:"中央空调智能电表1",tag:"COM2.KTCTR1.总有功电量",type:"电"},
             {name:"中央空调智能电表2",tag:"COM2.KTCTR2.总有功电量",type:"电"},
             {name:"辅助设备智能电表",tag:"COM2.KTCTRADD.总有功电量",type:"电"},
-            {name:"8楼水表",tag:"COM1.WATER8F.今日累积流量",type:"水",tier:"8楼"},
-            {name:"9楼水表",tag:"COM1.WATER9F.今日累积流量",type:"水",tier:"9楼"},
+            {name:"8楼水表",tag:"COM1.WATER8F.今日累积流量",type:"水"},
+            {name:"9楼水表",tag:"COM1.WATER9F.今日累积流量",type:"水"},
         ],
         usingDay:moment(moment().format("YYYY-MM-DD")).diff("2020-11-28", 'day'),
         today_energy:"", //今天已经运行小时数的能耗
@@ -386,6 +469,7 @@
     },
     mounted() {
       this.initWebSocket()
+      this.getEnergyComparison()
       this.getWeather();
       this.getNotice();
       //this.getCompanyEnergyEfficiency();
@@ -513,7 +597,6 @@
         console.log("websocket连接失败")
       },
       websocketonmessage(e){ //数据接收
-        var that = this
         this.websockVarData = JSON.parse(e.data)
         this.websocket_status = this.websockVarData.websocket_status
         this.Stutus = this.websockVarData.Stutus
@@ -524,21 +607,21 @@
         this.yesterday_energy = this.websockVarData.yesterday_energy
         this.yesterday_total_energy = this.websockVarData.yesterday_total_energy
         this.save_energy = this.websockVarData.save_energy
-        this.energyTotal = 0
-        for(var key in this.websockVarData){
-            this.tagListData.forEach(item =>{
-                if(item.tag === key ){
-                    if(item.type === this.nyzk_index){
-                        that.energyTotal += Number(this.websockVarData[key])
-                    }
-                }
-            })
-        }
-        that.chartData.rows.push({
-          "时间": moment().format("HH:mm:ss"),
-          "能耗量": that.energyTotal
-        })
-        that.chartData.rows.shift()
+        this.floorChartData.rows = []
+        this.floorChartData.rows = [
+          {"楼层":"1楼","能耗":this.websockVarData['COM2.KT1F.总有功电量']},
+          {"楼层":"2楼","能耗":this.websockVarData['COM2.KT2F.总有功电量']},
+          {"楼层":"3楼","能耗":this.websockVarData['COM2.KT3F.总有功电量']},
+          {"楼层":"4楼","能耗":this.websockVarData['COM2.KT4F.总有功电量']},
+          {"楼层":"5楼","能耗":this.websockVarData['COM2.KT5F.总有功电量']},
+          {"楼层":"6楼","能耗":this.websockVarData['COM2.KT6F.总有功电量']},
+          {"楼层":"7楼","能耗":this.websockVarData['COM2.KT7F.总有功电量']},
+          {"楼层":"8楼","能耗":this.websockVarData['COM2.KT8F.总有功电量']},
+          {"楼层":"9楼","能耗":this.websockVarData['COM2.KT9F.总有功电量']},
+          {"楼层":"10楼","能耗":this.websockVarData['COM2.KT10F.总有功电量']},
+          {"楼层":"11楼","能耗":this.websockVarData['COM2.KT11F.总有功电量']},
+          {"楼层":"12楼","能耗":this.websockVarData['COM2.KT12F.总有功电量']},
+        ]
       },
       websocketsend(Data){//数据发送
         this.websock.send(Data);
@@ -549,34 +632,47 @@
       closesocket(){
         this.websock.close()
       },
-      energyActiveChange(index){
-        this.nyzk_index = index
-          this.chartData = {
-            columns: ['时间', '能耗量'],
-            rows: [
-                { '时间': moment().subtract(40, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(38, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(36, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(34, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(32, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(30, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(28, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(26, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(24, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(22, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(20, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(18, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(16, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(14, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(12, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(10, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(8, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(6, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(4, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(2, 's').format("HH:mm:ss"), '能耗量': null}
-            ]
-          }
-      }
+      getEnergyComparison(){
+        var params = {
+          date:moment().subtract(1, "days").format("YYYY-MM-DD")
+        }
+        console.log(params)
+        this.axios.get("/api/energy_contrast",{
+          params: params
+        }).then(res =>{
+          console.log(res.data)
+        },res =>{
+          console.log("请求错误")
+        })
+      },
+      // energyActiveChange(index){
+      //   this.nyzk_index = index
+      //     this.chartData = {
+      //       columns: ['时间', '能耗量'],
+      //       rows: [
+      //           { '时间': moment().subtract(40, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(38, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(36, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(34, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(32, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(30, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(28, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(26, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(24, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(22, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(20, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(18, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(16, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(14, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(12, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(10, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(8, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(6, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(4, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(2, 's').format("HH:mm:ss"), '能耗量': null}
+      //       ]
+      //     }
+      // }
     }
   }
 </script>
