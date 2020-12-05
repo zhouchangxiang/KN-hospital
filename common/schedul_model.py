@@ -3,11 +3,11 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine, Column, DateTime, Integer, Unicode
 
 from flask_login import LoginManager
-from database.connect_db import CONNECT_DATABASE
+from database.db_operate import DB_URL
 
 login_manager = LoginManager()
 # 创建对象的基类
-engine = create_engine(CONNECT_DATABASE)
+engine = create_engine(DB_URL)
 Session = sessionmaker(bind=engine)
 db_session = Session()
 Base = declarative_base(engine)

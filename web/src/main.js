@@ -13,8 +13,6 @@ import 'font-awesome/css/font-awesome.min.css'
 import VCharts from 'v-charts'
 import store from './store'
 import $ from 'jquery'
-import echarts from 'echarts'
-Vue.prototype.$echarts = echarts
 
 import JsonExcel from 'vue-json-excel';
 Vue.component('downloadExcel',JsonExcel);

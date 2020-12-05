@@ -10,10 +10,10 @@ from common.BSFramwork import AlchemyEncoder
 from common.system import Organization, Factory, DepartmentManager, Role, Permission, ModulMenus, User, RolePermission, \
     RoleUser
 from flask_login import current_user, LoginManager
-from database.connect_db import CONNECT_DATABASE
+from database.db_operate import DB_URL
 login_manager = LoginManager()
 # 创建对象的基类
-engine = create_engine(CONNECT_DATABASE)
+engine = create_engine(DB_URL)
 Session = sessionmaker(bind=engine)
 db_session = Session()
 Base = declarative_base(engine)

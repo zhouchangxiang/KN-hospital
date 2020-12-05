@@ -36,13 +36,13 @@ def energy_contrast():
                 now_end_time = '"' + now + hours[i+1] + '"'
                 sql1 = f'select sum(IncremenValue) as value from IncrementElectricTable where CollectionDate between {yesterday_start_time} and {yesterday_end_time}'
                 result1 = db_session.execute(sql1).fetchall()
-                yesterday_value = '%.2f' % result1[0]['value'] if result1[0]['value'] is not None else 0.0
-                if hours[i] != now_hour:
+                yesterday_value = result1[0]['value'] if result1[0]['value'] is not None else 0
+                if hours[i] <= now_hour:
                     sql2 = f'select sum(IncremenValue) as value from IncrementElectricTable where CollectionDate between {now_start_time} and {now_end_time}'
                     result2 = db_session.execute(sql2).fetchall()
-                    today_value = '%.2f' % result1[0]['value'] if result1[0]['value'] is not None else 0.0
+                    today_value = result2[0]['value'] if result2[0]['value'] is not None else 0
                 else:
-                    today_value = 0.0
+                    today_value = ' '
                 data = {'时间':  hours[i], '今日能耗': today_value, '对比日能耗': yesterday_value}
                 rows.append(data)
         return json.dumps({'code': '200', 'mes': '查询成功', 'data': rows}, cls=MyEncoder, ensure_ascii=False)

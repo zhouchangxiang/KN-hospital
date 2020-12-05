@@ -290,12 +290,7 @@
         },
         chartData: {
           columns: ['时间', '今日能耗','昨日能耗'],
-          rows: [
-            {"时间":"00:00","今日能耗":123,"昨日能耗":321},
-            {"时间":"01:00","今日能耗":113,"昨日能耗":121},
-            {"时间":"02:00","今日能耗":163,"昨日能耗":341},
-            {"时间":"03:00","今日能耗":311,"昨日能耗":321},
-          ]
+          rows: []
         },
         floorChartExtend:{
           tooltip:{
@@ -577,18 +572,18 @@
         this.save_energy = this.websockVarData.save_energy
         this.floorChartData.rows = []
         this.floorChartData.rows = [
-          {"楼层":"1楼","能耗":this.websockVarData['COM2.KT1F.总有功电量']+this.websockVarData['COM2.LIGHT1F.总有功电量']},
-          {"楼层":"2楼","能耗":this.websockVarData['COM2.KT2F.总有功电量']+this.websockVarData['COM2.LIGHT2F.总有功电量']},
-          {"楼层":"3楼","能耗":this.websockVarData['COM2.KT3F.总有功电量']+this.websockVarData['COM2.LIGHT3F.总有功电量']},
-          {"楼层":"4楼","能耗":this.websockVarData['COM2.KT4F.总有功电量']+this.websockVarData['COM2.LIGHT4F.总有功电量']},
-          {"楼层":"5楼","能耗":this.websockVarData['COM2.KT5F.总有功电量']+this.websockVarData['COM2.LIGHT5F.总有功电量']},
-          {"楼层":"6楼","能耗":this.websockVarData['COM2.KT6F.总有功电量']+this.websockVarData['COM2.LIGHT6F.总有功电量']},
-          {"楼层":"7楼","能耗":this.websockVarData['COM2.KT7F.总有功电量']+this.websockVarData['COM2.LIGHT7F.总有功电量']},
-          {"楼层":"8楼","能耗":this.websockVarData['COM2.KT8F.总有功电量']+this.websockVarData['COM2.LIGHT8F.总有功电量']},
-          {"楼层":"9楼","能耗":this.websockVarData['COM2.KT9F.总有功电量']+this.websockVarData['COM2.LIGHT9F.总有功电量']},
-          {"楼层":"10楼","能耗":this.websockVarData['COM2.KT10F.总有功电量']+this.websockVarData['COM2.LIGHT10F.总有功电量']},
-          {"楼层":"11楼","能耗":this.websockVarData['COM2.KT11F.总有功电量']+this.websockVarData['COM2.LIGHT11F.总有功电量']},
-          {"楼层":"12楼","能耗":this.websockVarData['COM2.KT12F.总有功电量']+this.websockVarData['COM2.LIGHT12F.总有功电量']},
+          {"楼层":"1楼","能耗":Number(this.websockVarData['COM2.KT1F.总有功电量'])+Number(this.websockVarData['COM2.LIGHT1F.总有功电量'])},
+          {"楼层":"2楼","能耗":Number(this.websockVarData['COM2.KT2F.总有功电量'])+Number(this.websockVarData['COM2.LIGHT2F.总有功电量'])},
+          {"楼层":"3楼","能耗":Number(this.websockVarData['COM2.KT3F.总有功电量'])+Number(this.websockVarData['COM2.LIGHT3F.总有功电量'])},
+          {"楼层":"4楼","能耗":Number(this.websockVarData['COM2.KT4F.总有功电量'])+Number(this.websockVarData['COM2.LIGHT4F.总有功电量'])},
+          {"楼层":"5楼","能耗":Number(this.websockVarData['COM2.KT5F.总有功电量'])+Number(this.websockVarData['COM2.LIGHT5F.总有功电量'])},
+          {"楼层":"6楼","能耗":Number(this.websockVarData['COM2.KT6F.总有功电量'])+Number(this.websockVarData['COM2.LIGHT6F.总有功电量'])},
+          {"楼层":"7楼","能耗":Number(this.websockVarData['COM2.KT7F.总有功电量'])+Number(this.websockVarData['COM2.LIGHT7F.总有功电量'])},
+          {"楼层":"8楼","能耗":Number(this.websockVarData['COM2.KT8F.总有功电量'])+Number(this.websockVarData['COM2.LIGHT8F.总有功电量'])},
+          {"楼层":"9楼","能耗":Number(this.websockVarData['COM2.KT9F.总有功电量'])+Number(this.websockVarData['COM2.LIGHT9F.总有功电量'])},
+          {"楼层":"10楼","能耗":Number(this.websockVarData['COM2.KT10F.总有功电量'])+Number(this.websockVarData['COM2.LIGHT10F.总有功电量'])},
+          {"楼层":"11楼","能耗":Number(this.websockVarData['COM2.KT11F.总有功电量'])+Number(this.websockVarData['COM2.LIGHT11F.总有功电量'])},
+          {"楼层":"12楼","能耗":Number(this.websockVarData['COM2.KT12F.总有功电量'])+Number(this.websockVarData['COM2.LIGHT12F.总有功电量'])},
         ]
       },
       websocketsend(Data){//数据发送
@@ -604,11 +599,12 @@
         var params = {
           date:moment().subtract(1, "days").format("YYYY-MM-DD")
         }
-        console.log(params)
         this.axios.get("/api/energy_contrast",{
           params: params
         }).then(res =>{
-          console.log(res.data)
+          if(res.data.code === "200"){
+            this.chartData.rows = res.data.data
+          }
         },res =>{
           console.log("请求错误")
         })

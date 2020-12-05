@@ -79,7 +79,7 @@ class MakeModel:
         notes += 'from sqlalchemy import create_engine, Column,ForeignKey, Table, DateTime, Integer, String\n'
         notes += 'from sqlalchemy import Column, DateTime, Float, Integer, String, Unicode,BigInteger\n'
         notes += 'from sqlalchemy.dialects.mssql.base import BIT\n'
-        notes += 'from equipment_backend.database.connect_db import CONNECT_DATABASE\n'
+        notes += 'from equipment_backend.database.connect_db import DB_URL\n'
         notes += 'from datetime import datetime\n'
         notes += 'from flask_login import LoginManager\n'
         notes += 'from werkzeug.security import generate_password_hash, check_password_hash\n'
@@ -96,7 +96,7 @@ class MakeModel:
     # 创建对象的基类
     def makeBaseModel(self):
         notes = ''
-        sqlstring = "CONNECT_DATABASE"
+        sqlstring = "DB_URL"
         notes = '\n'
         notes += '# 创建对象的基类\n'
         notes += "engine = create_engine(" + "\n\t\t"
