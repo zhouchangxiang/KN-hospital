@@ -158,42 +158,10 @@
 						</div>
 						<div class="ywds right_item">
 							<p><img src="img/ring.png" alt="">
-								<span class="pingfang white font48">运维大师</span></p>
-							<table border="2" v-if="operations.length">
-								<tr>
-									<th width="200">人员编号</th>
-									<th width="180">时间</th>
-									<th width="200">维护位置</th>
-									<th width="200">问题数量</th>
-									<th width="200">平台指令</th>
-									<th width="180">结果</th>
-								</tr>
-								<tr v-for="operation in operations">
-									<td>{{operation.pollingUserId}}</td>
-									<td>{{operation.pollingTime.split(' ')[1]}}</td>
-									<td>{{operation.areaName}}</td>
-									<td>{{operation.questionCount}}</td>
-									<td>{{operation.processMethodStr}}</td>
-									<td>{{operation.processStatusStr}}</td>
-								</tr>
-							</table>
-
-							<table border="2" v-else>
-								<tr>
-									<th width="200">人员编号</th>
-									<th width="180">时间</th>
-									<th width="200">维护位置</th>
-									<th width="200">问题数量</th>
-									<th width="200">平台指令</th>
-									<th width="180">结果</th>
-								</tr>
-								<tr>
-									<td colspan="6" rowspan="2">暂无数据</td>
-								</tr>
-							</table>
+								<span class="pingfang white font48">实时楼层能耗</span></p>
 						</div>
 						<div class="right_item">
-              <ve-bar :data="floorChartData" :extend="floorChartExtend" height="380px" width="100%"></ve-bar>
+              <ve-bar :data="floorChartData" :extend="floorChartExtend" height="670px" width="100%"></ve-bar>
 						</div>
 					</div>
 					<!-- 今日管控情况 -->
@@ -386,7 +354,7 @@
               show:true,
               position:"right",
               color:"#ffffff",
-              fontSize:48,
+              fontSize:40,
             },
           }
         },
@@ -549,8 +517,8 @@
                       data:{}
                               }
               }
-              response.data.data.transRegionPerson = "212"
-              response.data.data.unusualPerson = "121"
+              response.data.data.transRegionPerson = "0"
+              response.data.data.unusualPerson = "0"
               response.data.data.patientDetailList = [
                               {areaName:"aaaa",patientDegreeEasy:1231,patientDegreeMedium:4123,patientDegreeSerious:5324},
                               {areaName:"bbb",patientDegreeEasy:456,patientDegreeMedium:2334,patientDegreeSerious:3522},
@@ -609,18 +577,18 @@
         this.save_energy = this.websockVarData.save_energy
         this.floorChartData.rows = []
         this.floorChartData.rows = [
-          {"楼层":"1楼","能耗":this.websockVarData['COM2.KT1F.总有功电量']},
-          {"楼层":"2楼","能耗":this.websockVarData['COM2.KT2F.总有功电量']},
-          {"楼层":"3楼","能耗":this.websockVarData['COM2.KT3F.总有功电量']},
-          {"楼层":"4楼","能耗":this.websockVarData['COM2.KT4F.总有功电量']},
-          {"楼层":"5楼","能耗":this.websockVarData['COM2.KT5F.总有功电量']},
-          {"楼层":"6楼","能耗":this.websockVarData['COM2.KT6F.总有功电量']},
-          {"楼层":"7楼","能耗":this.websockVarData['COM2.KT7F.总有功电量']},
-          {"楼层":"8楼","能耗":this.websockVarData['COM2.KT8F.总有功电量']},
-          {"楼层":"9楼","能耗":this.websockVarData['COM2.KT9F.总有功电量']},
-          {"楼层":"10楼","能耗":this.websockVarData['COM2.KT10F.总有功电量']},
-          {"楼层":"11楼","能耗":this.websockVarData['COM2.KT11F.总有功电量']},
-          {"楼层":"12楼","能耗":this.websockVarData['COM2.KT12F.总有功电量']},
+          {"楼层":"1楼","能耗":this.websockVarData['COM2.KT1F.总有功电量']+this.websockVarData['COM2.LIGHT1F.总有功电量']},
+          {"楼层":"2楼","能耗":this.websockVarData['COM2.KT2F.总有功电量']+this.websockVarData['COM2.LIGHT2F.总有功电量']},
+          {"楼层":"3楼","能耗":this.websockVarData['COM2.KT3F.总有功电量']+this.websockVarData['COM2.LIGHT3F.总有功电量']},
+          {"楼层":"4楼","能耗":this.websockVarData['COM2.KT4F.总有功电量']+this.websockVarData['COM2.LIGHT4F.总有功电量']},
+          {"楼层":"5楼","能耗":this.websockVarData['COM2.KT5F.总有功电量']+this.websockVarData['COM2.LIGHT5F.总有功电量']},
+          {"楼层":"6楼","能耗":this.websockVarData['COM2.KT6F.总有功电量']+this.websockVarData['COM2.LIGHT6F.总有功电量']},
+          {"楼层":"7楼","能耗":this.websockVarData['COM2.KT7F.总有功电量']+this.websockVarData['COM2.LIGHT7F.总有功电量']},
+          {"楼层":"8楼","能耗":this.websockVarData['COM2.KT8F.总有功电量']+this.websockVarData['COM2.LIGHT8F.总有功电量']},
+          {"楼层":"9楼","能耗":this.websockVarData['COM2.KT9F.总有功电量']+this.websockVarData['COM2.LIGHT9F.总有功电量']},
+          {"楼层":"10楼","能耗":this.websockVarData['COM2.KT10F.总有功电量']+this.websockVarData['COM2.LIGHT10F.总有功电量']},
+          {"楼层":"11楼","能耗":this.websockVarData['COM2.KT11F.总有功电量']+this.websockVarData['COM2.LIGHT11F.总有功电量']},
+          {"楼层":"12楼","能耗":this.websockVarData['COM2.KT12F.总有功电量']+this.websockVarData['COM2.LIGHT12F.总有功电量']},
         ]
       },
       websocketsend(Data){//数据发送
@@ -645,34 +613,6 @@
           console.log("请求错误")
         })
       },
-      // energyActiveChange(index){
-      //   this.nyzk_index = index
-      //     this.chartData = {
-      //       columns: ['时间', '能耗量'],
-      //       rows: [
-      //           { '时间': moment().subtract(40, 's').format("HH:mm:ss"), '能耗量': null},
-      //         { '时间': moment().subtract(38, 's').format("HH:mm:ss"), '能耗量': null},
-      //         { '时间': moment().subtract(36, 's').format("HH:mm:ss"), '能耗量': null},
-      //         { '时间': moment().subtract(34, 's').format("HH:mm:ss"), '能耗量': null},
-      //         { '时间': moment().subtract(32, 's').format("HH:mm:ss"), '能耗量': null},
-      //         { '时间': moment().subtract(30, 's').format("HH:mm:ss"), '能耗量': null},
-      //         { '时间': moment().subtract(28, 's').format("HH:mm:ss"), '能耗量': null},
-      //         { '时间': moment().subtract(26, 's').format("HH:mm:ss"), '能耗量': null},
-      //         { '时间': moment().subtract(24, 's').format("HH:mm:ss"), '能耗量': null},
-      //         { '时间': moment().subtract(22, 's').format("HH:mm:ss"), '能耗量': null},
-      //         { '时间': moment().subtract(20, 's').format("HH:mm:ss"), '能耗量': null},
-      //         { '时间': moment().subtract(18, 's').format("HH:mm:ss"), '能耗量': null},
-      //         { '时间': moment().subtract(16, 's').format("HH:mm:ss"), '能耗量': null},
-      //         { '时间': moment().subtract(14, 's').format("HH:mm:ss"), '能耗量': null},
-      //         { '时间': moment().subtract(12, 's').format("HH:mm:ss"), '能耗量': null},
-      //         { '时间': moment().subtract(10, 's').format("HH:mm:ss"), '能耗量': null},
-      //         { '时间': moment().subtract(8, 's').format("HH:mm:ss"), '能耗量': null},
-      //         { '时间': moment().subtract(6, 's').format("HH:mm:ss"), '能耗量': null},
-      //         { '时间': moment().subtract(4, 's').format("HH:mm:ss"), '能耗量': null},
-      //         { '时间': moment().subtract(2, 's').format("HH:mm:ss"), '能耗量': null}
-      //       ]
-      //     }
-      // }
     }
   }
 </script>
