@@ -4,11 +4,13 @@
       <TabControl :TabControl="TabControl"></TabControl>
       <el-row :gutter="15" v-if="TabControl.TabControlCurrent === '电能报表'">
         <el-col :span="24">
-          <el-form :model="formParameters">
+          <el-form :inline="true" :model="formParameters">
             <el-form-item>
-              <el-date-picker type="datetime" v-model="formParameters.startDate" :picker-options="pickerOptions" size="mini" format="yyyy-MM-dd HH:mm:ss"  style="width: 180px;" :clearable="false"></el-date-picker> ~
-              <el-date-picker type="datetime" v-model="formParameters.endDate" :picker-options="pickerOptions" size="mini" format="yyyy-MM-dd HH:mm:ss" style="width: 180px;" :clearable="false"></el-date-picker>
-              <el-button type="primary" @click="searchElcetricityTime"></el-button>
+              <el-date-picker type="datetime" v-model="formParameters.startDate" :picker-options="pickerOptions" size="small" format="yyyy-MM-dd HH:mm:ss"  style="width: 200px;" :clearable="false"></el-date-picker> ~
+              <el-date-picker type="datetime" v-model="formParameters.endDate" :picker-options="pickerOptions" size="small" format="yyyy-MM-dd HH:mm:ss" style="width: 200px;" :clearable="false"></el-date-picker>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="searchElcetricityTime" size="small">查询</el-button>
             </el-form-item>
           </el-form>
         </el-col>
@@ -31,11 +33,13 @@
       </el-row>
       <el-row :gutter="15" v-if="TabControl.TabControlCurrent === '水能报表'">
         <el-col :span="24">
-          <el-form :model="formParameters">
+          <el-form :inline="true" :model="formParameters">
             <el-form-item>
-              <el-date-picker type="datetime" v-model="formParameters.startDate" :picker-options="pickerOptions" size="mini" format="yyyy-MM-dd HH:mm:ss"  style="width: 180px;" :clearable="false"></el-date-picker> ~
-              <el-date-picker type="datetime" v-model="formParameters.endDate" :picker-options="pickerOptions" size="mini" format="yyyy-MM-dd HH:mm:ss" style="width: 180px;" :clearable="false"></el-date-picker>
-              <el-button type="primary" @click="searchWaterTime"></el-button>
+              <el-date-picker type="datetime" v-model="formParameters.startDate" :picker-options="pickerOptions" size="small" format="yyyy-MM-dd HH:mm:ss"  style="width: 200px;" :clearable="false"></el-date-picker> ~
+              <el-date-picker type="datetime" v-model="formParameters.endDate" :picker-options="pickerOptions" size="small" format="yyyy-MM-dd HH:mm:ss" style="width: 200px;" :clearable="false"></el-date-picker>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="searchWaterTime" size="small">查询</el-button>
             </el-form-item>
           </el-form>
         </el-col>

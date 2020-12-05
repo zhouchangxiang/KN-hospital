@@ -11,6 +11,7 @@ from system_backend.SystemManagement.organization_model import organiza
 from system_backend.SystemManagement.system_manage import selectRedisBykey, addUpdateRedisBykey, \
     deleteRedisBykey
 from system_backend.SystemManagement.user_management import user_manager
+from system_backend.energy_manager import energycuid
 
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
@@ -40,8 +41,8 @@ account_auth.login_manager.init_app(app)
 # app.register_blueprint(erp_schedul)
 # #批次计划
 # app.register_blueprint(batch_plan)
-# #接口
-# app.register_blueprint(interface_manage)
+#接口
+app.register_blueprint(energycuid)
 #
 # @app.route('/')
 # @login_required
