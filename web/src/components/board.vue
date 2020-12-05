@@ -123,20 +123,17 @@
 					</div>
 					<!-- 能源总况 -->
 					<div class="middle_2">
-						<header>能耗实时趋势</header>
-						<div class="item_main" :style="{ marginLeft: ((nyzk_index == -1)?0:'-100%') }">
+						<header>能源总况能效分析</header>
+						<div class="item_main">
 							<div class="middle_item">
-								<div id="nyzk_echarts"></div>
-							</div>
-							<div class="middle_item">
-                <ul class="header_btn">
-                    <li v-for="(item,index) in type" v-bind:class="{active:nyzk_index == item}" @click="energyActiveChange(item)">{{item}}</li>
-                </ul>
+                <!--<ul class="header_btn">-->
+                    <!--<li v-for="(item,index) in type" v-bind:class="{active:nyzk_index == item}" @click="energyActiveChange(item)">{{item}}</li>-->
+                <!--</ul>-->
 								<!-- 能源总况能效分析 -->
 								<div class="nyzknxfx">
-									<header>{{ nyzk_index }}实时总量{{ energyTotal }}</header>
+									<header>对比昨日能耗趋势</header>
 									<div class="nyzk">
-										<ve-line :data="chartData" :extend="ChartExtend" height="900px"></ve-line>
+										<ve-line :data="chartData" :extend="ChartExtend" height="980px" width="100%"></ve-line>
 									</div>
 								</div>
 							</div>
@@ -245,70 +242,91 @@
         chartSettings:{},
         ChartExtend: {
           tooltip:{
-              show:false
-                },
-                legend:{
             show:false
-                },
-                xAxis:{
-              splitLine:{
-                  show:false
-                    },
-                    axisLabel: {
-                       show: true,
-                        textStyle: {
-                          color: '#c3dbff',  //更改坐标轴文字颜色
-                          fontSize : 56      //更改坐标轴文字大小
-                        }
-                     },
-                },
-                yAxis:{
-              splitLine:{
-                  show:false
-                    }
-                },
-              grid:{
-                left:'2%',
-                right:'2%',
-                bottom:'2%',
-                top:'2%'
-              },
-              series:{
-                barMaxWidth : 50,
-                smooth: false,
-                label:{
-                  show: false,
-                  position: "top",
-                  fontSize:56
-                },
-                  lineStyle:{
-                    width:5
-                  }
+          },
+          legend:{
+            show:false
+          },
+          xAxis:{
+            type: 'category',
+            axisLabel: {
+              margin:30,
+              textStyle: {
+                color: '#c3dbff',  //更改坐标轴文字颜色
+                fontSize : 56      //更改坐标轴文字大小
               }
             },
+            axisTick:{
+              show:true,
+              length:10,
+              lineStyle:{
+                width:5,
+                color:"#fff"
+              }
+            },
+            axisLine:{
+              show:true,
+              lineStyle: {
+                width:5,
+                color: '#c3dbff',
+              }
+            },
+            splitLine:{
+              show:false
+            }
+          },
+          yAxis:{
+            type: 'value',
+            axisLabel:{
+              fontSize:48,
+              margin:30,
+              color:"#c3dbff"
+            },
+            axisLine:{
+              show:true,
+              lineStyle: {
+                width:3,
+                color: '#c3dbff',
+              }
+            },
+            axisTick:{
+              show:true,
+              length:10,
+              lineStyle:{
+                width:5,
+                color:"#fff"
+              }
+            },
+            splitLine:{
+              show:false,
+            }
+          },
+          grid:{
+            left:'2%',
+            right:'2%',
+            bottom:'1%',
+            top:'6%'
+          },
+          series:{
+            smooth: false,
+            label:{
+              show:true,
+              position:"top",
+              color:"#ffffff",
+              fontSize:48,
+            },
+            lineStyle:{
+              width:8
+            }
+          }
+        },
         chartData: {
-          columns: ['时间', '能耗量'],
+          columns: ['时间', '今日能耗','昨日能耗'],
           rows: [
-              { '时间': moment().subtract(40, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(38, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(36, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(34, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(32, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(30, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(28, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(26, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(24, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(22, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(20, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(18, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(16, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(14, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(12, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(10, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(8, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(6, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(4, 's').format("HH:mm:ss"), '能耗量': null},
-            { '时间': moment().subtract(2, 's').format("HH:mm:ss"), '能耗量': null}
+            {"时间":"00:00","今日能耗":123,"昨日能耗":321},
+            {"时间":"01:00","今日能耗":113,"昨日能耗":121},
+            {"时间":"02:00","今日能耗":163,"昨日能耗":341},
+            {"时间":"03:00","今日能耗":311,"昨日能耗":321},
           ]
         },
         energyTotal:0,
@@ -386,6 +404,7 @@
     },
     mounted() {
       this.initWebSocket()
+      this.getEnergyComparison()
       this.getWeather();
       this.getNotice();
       //this.getCompanyEnergyEfficiency();
@@ -524,21 +543,8 @@
         this.yesterday_energy = this.websockVarData.yesterday_energy
         this.yesterday_total_energy = this.websockVarData.yesterday_total_energy
         this.save_energy = this.websockVarData.save_energy
-        this.energyTotal = 0
-        for(var key in this.websockVarData){
-            this.tagListData.forEach(item =>{
-                if(item.tag === key ){
-                    if(item.type === this.nyzk_index){
-                        that.energyTotal += Number(this.websockVarData[key])
-                    }
-                }
-            })
-        }
-        that.chartData.rows.push({
-          "时间": moment().format("HH:mm:ss"),
-          "能耗量": that.energyTotal
-        })
-        that.chartData.rows.shift()
+
+
       },
       websocketsend(Data){//数据发送
         this.websock.send(Data);
@@ -549,34 +555,47 @@
       closesocket(){
         this.websock.close()
       },
-      energyActiveChange(index){
-        this.nyzk_index = index
-          this.chartData = {
-            columns: ['时间', '能耗量'],
-            rows: [
-                { '时间': moment().subtract(40, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(38, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(36, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(34, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(32, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(30, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(28, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(26, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(24, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(22, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(20, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(18, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(16, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(14, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(12, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(10, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(8, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(6, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(4, 's').format("HH:mm:ss"), '能耗量': null},
-              { '时间': moment().subtract(2, 's').format("HH:mm:ss"), '能耗量': null}
-            ]
-          }
-      }
+      getEnergyComparison(){
+        var params = {
+          date:moment().subtract(1, "days").format("YYYY-MM-DD")
+        }
+        console.log(params)
+        this.axios.get("/api/energy_contrast",{
+          params: params
+        }).then(res =>{
+          console.log(res.data)
+        },res =>{
+          console.log("请求错误")
+        })
+      },
+      // energyActiveChange(index){
+      //   this.nyzk_index = index
+      //     this.chartData = {
+      //       columns: ['时间', '能耗量'],
+      //       rows: [
+      //           { '时间': moment().subtract(40, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(38, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(36, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(34, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(32, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(30, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(28, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(26, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(24, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(22, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(20, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(18, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(16, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(14, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(12, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(10, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(8, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(6, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(4, 's').format("HH:mm:ss"), '能耗量': null},
+      //         { '时间': moment().subtract(2, 's').format("HH:mm:ss"), '能耗量': null}
+      //       ]
+      //     }
+      // }
     }
   }
 </script>
