@@ -77,6 +77,31 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+<<<<<<< HEAD
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/database/db_operate.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="225">
+              <caret line="24" lean-forward="true" selection-start-line="24" selection-end-line="24" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/increment_data.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="270">
+              <caret line="24" column="33" selection-start-line="24" selection-start-column="33" selection-end-line="24" selection-end-column="33" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/common/asd.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="973">
+              <caret line="274" column="11" lean-forward="true" selection-start-line="274" selection-start-column="11" selection-end-line="274" selection-end-column="11" />
+=======
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/web/src/components/board.vue">
           <provider selected="true" editor-type-id="text-editor">
@@ -97,6 +122,7 @@
                 <element signature="n#style#0;n#div#0;n#div#1;n#div#2;n#div#1;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#el-button#0;n#div#0;n#div#1;n#div#2;n#div#1;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
               </folding>
+>>>>>>> 3b68c0b934aeec1f733ba07910b95f4d7698fe59
             </state>
           </provider>
         </entry>
@@ -105,8 +131,15 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
+<<<<<<< HEAD
+      <find>incrementelectrictable</find>
+=======
       <find>energyActiveChange</find>
+<<<<<<< HEAD
       <find>illnes</find>
+=======
+>>>>>>> 3b68c0b934aeec1f733ba07910b95f4d7698fe59
+>>>>>>> 9646a902dc3ea53b5952264375a655ae39da505c
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -128,11 +161,30 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
+<<<<<<< HEAD
   <component name="ProjectFrameBounds">
     <option name="x" value="217" />
     <option name="y" value="157" />
+=======
+<<<<<<< HEAD
+  <component name="NodePackageJsonFileManager">
+    <packageJsonPaths>
+      <path value="$PROJECT_DIR$/web/package.json" />
+    </packageJsonPaths>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1940" />
+    <option name="height" value="905" />
+=======
+  <component name="ProjectFrameBounds" extendedState="1">
+    <option name="x" value="257" />
+    <option name="y" value="166" />
+>>>>>>> 9646a902dc3ea53b5952264375a655ae39da505c
     <option name="width" value="1428" />
     <option name="height" value="824" />
+>>>>>>> 3b68c0b934aeec1f733ba07910b95f4d7698fe59
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -181,6 +233,16 @@
               <item name="views" type="462c0819:PsiDirectoryNode" />
               <item name="energy" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="KN-hospital" type="b2602c69:ProjectViewProjectNode" />
+              <item name="KN-hospital" type="462c0819:PsiDirectoryNode" />
+              <item name="schedul_backend" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="KN-hospital" type="b2602c69:ProjectViewProjectNode" />
+              <item name="KN-hospital" type="462c0819:PsiDirectoryNode" />
+              <item name="system_backend" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -225,9 +287,23 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
+<<<<<<< HEAD
     <frame x="217" y="157" width="1428" height="824" extended-state="0" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.250731" />
+=======
+<<<<<<< HEAD
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.26066098" />
+=======
+    <frame x="257" y="166" width="1428" height="824" extended-state="1" />
+    <editor active="true" />
+    <layout>
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24707602" />
+>>>>>>> 3b68c0b934aeec1f733ba07910b95f4d7698fe59
+>>>>>>> 9646a902dc3ea53b5952264375a655ae39da505c
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -259,8 +335,13 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/database/db_operate.py">
       <provider selected="true" editor-type-id="text-editor">
+<<<<<<< HEAD
+        <state relative-caret-position="225">
+          <caret line="24" lean-forward="true" selection-start-line="24" selection-end-line="24" />
+=======
         <state relative-caret-position="300">
           <caret line="20" selection-start-line="20" selection-end-line="20" />
+>>>>>>> 3b68c0b934aeec1f733ba07910b95f4d7698fe59
         </state>
       </provider>
     </entry>
@@ -270,6 +351,19 @@
     <entry file="file://$PROJECT_DIR$/database/config.ini">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
+<<<<<<< HEAD
+    <entry file="file://$PROJECT_DIR$/increment_data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="24" column="33" selection-start-line="24" selection-start-column="33" selection-end-line="24" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/asd.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="973">
+          <caret line="274" column="11" lean-forward="true" selection-start-line="274" selection-start-column="11" selection-end-line="274" selection-end-column="11" />
+=======
     <entry file="file://$PROJECT_DIR$/web/src/main.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="75">
@@ -317,6 +411,7 @@
             <element signature="n#style#0;n#div#0;n#div#1;n#div#2;n#div#1;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#el-button#0;n#div#0;n#div#1;n#div#2;n#div#1;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
           </folding>
+>>>>>>> 3b68c0b934aeec1f733ba07910b95f4d7698fe59
         </state>
       </provider>
     </entry>
