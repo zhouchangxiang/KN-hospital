@@ -2,6 +2,7 @@ import json
 import xlwt
 from io import BytesIO
 import pandas as pd
+from datetime import datetime, timedelta
 from flask import make_response, Blueprint, request
 from sqlalchemy.exc import InvalidRequestError
 
@@ -13,6 +14,41 @@ from common.asd import db_session, TagDetail, IncrementElectricTable, IncrementW
 foo = Blueprint('foo', __name__)
 
 electric = Blueprint('electric', __name__)
+
+
+@electric.route('/energy_contrast', methods=['GET'])
+def energy_contrast():
+    try:
+        hours = ['00:00:00', '01:00:00', '02:00:00', '03:00:00', '04:00:00', '05:00:00', '06:00:00', '07:00:00',
+                 '08:00:00', '09:00:00', '10:00:00', '11:00:00', '12:00:00', '13:00:00', '14:00:00', '15:00:00',
+                 '16:00:00', '17:00:00', '18:00:00', '19:00:00', '20:00:00', '21:00:00', '22:00:00', '23:00:00',
+                 '24:00:00']
+        # yesterday = (datetime.now() - timedelta(1)).strftime('%Y-%m-%d ')
+        yesterday = request.values.get('date')
+        now = datetime.now().strftime('%Y-%m-%d ')
+        now_hour = datetime.now().strftime('%H:00:00')
+        rows = []
+        for i in range(0, len(hours)):
+            if hours[i] != '24:00:00':
+                yesterday_start_time = '"' + yesterday + ' ' + hours[i] + '"'
+                yesterday_end_time = '"' + yesterday + ' ' + hours[i+1] + '"'
+                now_start_time = '"' + now + hours[i] + '"'
+                now_end_time = '"' + now + hours[i+1] + '"'
+                sql1 = f'select sum(IncremenValue) as value from IncrementElectricTable where CollectionDate between {yesterday_start_time} and {yesterday_end_time}'
+                result1 = db_session.execute(sql1).fetchall()
+                yesterday_value = result1[0]['value'] if result1[0]['value'] is not None else 0
+                if hours[i] <= now_hour:
+                    sql2 = f'select sum(IncremenValue) as value from IncrementElectricTable where CollectionDate between {now_start_time} and {now_end_time}'
+                    result2 = db_session.execute(sql2).fetchall()
+                    today_value = result2[0]['value'] if result2[0]['value'] is not None else 0
+                else:
+                    today_value = ' '
+                data = {'时间':  hours[i], '今日能耗': today_value, '对比日能耗': yesterday_value}
+                rows.append(data)
+        return json.dumps({'code': '200', 'mes': '查询成功', 'data': rows}, cls=MyEncoder, ensure_ascii=False)
+    except Exception as e:
+        print(str(e))
+        return json.dumps({'code': '200', 'mes': '查询失败', 'error': str(e)}, ensure_ascii=False)
 
 
 @electric.route('/energy', methods=['GET'])

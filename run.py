@@ -1,13 +1,14 @@
 from flask import Flask
 from flask_cors import CORS
 
+from database.db_operate import DB_URL
 from repair import repair
-from database.connect_db import CONNECT_DATABASE
+# from database.db_operate import DB_URL
 from energy import energy
 from energy_api import electric
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = CONNECT_DATABASE
+app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 CORS(app, supports_credentials=True)

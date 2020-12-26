@@ -14,7 +14,7 @@ from common import MESLogger, autocode
 from flask_login import current_user, LoginManager
 from common.BSFramwork import AlchemyEncoder
 from common.system import Organization, Factory, DepartmentManager, Role
-from database import connect_db
+from database import constant
 
 DB_URL = 'mysql+pymysql://root:Hstl_2020@127.0.0.1:3306/hstl?charset=utf8'
 
@@ -196,13 +196,13 @@ def selectTree():
 
 
 
-pool = redis.ConnectionPool(host=connect_db.REDIS_HOST,decode_responses=True)
+pool = redis.ConnectionPool(host=constant.REDIS_HOST,decode_responses=True)
 redis_conn = redis.Redis(connection_pool=pool)
 def selectRedisBykey(data):
     '''通过key查询增加修改Redis单个的值'''
     try:
         key = data.get("key")
-        value = redis_conn.hget(connect_db.REDIS_TABLENAME, key)
+        value = redis_conn.hget(constant.REDIS_TABLENAME, key)
         return json.dumps(value, cls=AlchemyEncoder, ensure_ascii=False)
     except Exception as e:
         print(e)
@@ -214,7 +214,7 @@ def addUpdateRedisBykey(data):
     try:
         key = data.get("key")
         value = data.get("value")
-        redis_conn.hset(connect_db.REDIS_TABLENAME, key, value)
+        redis_conn.hset(constant.REDIS_TABLENAME, key, value)
         return json.dumps("OK", cls=AlchemyEncoder, ensure_ascii=False)
     except Exception as e:
         print(e)
