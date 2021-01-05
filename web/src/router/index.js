@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Index from '@/components/Index'
 import board from '@/components/board'
 import Home from '@/views/home'
+import Login from '@/components/Login'
 import floorData from '@/views/energy/floorData'
 import IntelligentMaintenance from '@/views/energy/IntelligentMaintenance'
 import ServiceDiagnosis from '@/views/energy/ServiceDiagnosis'
@@ -33,6 +34,11 @@ export default new Router({
       path:"/",
       name:"board",
       component:board,
-    }
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: Login,
+    },
   ]
 })

@@ -441,7 +441,7 @@
       },
       repairs(){  //报修
         if(this.TableData.multipleSelection.length === 1){
-          if(this.TableData.multipleSelection[0].Status === "运行中"){
+          if(this.TableData.multipleSelection[0].Status === "正常"){
             this.showRepairsForm = true
           }else{
             this.$message({

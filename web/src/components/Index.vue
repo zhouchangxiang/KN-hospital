@@ -72,6 +72,11 @@
       window.onresize = function () {
         document.body.style.zoom = 0;
       }
+      if(sessionStorage.getItem("LoginStatus")) {
+        this.$store.commit('setUser',sessionStorage.getItem('WorkNumber'))
+      }else{
+        this.$router.push("/login");
+      }
     },
     destroyed() {
 
