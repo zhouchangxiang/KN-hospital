@@ -32,46 +32,6 @@ login_auth = Blueprint('login_auth', __name__, template_folder='templates')
 def load_user(user_id):
     return db_session.query(User).filter_by(ID=int(user_id)).first()
 
-
-@login_auth.route('/account/login', methods=['GET', 'POST'])
-def login():
-    try:
-        if request.method == 'GET':
-            return render_template('./main/login.html')
-        if request.method == 'POST':
-            data = request.values
-            WorkNumber = data.get('WorkNumber')
-            password = data.get('password')
-            # 验证账户与密码
-            user = db_session.query(User).filter_by(WorkNumber=WorkNumber).first()
-            if user and (user.confirm_password(password) or user.Password == password):
-                login_user(user)  # login_user(user)调用user_loader()把用户设置到db_session中
-                user.session_id = str(time.time())
-                db_session.commit()
-                # roles = db_session.query(User.RoleName).filter_by(WorkNumber=WorkNumber).all()
-                # menus = []
-                # for role in roles:
-                #     for index in role:
-                #         role_id = db_session.query(Role.ID).filter_by(RoleName=index).first()
-                #         menu = db_session.query(Menu.ModuleCode).join(Role_Menu, isouter=True).filter_by(Role_ID=role_id).all()
-                #         for li in menu:
-                #             menus.append(li[0])
-                # session['menus'] = menus
-                # user.Status = "1"
-                # db_session.commit()
-                use = db_session.query(User).filter_by(WorkNumber=WorkNumber).first()
-                # return redirect('/')
-                return render_template('./main/heatmap.html')
-            # 认证失败返回登录页面
-            error = '用户名或密码错误'
-            return render_template('./main/login.html', error=error)
-    except Exception as e:
-        print(e)
-        db_session.rollback()
-        logger.error(e)
-        return json.dumps([{"status": "Error:" + str(e)}], cls=AlchemyEncoder, ensure_ascii=False)
-
-
 # 退出登录
 @login_auth.route('/account/logout')
 @login_required
