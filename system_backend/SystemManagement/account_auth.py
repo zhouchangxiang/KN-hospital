@@ -13,7 +13,6 @@ from common.system import User
 from common.MESLogger import logger
 from common.BSFramwork import AlchemyEncoder
 from database.db_operate import DB_URL
-login_manager = LoginManager()
 # 创建对象的基类
 engine = create_engine(DB_URL)
 Session = sessionmaker(bind=engine)
@@ -129,7 +128,7 @@ def userloginauthentication():
             user = db_session.query(User).filter_by(WorkNumber=WorkNumber).first()
             resp = make_response()
             if user and (user.confirm_password(password) or user.Password == password):
-                login_user(user)  # login_user(user)调用user_loader()把用户设置到db_session中
+                login_user(user)
                 user.session_id = str(time.time())
                 user.LastLoginTime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 db_session.commit()

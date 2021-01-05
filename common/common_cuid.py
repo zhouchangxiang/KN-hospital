@@ -186,9 +186,8 @@ def select(data):
         if pages == None or pages == "":
             pages = ""
         else:
-
             rowsnumber = int(data.get("limit"))
-            pages = int(data.get("offset"))*rowsnumber+1
+            pages = int(data.get("offset"))*rowsnumber + 1
         newTable = Table(tableName, metadata, autoload=True, autoload_with=engine)
         columns = ""
         for column in newTable.columns:
@@ -231,19 +230,26 @@ def select(data):
         dict_list = []
         y = 0
         for i in re:
-            y = y + 1
-            if y == 1:
-                continue
+            # y = y + 1
+            # if y == 1:
+            #     continue
+            # dir = {}
+            # j = 0
+            # for column in newTable.columns:
+            #     if isinstance(i[j], datetime.datetime) == True:
+            #         dir[str(column).split(".")[1]] = datetime.datetime.strftime(i[j],'%Y-%m-%d %H:%M:%S')
+            #     else:
+            #         dir[str(column).split(".")[1]] = i[j]
+            #     j = j+1
+            # dict_list.append(dir)
             dir = {}
-            j = 0
-            for column in newTable.columns:
-                if isinstance(i[j], datetime.datetime) == True:
-                    dir[str(column).split(".")[1]] = datetime.datetime.strftime(i[j],'%Y-%m-%d %H:%M:%S')
+            column_list = columns.split(",")
+            for column in column_list:
+                if isinstance(i[column], datetime.datetime) == True:
+                    dir[column] = datetime.datetime.strftime(i[column], '%Y-%m-%d %H:%M:%S')
                 else:
-                    dir[str(column).split(".")[1]] = i[j]
-                j = j+1
+                    dir[column] = i[column]
             dict_list.append(dir)
-
         return {"code": "200", "message": "请求成功", "data": {"total": recount[0][0], "rows": dict_list}}
     except Exception as e:
         print(e)
