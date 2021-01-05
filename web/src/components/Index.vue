@@ -21,6 +21,11 @@
           <i class="color-white text-size-18 el-icon-s-home" @click="$router.push('/')"></i>
         </el-tooltip>
       </div>
+      <div style="position: absolute;top: 20px;right: 100px;color: #fff; cursor: pointer;">
+        <el-tooltip class="head-menu-item" effect="dark" content="退出登录" placement="bottom">
+          <i class="color-white text-size-18 el-icon-circle-close" @click="LoginOut"></i>
+        </el-tooltip>
+      </div>
     </el-header>
     <el-main style="padding: 15px;">
       <transition name="move" mode="out-in">
@@ -94,6 +99,10 @@
             this.isFullScreen = true
           }
         }
+      },
+      LoginOut(){
+        this.$store.commit('removeUser')
+        this.$router.replace("/login")
       },
       initWebSocket(){ //初始化weosocket
         // this.websock = new WebSocket('ws://' + location.host + '/socket');

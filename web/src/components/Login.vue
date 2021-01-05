@@ -90,7 +90,7 @@
                   var that = this;
                   this.isSubLoadding = false
                   setTimeout(function(){
-                    that.$router.push("/")
+                    that.$router.push("/Index")
                   },1000)
                   this.$store.commit('setUser',this.loginForm.WorkNumber);
                   if(this.loginForm.rememb){
