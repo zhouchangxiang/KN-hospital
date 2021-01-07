@@ -248,7 +248,7 @@ body {
 	font-family: semibold;
 }
 .main table td {
-	height: 106px;
+	height: 100px;
 	font-family: pingfang;
 }
 
@@ -301,6 +301,7 @@ body {
 
 .middle_2 .nyzknxfx {
 	padding-top: 24px;
+  padding-left: 44px;
 	clear: both;
 }
 
@@ -452,7 +453,84 @@ body {
 .right_2 .hnzs {
 	position: relative;
 }
-
+.right_2 .ksynsj{
+  padding-top: 66px;
+}
+.right_2 .ksynsj_left{
+  float: left;
+  width: 220px;
+  height: 255px;
+  padding-left: 1px;
+  margin-top: 48px;
+  overflow: hidden;
+}
+.right_2 .ksynsj_left ul {
+  transition: all 1s;
+}
+.right_2 .ksynsj_left ul li {
+  width: 210px;
+  font-size: 24px;
+  font-family: pingfang;
+  float: left;
+  margin-left: 10px;
+  border: 2px solid #009fc9;
+  color: #a3cccc;
+  height: 80px;
+  line-height: 80px;
+  text-align: center;
+}
+.right_2 .ksynsj_left ul li.active{
+  border: 2px solid rgba(0, 159, 201, 0.6);
+  background: #009fc9;
+  color: #fff;
+}
+.right_2 .ksynsj_right {
+  width: 900px;
+  margin-top: 18px;
+  float: left;
+}
+.right_2 .ksynsj_right strong {
+  font-family: yaheib;
+  font-size: 48px;
+  color: #11f6e7;
+}
+.kshnjndb .kshnjndb_item {
+  height: 180px;
+  margin-top: 20px;
+  overflow: hidden;
+}
+.kshnjndb ul {
+  width: 100%;
+  margin-left: 40px;
+  margin-top: 40px;
+  transition: all 1s;
+}
+.kshnjndb ul li {
+  padding: 20px 0px;
+  display: block;
+  height: 20px;
+  line-height: 60px;
+}
+.kshnjndb .kshnjndb_bar {
+  position: relative;
+  width: 900px;
+  float: left;
+  background: rgba(0, 159, 201, 0.4);
+  height: 20px;
+}
+.kshnjndb .kshnjndb_bar_active {
+  width: 80%;
+  background: #009fc9;
+  height: 100%;
+}
+.kshnjndb .txt {
+  float: left;
+  font-family: pingfang;
+  color: #a3cccc;
+  font-size: 30px;
+  line-height: 20px;
+  margin-left: 20px;
+}
 .right_2 .hnzs .txt {
 	width: 250px;
 	float: left;
@@ -460,6 +538,12 @@ body {
 	padding-top: 40px;
 }
 
+.right_2 .message {
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  margin-top: 32px;
+}
 .right_2 .hnzs .level {
 	width: 850px;
 	float: left;
