@@ -202,6 +202,5 @@ while True:
               ['COM2.KT7F.总有功电量', 'COM2.LIGHT7F.总有功电量'], ['COM2.KT8F.总有功电量', 'COM2.LIGHT8F.总有功电量'],
               ['COM2.KT9F.总有功电量', 'COM2.LIGHT9F.总有功电量'], ['COM2.KT10F.总有功电量', 'COM2.LIGHT10F.总有功电量'],
               ['COM2.KT11F.总有功电量', 'COM2.LIGHT11F.总有功电量'], ['COM2.KT12F.总有功电量', 'COM2.LIGHT12F.总有功电量']]
-
     print('结束计算能耗数据')
     time.sleep(180)
