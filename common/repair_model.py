@@ -21,30 +21,22 @@ class Equipment(Base):
 
     # ID:
     ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
+    # 设备编号
+    EquipmentNo = Column(Unicode(32), nullable=True)
+    # 设备编码
+    EquipmentCode = Column(Unicode(32), nullable=True)
+    # 设备类型
+    EquipmentType = Column(Unicode(512), nullable=True)
     # 设备名称
-    Name = Column(Unicode(32), nullable=True)
+    EquipmentName = Column(Unicode(512), nullable=True)
     # 区域
     Area = Column(Unicode(32), nullable=True)
-    # 设备编码:
-    EquipmentCode = Column(Unicode(30), primary_key=False, autoincrement=False, nullable=True)
+    # 添加日期
+    AddTime = Column(Unicode(32), nullable=True)
     # 设备状态（运行中，维修中）
-    Status = Column(Unicode(32), default="运行中", nullable=True)
+    Status = Column(Unicode(32), default="正常", nullable=True)
     # 注释:
-    Comment = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-    # 设备型号
-    # Model = Column(Unicode(128), nullable=True)
-    # 生产商
-    # Manufacturer = Column(Unicode(32), nullable=True)
-    # SAP号
-    # Sap = Column(Unicode(64), nullable=True)
-    # 固定资产编号
-    # FixedAssetsNo = Column(Unicode(128), nullable=True)
-    # 固定资产名称s
-    # FixedAssetsName = Column(Unicode(32), nullable=True)
-    # 区域
-    # Area = Column(Unicode(32), nullable=True)
-    # 进厂日期
-    # IntoTime = Column(Unicode(32), nullable=True, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    Comment = Column(Unicode(32), nullable=True, default='')
 
 
 class Plan(Base):
