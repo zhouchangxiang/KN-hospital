@@ -179,10 +179,36 @@
 						<div class="ywds right_item">
 							<p><img src="img/ring.png" alt="">
 								<span class="pingfang white font48"><span style="color: #11f6e7;margin-right: 20px;" class="el-icon-collection-tag"></span>运维大师</span></p>
-						</div>
-						<div class="right_item">
+						  <table border="2" v-if="operations.length">
+                <tr>
+                  <th width="200">人员编号</th>
+                  <th width="100">时间</th>
+                  <th width="200">维护位置</th>
+                  <th width="200">问题数量</th>
+                  <th width="200">平台指令</th>
+                  <th width="100">结果</th>
+                </tr>
+                <tr v-for="(item,index) in operations">
+                  <td>{{  }}</td>
+                </tr>
+              </table>
+              <table border="2" v-else>
+                <tr>
+                  <th width="200">人员编号</th>
+                  <th width="100">时间</th>
+                  <th width="200">维护位置</th>
+                  <th width="200">问题数量</th>
+                  <th width="200">平台指令</th>
+                  <th width="100">结果</th>
+                </tr>
+                <tr>
+                  <td colspan="6" rowspan="2">暂无数据</td>
+                </tr>
+              </table>
+            </div>
+            <div class="right_item">
 
-						</div>
+            </div>
 					</div>
 					<!-- 今日管控情况 -->
 					<div class="right_2">
@@ -367,6 +393,21 @@
               color: '#ffffff',  //更改坐标轴文字颜色
               fontSize : 36      //更改坐标轴文字大小
             },
+            axisTick:{
+              show:true,
+              length:10,
+              lineStyle:{
+                width:5,
+                color:"#fff"
+              }
+            },
+            axisLine:{
+              show:true,
+              lineStyle: {
+                width:5,
+                color: '#c3dbff',
+              }
+            },
           },
           grid:{
             left:'0',
@@ -432,8 +473,11 @@
         notice:[
           {noticeTitle:"通知",noticeContent:"这是留言板，请留言提示！"}
         ],
-        operations: [],
-        illness: [],
+        operations: [], //运维大师数据
+        illness: [
+          {name:"跨区移动",data:"18"},
+          {name:"异常人员",data:"9"},
+        ],
         weather: {}, //天气
         energy:{
           year_total_energy:0,
