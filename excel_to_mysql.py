@@ -39,3 +39,5 @@ conn.close()
 columns = str(sheet.ncols)
 rows = str(sheet.nrows)
 print("导入 " + columns + " 列 " + rows + " 行数据到MySQL数据库!")
+
+
