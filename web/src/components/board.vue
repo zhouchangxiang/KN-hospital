@@ -178,7 +178,9 @@
 						</div>
 						<div class="ywds right_item">
 							<p><img src="img/ring.png" alt="">
-								<span class="pingfang white font48"><span style="color: #11f6e7;margin-right: 20px;" class="el-icon-collection-tag"></span>运维大师</span></p>
+								<span class="pingfang white font48"><span style="color: #11f6e7;margin-right: 20px;" class="el-icon-collection-tag"></span>运维大师</span>
+                <a href="javascript:;" class="pingfang white font48" style="float:right; text-decoration: none;" @click="$router.push('/Index')">去维护</a>
+              </p>
 						  <table border="2" v-if="operations.length">
                 <tr>
                   <th width="200">人员编号</th>
@@ -501,7 +503,6 @@
       this.setksynsj_margin()
       this.setkshnjndb_margin()
       this.initWebSocket()
-      this.getEnergyComparison()
       this.getWeather();
       this.getNotice();
       //this.getCompanyEnergyEfficiency();
