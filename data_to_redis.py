@@ -56,14 +56,27 @@ def get_day_of_year(year, month, day):
     return days_of_31_num * 31 + days_of_30_num * 30 + (29 if is_leap_year(year) else 28) + day
 
 
+def count_energy(tags, start_time, end_time):
+    result = 0.0
+    for tag in tags:
+        sql = f'select sum(IncremenValue) as value from IncrementElectricTable where Address="{tag}" CollectionDate between {start_time} and {end_time} '
+        data = db_session.execute(sql).fetchall()
+        if data[0]['value'] is not None:
+            result += float(data[0]['value'])
+        else:
+            result = 0.0
+    return result
+
+
+
 while True:
     # 电
     print('开始计算每日预估能耗')
     now = date.today()
-    this_month_start = datetime(now.year, now.month, 1).strftime('%Y-%m-%d') + " 00:00:00" + "'"
-    this_month_end = datetime(now.year, now.month, calendar.monthrange(now.year, now.month)[1]).strftime('%Y-%m-%d') + " 23:59:59" + "'"
-    this_year_start = datetime(now.year, 1, 1).strftime('%Y-%m-%d') + " 00:00:00" + "'"
-    this_year_end = datetime(now.year, 12, 1).strftime('%Y-%m-%d') + " 23:59:59" + "'"
+    this_month_start = "'" + datetime(now.year, now.month, 1).strftime('%Y-%m-%d') + " 00:00:00" + "'"
+    this_month_end = "'" + datetime(now.year, now.month, calendar.monthrange(now.year, now.month)[1]).strftime('%Y-%m-%d') + " 23:59:59" + "'"
+    this_year_start = "'" + datetime(now.year, 1, 1).strftime('%Y-%m-%d') + " 00:00:00" + "'"
+    this_year_end = "'" + datetime(now.year, 12, 31).strftime('%Y-%m-%d') + " 23:59:59" + "'"
     yesterday_start_time = "'" + (date.today() - timedelta(1)).strftime('%Y-%m-%d') + " 00:00:00" + "'"
     yesterday_last_time = "'" + (date.today() - timedelta(1)).strftime('%Y-%m-%d') + " 23:59:59" + "'"
     yesterday_end_time = "'" + (date.today() - timedelta(1)).strftime('%Y-%m-%d ') + datetime.now().strftime('%H:%M:%S') + "'"
@@ -128,5 +141,39 @@ while True:
     redis_coon.hset(REDIS_TABLENAME, 'water_day_total', water_day_total)
     redis_coon.hset(REDIS_TABLENAME, 'water_avg_day', water_avg_day)
     redis_coon.hset(REDIS_TABLENAME, 'water_avg_month', water_avg_month)
+
+    # 单位建筑面积电耗 年用电量*0.1229 / 20224.4
+    d1 = float(result4[0]['value']) * 0.1229 / 20224.4
+    # 单位建筑面积水耗 8、9楼年用水量 / 2140
+    d2 = water_year_total / 2140
+    # 单位建筑面积能耗 (年用电量*0.1229 + 8、9楼年用水量*0.000257) / 20224.4
+    d3 = (float(result4[0]['value']) * 0.1229 + water_year_total * 0.000257) / 20224.4
+    # 单位面积空调能耗 电表13-27年总用电量 * 0.1229 / 13000
+    tags1 = ['COM2.KT1F.总有功电量', 'COM2.KT2F.总有功电量', 'COM2.KT3F.总有功电量', 'COM2.KT4F.总有功电量', 'COM2.KT5F.总有功电量',
+             'COM2.KT6F.总有功电量', 'COM2.KT7F.总有功电量', 'COM2.KT8F.总有功电量', 'COM2.KT9F.总有功电量', 'COM2.KT10F.总有功电量',
+             'COM2.KT11F.总有功电量', 'COM2.KT12F.总有功电量', 'COM2.KT5F.总有功电量', 'COM2.KTCTR1.总有功电量', 'COM2.KTCTR2.总有功电量',
+             'COM2.KTCTRADD.总有功电量']
+    result_tags1 = count_energy(tags1, this_year_start, this_year_end)
+    d4 = result_tags1 * 0.1229 / 13000
+    # 单位床位能耗 (年用电量*0.1229 + 8、9楼年用水量*0.000257) / 1330
+    d5 = (float(result4[0]['value']) * 0.1229 + water_year_total * 0.000257) / 630
+    # 人均综合能耗 （8、9楼年用电量 *0.1229 + 8、9楼年用水量*0.000257）/ 210
+    tags2 = ['COM2.KT8F.总有功电量', 'COM2.LIGHT8F.总有功电量', 'COM2.LIGHT9F.总有功电量', 'COM2.KT9F.总有功电量']
+    result_tags2 = count_energy(tags2, this_year_start, this_year_end)
+    d6 = (result_tags2 * 0.1229 + water_year_total * 0.000257) / 210
+    # 人均电耗 8、9楼年用电量*0.1229 / 210
+    d7 = result_tags2 * 0.1229 / 120
+    # 人均水耗 8、9楼年用水量 / 210
+    d8 = water_year_total / 210
+    data = [{'Desc': "单位建筑面积电耗", 'beforeValue': '6.07', 'companyValue': d1},
+            {'Desc': "单位建筑面积水耗", 'beforeValue': '1.68', 'companyValue': d2},
+            {'Desc': "单位建筑面积天然气耗", 'beforeValue': '0.0', 'companyValue': '0.0'},
+            {'Desc': "单位建筑面积能耗", 'beforeValue': '6.07', 'companyValue': d3},
+            {'Desc': "单位面积空调能耗", 'beforeValue': '6.38', 'companyValue': d4},
+            {'Desc': "单位床位能耗", 'beforeValue': '197.94', 'companyValue': d5},
+            {'Desc': "人均综合能耗", 'beforeValue': '24.7', 'companyValue': d6},
+            {'Desc': "人均电耗", 'beforeValue': '584.8', 'companyValue': d7},
+            {'Desc': "人均水耗", 'beforeValue': '17.1', 'companyValue': d8},
+            ]
     print('结束计算能耗数据')
     time.sleep(180)
