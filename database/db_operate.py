@@ -8,9 +8,9 @@ from flask_login import current_user
 import pymssql
 from database import constant
 from enum import Enum, IntEnum, unique
-DB_URL = 'mysql+pymysql://root:Hstl_2020@127.0.0.1:3306/hstl?charset=utf8'
+DB_URL = 'mysql+pymysql://root:Hstl_2020@127.0.0.1:3306/hstl?charset=utf8&autocommit=true'
 
-engine = create_engine(DB_URL)#Qcsw@758@192.168.2.123  root@127.0.0.1
+engine = create_engine(DB_URL, pool_size=5, max_overflow=2, pool_timeout=30, pool_recycle=1800)#Qcsw@758@192.168.2.123  root@127.0.0.1
 Session = sessionmaker(bind=engine)
 db_session = Session()
 pool = redis.ConnectionPool(host=constant.REDIS_HOST, password=constant.REDIS_PASSWORD,decode_responses=True)

@@ -142,7 +142,7 @@
                       <li>本月用{{ tp }}总量：{{ energy.month_total_energy }}{{ types[i] }}</li>
                       <li>今年月均{{ tp }}总量：{{ energy.year_avg_month }}{{ types[i] }}</li>
                       <li>今年日均{{ tp }}总量：{{ energy.year_avg_day }}{{ types[i] }}</li>
-                      <li>今日用{{ tp }}总量：{{ energy.total_energy }}{{ types[i] }}</li>
+                      <li>今日用{{ tp }}总量：{{ energy.today_energy }}{{ types[i] }}</li>
                     </ul>
 									</div>
                   <!--<ve-line :data="chartData" :extend="ChartExtend" height="980px" width="100%"></ve-line>-->
@@ -523,7 +523,7 @@
             month_total_energy:this.websockVarData.month_total_energy,
             year_avg_day:this.websockVarData.year_avg_day,
             year_avg_month:this.websockVarData.year_avg_month,
-            total_energy:this.websockVarData.total_energy,
+            today_energy:this.websockVarData.today_energy,
           }
         }else if(val == 1){
           this.energy = {
@@ -531,7 +531,7 @@
             month_total_energy:this.websockVarData.water_month_total,
             year_avg_day:this.websockVarData.water_avg_day,
             year_avg_month:this.websockVarData.water_avg_month,
-            total_energy:this.websockVarData.water_day_total,
+            today_energy:this.websockVarData.water_day_total,
           }
         }else{
           this.energy = {
@@ -539,7 +539,7 @@
             month_total_energy:0,
             year_avg_day:0,
             year_avg_month:0,
-            total_energy:0,
+            today_energy:0,
           }
         }
       }
@@ -556,7 +556,7 @@
             that.nyzk_index = -1
             that.middle_title = "年耗能占比分析"
           }
-        },3000)
+        },10000)
       },
       //楼层滚动
       setksynsj_margin(){
@@ -614,6 +614,7 @@
         this.yesterday_energy = this.websockVarData.yesterday_energy
         this.yesterday_total_energy = this.websockVarData.yesterday_total_energy
         this.save_energy = this.websockVarData.save_energy
+          console.log(this.websockVarData.today_energy)
       },
       websocketsend(Data){//数据发送
         this.websock.send(Data);
@@ -623,20 +624,6 @@
       },
       closesocket(){
         this.websock.close()
-      },
-      getEnergyComparison(){
-        var params = {
-          date:moment().subtract(1, "days").format("YYYY-MM-DD")
-        }
-        this.axios.get("/api/energy_contrast",{
-          params: params
-        }).then(res =>{
-          if(res.data.code === "200"){
-            this.chartData.rows = res.data.data
-          }
-        },res =>{
-          console.log("请求错误")
-        })
       },
       energyActiveChange(index){
         this.nyzk_index = index

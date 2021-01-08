@@ -59,12 +59,12 @@ def get_day_of_year(year, month, day):
 def count_energy(tags, start_time, end_time):
     result = 0.0
     for tag in tags:
-        sql = f'select sum(IncremenValue) as value from IncrementElectricTable where Address="{tag}" CollectionDate between {start_time} and {end_time} '
+        sql = f'select sum(IncremenValue) as value from IncrementElectricTable where Address="{tag}" and CollectionDate between {start_time} and {end_time}'
         data = db_session.execute(sql).fetchall()
         if data[0]['value'] is not None:
             result += float(data[0]['value'])
         else:
-            result = 0.0
+            result += 0.0
     return result
 
 
@@ -86,7 +86,7 @@ while True:
     now_year = date.today().strftime('%Y')
     now_month = date.today().strftime('%m')
     now_day = date.today().strftime('%d')
-    year_day_data = get_day_of_year(now_year, now_month, now_day)
+    year_day_data = get_day_of_year(now_year, int(now_month), int(now_day))
 
     # 今日用电总量
     sql1 = f'select sum(IncremenValue) as value from IncrementElectricTable where CollectionDate between {today_start_time} and {today_end_time} '
@@ -175,5 +175,6 @@ while True:
             {'Desc': "人均电耗", 'beforeValue': '584.8', 'companyValue': d7},
             {'Desc': "人均水耗", 'beforeValue': '17.1', 'companyValue': d8},
             ]
+    redis_coon.hset(REDIS_TABLENAME, 'indicator', str(data))
     print('结束计算能耗数据')
     time.sleep(180)

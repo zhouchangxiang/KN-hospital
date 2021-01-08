@@ -15,10 +15,10 @@ from common.MESLogger import MESLogger
 from common.BSFramwork import AlchemyEncoder
 from database.db_operate import DB_URL
 
-engine = create_engine(DB_URL,max_overflow=0,  # 超过连接池大小外最多创建的连接
+engine = create_engine(DB_URL,max_overflow=2,  # 超过连接池大小外最多创建的连接
             pool_size=5,  # 连接池大小
             pool_timeout=30,  # 池中没有线程最多等待的时间，否则报错
-            pool_recycle=-1,  # 多久之后对线程池中的线程进行一次连接的回收（重置）
+            pool_recycle=1800,  # 多久之后对线程池中的线程进行一次连接的回收（重置）
             echo=True
          )
 conn = engine.connect()
@@ -187,7 +187,7 @@ def select(data):
             pages = ""
         else:
             rowsnumber = int(data.get("limit"))
-            pages = int(data.get("offset"))*rowsnumber + 1
+            pages = int(data.get("offset"))*rowsnumber
         newTable = Table(tableName, metadata, autoload=True, autoload_with=engine)
         columns = ""
         for column in newTable.columns:
@@ -227,6 +227,7 @@ def select(data):
                 sqlcount = "select count(ID) from " + tableName + " where " + params
         re = db_session.execute(sql).fetchall()
         recount = db_session.execute(sqlcount).fetchall()
+        db_session.close()
         dict_list = []
         y = 0
         for i in re:
@@ -253,6 +254,7 @@ def select(data):
         return {"code": "200", "message": "请求成功", "data": {"total": recount[0][0], "rows": dict_list}}
     except Exception as e:
         print(e)
+        db_session.rollback()
         logger.error(e)
         insertSyslog("error", "查询报错Error：" + str(e), current_user.Name)
         return {"code": "500", "message": "请求错误", "data": "查询报错Error：" + str(e)}
