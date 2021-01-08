@@ -33,7 +33,7 @@ class Equipment(Base):
     Area = Column(Unicode(32), nullable=True)
     # 添加日期
     AddTime = Column(Unicode(32), nullable=True)
-    # 设备状态（运行中，维修中）
+    # 设备状态（正常，维修中）
     Status = Column(Unicode(32), default="正常", nullable=True)
     # 注释:
     Comment = Column(Unicode(32), nullable=True, default='')
