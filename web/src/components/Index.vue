@@ -121,6 +121,10 @@
       this.routeLocation = this.$route.path
     },
     created(){
+      document.body.style.zoom = 0
+      window.onresize = function(){
+        document.body.style.zoom = 0
+      }
       window.addEventListener('resize', this.getMenuHeight);
       this.getMenuHeight()
       // if(sessionStorage.getItem("LoginStatus")) {
