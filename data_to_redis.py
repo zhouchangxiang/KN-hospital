@@ -86,7 +86,7 @@ def count_floor_energy(tags, start_time, end_time, water_day_total, total_energy
             else:
                 floor_total_energy += 0.0
                 total += 0.0
-        ratio = str('%.2f' % (floor_total_energy / total_energy * 100)) + '%'
+        ratio = '%.2f' % (floor_total_energy / total_energy * 100)
         if i == 7 or i == 8:
             floorData.append({'areaName': AreaName, 'electricity': floor_total_energy, 'water': water_day_total, 'ratio': ratio})
         else:

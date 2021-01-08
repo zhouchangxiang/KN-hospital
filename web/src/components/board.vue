@@ -229,12 +229,24 @@
               <div class="ksynsj_right">
                 <ul>
                   <li>
-                    <p>耗电</p>
-                    <strong>{{  }}</strong>
+                    <p>耗电(kW·h)</p>
+                    <strong v-if="ksynsj.length > 0">{{ ksynsj[ksyns_index].electricity }}</strong>
                   </li>
                   <li>
-                    <p>耗水</p>
-                    <strong>{{  }}</strong>
+                    <p>耗水(t)</p>
+                    <strong v-if="ksynsj.length > 0">{{ ksynsj[ksyns_index].water }}</strong>
+                  </li>
+                  <li>
+                    <p>耗冷(kW·h)</p>
+                    <strong>0</strong>
+                  </li>
+                  <li>
+                    <p>耗暖(kj)</p>
+                    <strong>0</strong>
+                  </li>
+                  <li>
+                    <p>耗气(m³)</p>
+                    <strong>0</strong>
                   </li>
                 </ul>
               </div>
@@ -247,7 +259,7 @@
                 <ul v-bind:style="{ marginTop: kshnjndb_margin + 'px' }">
                   <li v-for="item in ksynsj">
                     <div class="kshnjndb_bar">
-                      <div class="kshnjndb_bar_active" v-bind:style="{ width:(item.economyEnergy*100) + '%' }"></div>
+                      <div class="kshnjndb_bar_active" v-bind:style="{ width:(item.ratio) + '%' }"></div>
                     </div>
                     <div class="txt">{{ item.areaName }}</div>
                   </li>
@@ -409,12 +421,6 @@
           series:{
             smooth: false,
             barMaxWidth:"50",
-            label:{
-              show:true,
-              position:"right",
-              color:"#ffffff",
-              fontSize:36,
-            },
             lineStyle:{
               width:8
             }
@@ -423,9 +429,9 @@
         barChartData:{
           columns: ['楼层', '轻', '中', '重'],
           rows: [
-            { '楼层': '7楼', '轻': 1393, '中': 1393, '重': 1393 },
-            { '楼层': '8楼', '轻': 3530, '中': 1393, '重': 1393 },
-            { '楼层': '9楼', '轻': 1232, '中': 1393, '重': 1393 },
+            { '楼层': '7楼', '轻': 23, '中': 12, '重': 3 },
+            { '楼层': '8楼', '轻': 12, '中': 34, '重': 7 },
+            { '楼层': '9楼', '轻': 43, '中': 75, '重': 5 },
           ]
         },
         energyTotal:0,
@@ -442,14 +448,7 @@
         middle_title:"年耗能占比分析",
         ksynsj_margin:0,
         ksyns_index:0,
-        ksynsj:[
-          {areaName:"1f",economyEnergy:0.4},
-          {areaName:"2f",economyEnergy:0.4},
-          {areaName:"3f",economyEnergy:0.4},
-          {areaName:"4f",economyEnergy:0.2},
-          {areaName:"5f",economyEnergy:0.4},
-          {areaName:"6f",economyEnergy:0.4},
-        ],
+        ksynsj:[],
         kshnjndb_margin:0,
         notice:[
           {noticeTitle:"通知",noticeContent:"这是留言板，请留言提示！"}
@@ -621,6 +620,7 @@
           { '能源': '暖', '能耗': 0 },
           { '能源': '汽', '能耗': 0 },
         ]
+        this.ksynsj = JSON.parse(this.websockVarData.floorData)
       },
       websocketsend(Data){//数据发送
         this.websock.send(Data);
