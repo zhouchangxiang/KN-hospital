@@ -59,14 +59,13 @@ def get_day_of_year(year, month, day):
 def count_energy(tags, start_time, end_time):
     result = 0.0
     for tag in tags:
-        sql = f'select sum(IncremenValue) as value from IncrementElectricTable where Address="{tag}" and CollectionDate between {start_time} and {end_time}'
+        sql = f'select sum(IncremenValue) as value from IncrementElectricTable where Address="{tag}" and CollectionDate between {start_time} and {end_time} '
         data = db_session.execute(sql).fetchall()
         if data[0]['value'] is not None:
             result += float(data[0]['value'])
         else:
             result += 0.0
     return result
-
 
 
 while True:
