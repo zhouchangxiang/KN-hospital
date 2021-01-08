@@ -69,17 +69,29 @@ def count_energy(tags, start_time, end_time):
     return result
 
 
-def count_floor_energy(tags, start_time, end_time):
-    result = 0.0
+def count_floor_energy(tags, start_time, end_time, water_day_total, total_energy):
+    total = 0.0
+    i = 0
+    floorData = []
     for tag in tags:
+        i += 1
+        floor_total_energy = 0.0
+        AreaName = f'厚德楼{i}楼'
         for item in tag:
             sql = f'select sum(IncremenValue) as value from IncrementElectricTable where Address="{item}" and CollectionDate between {start_time} and {end_time} '
             data = db_session.execute(sql).fetchall()
             if data[0]['value'] is not None:
-                result += float(data[0]['value'])
+                floor_total_energy += float(data[0]['value'])
+                total += floor_total_energy
             else:
-                result += 0.0
-    return result
+                floor_total_energy += 0.0
+                total += 0.0
+        ratio = '%.2f' % (floor_total_energy / total_energy)
+        if i == 7 or i == 8:
+            floorData.append({'areaName': AreaName, 'electricity': floor_total_energy, 'water': water_day_total, 'ratio': ratio})
+        else:
+            floorData.append({'areaName': AreaName, 'electricity': floor_total_energy, 'water': 0.0, 'ratio': ratio})
+    return floorData
 
 
 while True:
@@ -193,7 +205,7 @@ while True:
             {'Desc': "人均电耗", 'beforeValue': '584.8', 'companyValue': d7},
             {'Desc': "人均水耗", 'beforeValue': '17.1', 'companyValue': d8},
             ]
-    json_data = json.dumps(data)
+    json_data = json.dumps(data, ensure_ascii=False)
     redis_coon.hset(REDIS_TABLENAME, 'indicator', json_data)
     # 楼层实时用能数据
     L_tags = [['COM2.KT1F.总有功电量', 'COM2.LIGHT1F.总有功电量'], ['COM2.KT2F.总有功电量', 'COM2.LIGHT2F.总有功电量'],
@@ -202,5 +214,8 @@ while True:
               ['COM2.KT7F.总有功电量', 'COM2.LIGHT7F.总有功电量'], ['COM2.KT8F.总有功电量', 'COM2.LIGHT8F.总有功电量'],
               ['COM2.KT9F.总有功电量', 'COM2.LIGHT9F.总有功电量'], ['COM2.KT10F.总有功电量', 'COM2.LIGHT10F.总有功电量'],
               ['COM2.KT11F.总有功电量', 'COM2.LIGHT11F.总有功电量'], ['COM2.KT12F.总有功电量', 'COM2.LIGHT12F.总有功电量']]
+    floor_data = count_floor_energy(L_tags, today_start_time, today_end_time, water_day_total, result1[0]['value'])
+    data = json.dumps(floor_data, ensure_ascii=False)
+    redis_coon.hset(REDIS_TABLENAME, 'floorData', data)
     print('结束计算能耗数据')
     time.sleep(180)
