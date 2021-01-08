@@ -58,34 +58,15 @@ class Plan(Base):
     WorkTime = Column(Unicode(32), nullable=True, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
 
-# class Record(Base):
-#     __tablename__ = 'Record'
-#
-#     # ID:
-#     ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
-#     # 设备编码:
-#     EquipmentCode = Column(Unicode(30), primary_key=False, autoincrement=False, nullable=True)
-#     # 确认人
-#     Name = Column(Unicode(32), nullable=True)
-#     # 设备状态（良好,异常）
-#     Status = Column(Unicode(32), default="良好")
-#     # 班组
-#     WorkNo = Column(Unicode(32), nullable=False)
-#     # 工单类型(维修，保养)
-#     Type = Column(Unicode(32), nullable=True)
-#     # 工作时间
-#     WorkTime = Column(Unicode(32), nullable=True, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-
-
 class KeepPlan(Base):
     """保养计划表"""
     __tablename__ = 'keepplan'
 
-    id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 工单号
     No = Column(Unicode(128), nullable=True, default=datetime.now().strftime('%Y%m%d%H%M%S'))
     # 设备名称
-    Name = Column(Unicode(32), nullable=True)
+    EquipmentName = Column(Unicode(32), nullable=True)
     # 设备编码
     EquipmentCode = Column(Unicode(128), nullable=True)
     # 制定计划人
@@ -112,17 +93,17 @@ class KeepTask(Base):
     """保养任务表"""
     __tablename__ = 'keeptask'
 
-    id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 工单号
     No = Column(Unicode(128), nullable=True, default=datetime.now().strftime('%Y%m%d%H%M%S'))
     # 设备名称
-    Name = Column(Unicode(32), nullable=True)
+    EquipmentName = Column(Unicode(32), nullable=True)
     # 设备编码
     EquipmentCode = Column(Unicode(128), nullable=True)
     # 制定计划人
     Worker = Column(Unicode(32), nullable=True)
     # 保养班组
-    Group = Column(Unicode(32), nullable=True)
+    GroupNo = Column(Unicode(32), nullable=True)
     # 工单状态
     Status = Column(Unicode(32), nullable=True)
     # 制定计划时间
@@ -145,11 +126,11 @@ class KeepRecord(Base):
     """保养记录表"""
     __tablename__ = 'keeprecord'
 
-    id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 工单号
     No = Column(Unicode(128), nullable=True, default=datetime.now().strftime('%Y%m%d%H%M%S'))
     # 设备名称
-    Name = Column(Unicode(32), nullable=True)
+    EquipmentName = Column(Unicode(32), nullable=True)
     # 设备编码
     EquipmentCode = Column(Unicode(128), nullable=True)
     # 制定计划人
@@ -180,11 +161,11 @@ class Repair(Base):
     """维修申请表"""
     __tablename__ = 'repair'
 
-    id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 工单号
     No = Column(Unicode(128), nullable=True, default=datetime.now().strftime('%Y%m%d%H%M%S'))
     # 设备名称
-    Name = Column(Unicode(32), nullable=True)
+    EquipmentName = Column(Unicode(32), nullable=True)
     # 设备编码
     EquipmentCode = Column(Unicode(128), nullable=True)
     # 申请人
@@ -205,15 +186,13 @@ class RepairTask(Base):
     """维修任务表"""
     __tablename__ = 'repairtask'
 
-    id = Column(Integer, autoincrement=True, primary_key=True)
+    ID = Column(Integer, autoincrement=True, primary_key=True)
     # 工单号
     No = Column(Unicode(128), nullable=True)
     # 设备名称
-    Name = Column(Unicode(32), nullable=True)
+    EquipmentName = Column(Unicode(32), nullable=True)
     # 设备编码
     EquipmentCode = Column(Unicode(128), nullable=True)
-    # 设备名称
-    # Name = Column(Unicode(32), nullable=True)
     # 申请人
     Worker = Column(Unicode(32), nullable=True)
     # 维修人
@@ -228,6 +207,22 @@ class RepairTask(Base):
     ReceiveTime = Column(Unicode(32), nullable=True)
     # 完成时间
     EndTime = Column(Unicode(32), nullable=True)
+
+
+class Disease(Base):
+    """病患表"""
+    __tablename__ = 'Disease'
+    ID = Column(Integer, autoincrement=True, primary_key=True)
+    # 楼层
+    Floor = Column(Unicode(128), nullable=True)
+    # 患病程度(轻-中-重)
+    Degree = Column(Unicode(32), nullable=True)
+    # 患病人数
+    Number = Column(Unicode(32), nullable=True)
+    # 跨区人数
+    Region = Column(Unicode(32), nullable=True)
+    # 移动人数
+    Move = Column(Unicode(32), nullable=True)
 
 
 Base.metadata.create_all(engine)
