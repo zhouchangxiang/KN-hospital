@@ -335,12 +335,7 @@
         },
         chartData: {
           columns: ['月份', '能耗'],
-          rows: [
-            {'月份':"1月",'能耗':121},
-            {'月份':"2月",'能耗':121},
-            {'月份':"3月",'能耗':121},
-            {'月份':"4月",'能耗':121},
-          ]
+          rows: []
         },
         ringChartSettings:{
           radius:300,
@@ -366,13 +361,7 @@
         },
         ringChartData:{
           columns: ['能源', '能耗'],
-          rows: [
-            { '能源': '电', '能耗': 1393 },
-            { '能源': '水', '能耗': 3530 },
-            { '能源': '冷', '能耗': 0 },
-            { '能源': '暖', '能耗': 0 },
-            { '能源': '汽', '能耗': 0 },
-          ]
+          rows: []
         },
         barChartSettings:{
           stack: {
@@ -445,17 +434,7 @@
         yesterday_energy:"", //昨天相同时间小时数的能耗
         yesterday_total_energy:"", //昨天的总能耗
         save_energy:"", //已节约能耗
-        indicator:[
-          {Desc:"单位建筑面积电耗",beforeValue:6.07,companyValue:0}, //年用电量*0.1229 / 20224.4
-          {Desc:"单位建筑面积水耗",beforeValue:1.68,companyValue:0}, //8、9楼年用水量 / 2140
-          {Desc:"单位建筑面积天然气耗",beforeValue:0,companyValue:0}, //
-          {Desc:"单位建筑面积能耗",beforeValue:6.07,companyValue:0}, //(年用电量*0.1229 + 8、9楼年用水量*0.000257) / 20224.4
-          {Desc:"单位面积空调能耗",beforeValue:6.38,companyValue:0}, //电表13-27年总用电量 * 0.1229 / 13000
-          {Desc:"单位床位能耗",beforeValue:0,companyValue:0}, //(年用电量*0.1229 + 8、9楼年用水量*0.000257) / 1330
-          {Desc:"人均综合能耗",beforeValue:24.7,companyValue:0}, //（8、9楼年用电量 *0.1229 + 8、9楼年用水量*0.000257）/ 210
-          {Desc:"人均电耗",beforeValue:584.8,companyValue:0}, //8、9楼年用电量*0.1229 / 210
-          {Desc:"人均水耗",beforeValue:17.1,companyValue:0}, //8、9楼年用水量 / 210
-        ],
+        indicator:[],
         nyzk_index: -1,//水电冷暖气到哪个了
         nyzk_index_son:0,
         type: ["电","水","冷","暖","汽"],
@@ -505,7 +484,6 @@
       this.initWebSocket()
       this.getWeather();
       this.getNotice();
-      //this.getCompanyEnergyEfficiency();
       this.getPatient();
     },
     computed:{
@@ -615,7 +593,34 @@
         this.yesterday_energy = this.websockVarData.yesterday_energy
         this.yesterday_total_energy = this.websockVarData.yesterday_total_energy
         this.save_energy = this.websockVarData.save_energy
-          console.log(this.websockVarData.today_energy)
+        this.indicator = JSON.parse(this.websockVarData.indicator)
+        var month_total_energy = 0
+        if(this.nyzk_index == 0){
+            month_total_energy = this.websockVarData.month_total_energy
+        }else if(this.nyzk_index == 1){
+            month_total_energy = this.websockVarData.water_month_total
+        }
+        this.chartData.rows = [
+          {'月份':"1月",'能耗':month_total_energy},
+          {'月份':"2月",'能耗':0},
+          {'月份':"3月",'能耗':0},
+          {'月份':"4月",'能耗':0},
+          {'月份':"5月",'能耗':0},
+          {'月份':"6月",'能耗':0},
+          {'月份':"7月",'能耗':0},
+          {'月份':"8月",'能耗':0},
+          {'月份':"9月",'能耗':0},
+          {'月份':"10月",'能耗':0},
+          {'月份':"11月",'能耗':0},
+          {'月份':"12月",'能耗':0},
+        ]
+        this.ringChartData.rows = [
+          { '能源': '电', '能耗': this.websockVarData.year_total_energy*0.1229},
+          { '能源': '水', '能耗': this.websockVarData.water_year_total },
+          { '能源': '冷', '能耗': 0 },
+          { '能源': '暖', '能耗': 0 },
+          { '能源': '汽', '能耗': 0 },
+        ]
       },
       websocketsend(Data){//数据发送
         this.websock.send(Data);

@@ -86,7 +86,7 @@ def count_floor_energy(tags, start_time, end_time, water_day_total, total_energy
             else:
                 floor_total_energy += 0.0
                 total += 0.0
-        ratio = '%.2f' % (floor_total_energy / total_energy)
+        ratio = str('%.2f' % (floor_total_energy / total_energy * 100)) + '%'
         if i == 7 or i == 8:
             floorData.append({'areaName': AreaName, 'electricity': floor_total_energy, 'water': water_day_total, 'ratio': ratio})
         else:
@@ -130,6 +130,7 @@ while True:
     result3 = db_session.execute(sql3).fetchall()
     result4 = db_session.execute(sql4).fetchall()
     result5 = db_session.execute(sql5).fetchall()
+    today_energy = result1[0]['value']
     if result1[0]['value'] is not None:
         print(result1[0]['value'])
         redis_coon.hset(REDIS_TABLENAME, 'today_energy', result1[0]['value'])
@@ -214,7 +215,7 @@ while True:
               ['COM2.KT7F.总有功电量', 'COM2.LIGHT7F.总有功电量'], ['COM2.KT8F.总有功电量', 'COM2.LIGHT8F.总有功电量'],
               ['COM2.KT9F.总有功电量', 'COM2.LIGHT9F.总有功电量'], ['COM2.KT10F.总有功电量', 'COM2.LIGHT10F.总有功电量'],
               ['COM2.KT11F.总有功电量', 'COM2.LIGHT11F.总有功电量'], ['COM2.KT12F.总有功电量', 'COM2.LIGHT12F.总有功电量']]
-    floor_data = count_floor_energy(L_tags, today_start_time, today_end_time, water_day_total, result1[0]['value'])
+    floor_data = count_floor_energy(L_tags, today_start_time, today_end_time, water_day_total, today_energy)
     data = json.dumps(floor_data, ensure_ascii=False)
     redis_coon.hset(REDIS_TABLENAME, 'floorData', data)
     print('结束计算能耗数据')
