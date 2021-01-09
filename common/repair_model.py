@@ -219,9 +219,9 @@ class Disease(Base):
     Degree = Column(Unicode(32), nullable=True)
     # 轻人数
     LightNumber = Column(Unicode(32), nullable=True)
-    # 轻人数
+    # 中人数
     CentreNumber = Column(Unicode(32), nullable=True)
-    # 轻人数
+    # 重人数
     HeightNumber = Column(Unicode(32), nullable=True)
     # 跨区人数
     Region = Column(Unicode(32), nullable=True)
