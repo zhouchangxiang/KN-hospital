@@ -196,15 +196,15 @@ while True:
     d7 = '%.2f' % (result_tags2 * 0.1229 / 120)
     # 人均水耗 8、9楼年用水量 / 210
     d8 = '%.2f' % (water_year_total / 210)
-    data = [{'Desc': "单位建筑面积电耗", 'beforeValue': '6.07', 'companyValue': d1},
-            {'Desc': "单位建筑面积水耗", 'beforeValue': '1.68', 'companyValue': d2},
+    data = [{'Desc': "单位建筑面积电耗", 'beforeValue': '0.59', 'companyValue': d1},
+            {'Desc': "单位建筑面积水耗", 'beforeValue': '1.04', 'companyValue': d2},
             {'Desc': "单位建筑面积天然气耗", 'beforeValue': '0.0', 'companyValue': '0.0'},
-            {'Desc': "单位建筑面积能耗", 'beforeValue': '6.07', 'companyValue': d3},
+            {'Desc': "单位建筑面积能耗", 'beforeValue': '0.59', 'companyValue': d3},
             {'Desc': "单位面积空调能耗", 'beforeValue': '6.38', 'companyValue': d4},
-            {'Desc': "单位床位能耗", 'beforeValue': '197.94', 'companyValue': d5},
-            {'Desc': "人均综合能耗", 'beforeValue': '24.7', 'companyValue': d6},
-            {'Desc': "人均电耗", 'beforeValue': '584.8', 'companyValue': d7},
-            {'Desc': "人均水耗", 'beforeValue': '17.1', 'companyValue': d8},
+            {'Desc': "单位床位能耗", 'beforeValue': '25.53', 'companyValue': d5},
+            {'Desc': "人均综合能耗", 'beforeValue': '4.99', 'companyValue': d6},
+            {'Desc': "人均电耗", 'beforeValue': '40.59', 'companyValue': d7},
+            {'Desc': "人均水耗", 'beforeValue': '10.59', 'companyValue': d8},
             ]
     json_data = json.dumps(data, ensure_ascii=False)
     redis_coon.hset(REDIS_TABLENAME, 'indicator', json_data)
