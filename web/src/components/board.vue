@@ -495,6 +495,7 @@
       this.getWeather();
       this.getNotice();
       this.getPatient();
+      this.getDisease();
     },
     computed:{
 
@@ -656,6 +657,22 @@
             tem:data.data[0].tem,
             air_level:data.data[0].air_level,
             city:data.city
+          }
+        },res =>{
+          console.log("请求错误")
+        })
+      },
+      //获取病患
+      getDisease(){
+        var that = this
+        var params = {
+          tableName: "Disease",
+        }
+        this.axios.get("/api/CUID",{
+          params: params
+        }).then(res =>{
+          if(res.data.code === "200"){
+            console.log(res.data.rows)
           }
         },res =>{
           console.log("请求错误")

@@ -95,12 +95,13 @@
         mainMenu:[
           {title: "楼层选择", url: "/floorData", icon:"el-icon-office-building"},
           {title: "总控模式", url: "/ControlMode", icon:"el-icon-set-up"},
-          {title: "房间控制", url: "/ControlRoom", icon:"fa fa-bed"},
+          {title: "房间控制", url: "/ControlRoom", icon:"el-icon-s-grid"},
           {title: "资产管理", icon:"fa fa-wrench",children:[
               {title:"资产列表", url: "/IntelligentMaintenance"},
               {title:"保养任务", url: "/eqMaintenance"},
             ]
           },
+          {title: "病患管理", url: "/Disease", icon:"fa fa-bed"},
           {title: "数据报表", url: "/DataReport", icon:"el-icon-document"},
           {title: "服务诊断", url: "/ServiceDiagnosis", icon:"fa fa-imdb"},
           {title: "系统管理", icon:"el-icon-setting",children:[
@@ -127,11 +128,11 @@
       }
       window.addEventListener('resize', this.getMenuHeight);
       this.getMenuHeight()
-      if(sessionStorage.getItem("LoginStatus")) {
-        this.$store.commit('setUser',sessionStorage.getItem('WorkNumber'))
-      }else{
-        this.$router.push("/login");
-      }
+      // if(sessionStorage.getItem("LoginStatus")) {
+      //   this.$store.commit('setUser',sessionStorage.getItem('WorkNumber'))
+      // }else{
+      //   this.$router.push("/login");
+      // }
     },
     destroyed() {
 
