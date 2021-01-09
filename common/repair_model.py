@@ -217,8 +217,12 @@ class Disease(Base):
     Floor = Column(Unicode(128), nullable=True)
     # 患病程度(轻-中-重)
     Degree = Column(Unicode(32), nullable=True)
-    # 患病人数
-    Number = Column(Unicode(32), nullable=True)
+    # 轻人数
+    LightNumber = Column(Unicode(32), nullable=True)
+    # 中人数
+    CentreNumber = Column(Unicode(32), nullable=True)
+    # 重人数
+    HeightNumber = Column(Unicode(32), nullable=True)
     # 跨区人数
     Region = Column(Unicode(32), nullable=True)
     # 移动人数
