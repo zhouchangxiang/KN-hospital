@@ -22,12 +22,12 @@
           tableName:"Disease",
           column:[
             {label:"ID",prop:"ID",type:"input",value:"",disabled:true,showField:false,searchProp:false},
-            {label:"楼层",prop:"Floor",type:"input"},
-            {label:"轻人数",prop:"LightNumber",type:"input"},
-            {label:"中人数",prop:"CentreNumber",type:"input"},
-            {label:"重人数 ",prop:"HeightNumber ",type:"input"},
-            {label:"跨区人数 ",prop:"Region ",type:"input"},
-            {label:"移动人数 ",prop:"Move ",type:"input"},
+            {label:"楼层",prop:"Floor",type:"input",value:""},
+            {label:"轻人数",prop:"LightNumber",type:"input",value:""},
+            {label:"中人数",prop:"CentreNumber",type:"input",value:""},
+            {label:"重人数",prop:"HeightNumber",type:"input",value:""},
+            {label:"跨区人数",prop:"Region",type:"input",value:""},
+            {label:"移动人数",prop:"Move",type:"input",value:""},
           ],
           data:[],
           limit:5,
@@ -61,9 +61,10 @@
         this.axios.get("/api/CUID",{
           params: params
         }).then(res =>{
-          var data = JSON.parse(res.data)
-          that.TableData.data = data.rows
-          that.TableData.total = data.total
+            if(res.data.code === "200"){
+              that.TableData.data = res.data.data.rows
+              that.TableData.total = res.data.data.total
+            }
         },res =>{
           console.log("请求错误")
         })

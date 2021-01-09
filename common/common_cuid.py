@@ -4,21 +4,18 @@ from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import sessionmaker
 from flask_login import current_user
 import re
-from common.repair_model import *
-
 from werkzeug.security import generate_password_hash
-
 import socket
 import datetime
 from common.system import SysLog, User, AuditTrace
 from common.MESLogger import MESLogger
-from common.BSFramwork import AlchemyEncoder
 from database.db_operate import DB_URL
+from common.system import User
 
-engine = create_engine(DB_URL,max_overflow=2,  # 超过连接池大小外最多创建的连接
+engine = create_engine(DB_URL,max_overflow=0,  # 超过连接池大小外最多创建的连接
             pool_size=5,  # 连接池大小
             pool_timeout=30,  # 池中没有线程最多等待的时间，否则报错
-            pool_recycle=1800,  # 多久之后对线程池中的线程进行一次连接的回收（重置）
+            pool_recycle=-1,  # 多久之后对线程池中的线程进行一次连接的回收（重置）
             echo=True
          )
 conn = engine.connect()
@@ -60,7 +57,7 @@ def insert(data):
     if isinstance(data, dict) and len(data) > 0:
         try:
             tableName = str(data.get("tableName"))
-            obj = Base.classes.get(tableName)
+            obj = Base.classes.get(tableName.lower())
             ss = obj()
             for key in data:
 
@@ -137,7 +134,7 @@ def update(data):
     if isinstance(data, dict) and len(data) > 0:
         try:
             tableName = str(data.get("tableName"))
-            obj = Base.classes.get(tableName)
+            obj = Base.classes.get(tableName.lower())
             ss = obj()
             ID = data.get('ID')
             oclass = db_session.query(obj).filter_by(ID=int(data.get('ID'))).first()

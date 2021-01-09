@@ -7,7 +7,7 @@ from datetime import datetime
 from flask_login import LoginManager
 from werkzeug.security import generate_password_hash, check_password_hash
 
-
+login_manager = LoginManager()
 # 创建对象的基类
 from database.db_operate import DB_URL
 engine = create_engine(DB_URL)

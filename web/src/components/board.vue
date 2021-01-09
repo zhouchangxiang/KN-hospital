@@ -439,11 +439,7 @@
         barColor:["#024576","#f1a726","#e24e26"],
         barChartData:{
           columns: ['楼层', '轻', '中', '重'],
-          rows: [
-            { '楼层': '7楼', '轻': 23, '中': 12, '重': 3 },
-            { '楼层': '8楼', '轻': 12, '中': 34, '重': 7 },
-            { '楼层': '9楼', '轻': 43, '中': 75, '重': 5 },
-          ]
+          rows: []
         },
         energyTotal:0,
         usingDay:moment(moment().format("YYYY-MM-DD")).diff("2019-03-30", 'day'),
@@ -465,10 +461,7 @@
           {noticeTitle:"通知",noticeContent:"这是留言板，请留言提示！"}
         ],
         operations: [], //运维大师数据
-        illness: [
-          {name:"跨区移动",data:"18"},
-          {name:"异常人员",data:"9"},
-        ],
+        illness: [],
         weather: {}, //天气
         energy:{
           year_total_energy:0,
@@ -494,7 +487,6 @@
       this.initWebSocket()
       this.getWeather();
       this.getNotice();
-      this.getPatient();
       this.getDisease();
     },
     computed:{
@@ -578,11 +570,6 @@
       },
       getNotice(){ //通知栏
         var that = this;
-      },
-      //获取病患管理
-      getPatient() {
-        var that = this;
-
       },
       initWebSocket(){ //初始化weosocket
         // this.websock = new WebSocket('ws://' + location.host + '/socket');
@@ -672,7 +659,23 @@
           params: params
         }).then(res =>{
           if(res.data.code === "200"){
-            console.log(res.data.rows)
+            that.barChartData.rows = []
+            var RegionNum = 0
+            var MoveNum = 0
+            res.data.data.rows.forEach(item =>{
+              that.barChartData.rows.push({
+                "楼层":item.Floor,
+                "轻":Number(item.LightNumber),
+                "中":Number(item.CentreNumber),
+                "重":Number(item.HeightNumber),
+              })
+              RegionNum += Number(item.Region)
+              MoveNum += Number(item.Move)
+            })
+            that.illness = [
+              {name:"跨区人数",data:RegionNum},
+              {name:"移动人数",data:MoveNum},
+            ]
           }
         },res =>{
           console.log("请求错误")
