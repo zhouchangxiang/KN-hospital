@@ -109,8 +109,8 @@
                 <td>{{ energy.beforeValue }}</td>
                 <td>{{ energy.companyValue }}</td>
                 <td>
-                  {{ energy.companyValue == 0 ? 0 : (Math.floor((energy.beforeValue - energy.companyValue) / energy.companyValue * 10000) / 100) }}%
-                  <span class="el-icon-top" style="color: #11f6e7;" v-if="energy.companyValue < energy.beforeValue"></span>
+                  {{ energy.companyValue == 0 ? 0 : (Math.floor((Number(energy.beforeValue) - Number(energy.companyValue)) / Number(energy.companyValue) * 10000) / 100) }}%
+                  <span class="el-icon-top" style="color: #11f6e7;" v-if="Number(energy.companyValue) < Number(energy.beforeValue)"></span>
                   <span class="el-icon-bottom" style="color: #d84a27;" v-else></span>
                 </td>
               </tr>
@@ -149,8 +149,8 @@
 								</div>
                 <div class="nyzknxfx" style="margin-top: 10px">
                   <header>能源趋势</header>
-                  <div class="">
-                    <ve-histogram :data="chartData" :extend="ChartExtend" height="550px"></ve-histogram>
+                  <div style="margin-top: 20px;">
+                    <ve-histogram :data="chartData" :extend="ChartExtend" height="520px"></ve-histogram>
                   </div>
                 </div>
 							</div>
@@ -169,7 +169,7 @@
 						<div class="bhgl right_item">
 							<p><img src="img/ring.png" alt="">
 								<span class="pingfang white font48"><span style="color: #11f6e7;margin-right: 20px;" class="el-icon-collection-tag"></span>病患管理</span></p>
-							<ve-bar :data="barChartData" :extend="barChartExtend" :settings="barChartSettings"></ve-bar>
+							<ve-bar :data="barChartData" :extend="barChartExtend" :colors="barColor" :settings="barChartSettings"></ve-bar>
 							<ul>
 								<li v-for="illnes in illness">
 									{{illnes.name}} <span>{{illnes.data}} </span>人
@@ -259,7 +259,7 @@
                 <ul v-bind:style="{ marginTop: kshnjndb_margin + 'px' }">
                   <li v-for="item in ksynsj">
                     <div class="kshnjndb_bar">
-                      <div class="kshnjndb_bar_active" v-bind:style="{ width:(item.ratio) + '%' }"></div>
+                      <div class="kshnjndb_bar_active" v-bind:style="{ width:Number(item.ratio) + '%' }"></div>
                     </div>
                     <div class="txt">{{ item.areaName }}</div>
                   </li>
@@ -293,7 +293,12 @@
             show:false
           },
           legend:{
-            show:false
+            show:true,
+            right:50,
+            textStyle:{
+              color:"#ffffff",
+              fontSize:32
+            }
           },
           xAxis:{
             show:true,
@@ -346,7 +351,7 @@
           }
         },
         chartData: {
-          columns: ['月份', '能耗'],
+          columns: ['月份', '已使用', '额定', '预估', '去年同比'],
           rows: []
         },
         ringChartSettings:{
@@ -385,7 +390,12 @@
             show:false
           },
           legend:{
-            show:false
+            show:true,
+            right:20,
+            textStyle:{
+              color:"#ffffff",
+              fontSize:32
+            }
           },
           xAxis:{
             show:false,
@@ -424,8 +434,9 @@
             lineStyle:{
               width:8
             }
-          }
+          },
         },
+        barColor:["#024576","#f1a726","#e24e26"],
         barChartData:{
           columns: ['楼层', '轻', '中', '重'],
           rows: [
@@ -435,7 +446,7 @@
           ]
         },
         energyTotal:0,
-        usingDay:moment(moment().format("YYYY-MM-DD")).diff("2020-11-28", 'day'),
+        usingDay:moment(moment().format("YYYY-MM-DD")).diff("2019-03-30", 'day'),
         today_energy:"", //今天已经运行小时数的能耗
         yesterday_energy:"", //昨天相同时间小时数的能耗
         yesterday_total_energy:"", //昨天的总能耗
@@ -497,19 +508,19 @@
       nyzk_index:function(val){
         if(val == 0){
           this.energy = {
-            year_total_energy:this.websockVarData.year_total_energy,
-            month_total_energy:this.websockVarData.month_total_energy,
-            year_avg_day:this.websockVarData.year_avg_day,
-            year_avg_month:this.websockVarData.year_avg_month,
-            today_energy:this.websockVarData.today_energy,
+            year_total_energy:Number(this.websockVarData.year_total_energy).toFixed(2),
+            month_total_energy:Number(this.websockVarData.month_total_energy).toFixed(2),
+            year_avg_day:Number(this.websockVarData.year_avg_day).toFixed(2),
+            year_avg_month:Number(this.websockVarData.year_avg_month).toFixed(2),
+            today_energy:Number(this.websockVarData.today_energy).toFixed(2),
           }
         }else if(val == 1){
           this.energy = {
-            year_total_energy:this.websockVarData.water_year_total,
-            month_total_energy:this.websockVarData.water_month_total,
-            year_avg_day:this.websockVarData.water_avg_day,
-            year_avg_month:this.websockVarData.water_avg_month,
-            today_energy:this.websockVarData.water_day_total,
+            year_total_energy:Number(this.websockVarData.water_year_total).toFixed(2),
+            month_total_energy:Number(this.websockVarData.water_month_total).toFixed(2),
+            year_avg_day:Number(this.websockVarData.water_avg_day).toFixed(2),
+            year_avg_month:Number(this.websockVarData.water_avg_month).toFixed(2),
+            today_energy:Number(this.websockVarData.water_day_total).toFixed(2),
           }
         }else{
           this.energy = {
@@ -600,18 +611,18 @@
             month_total_energy = this.websockVarData.water_month_total
         }
         this.chartData.rows = [
-          {'月份':"1月",'能耗':month_total_energy},
-          {'月份':"2月",'能耗':0},
-          {'月份':"3月",'能耗':0},
-          {'月份':"4月",'能耗':0},
-          {'月份':"5月",'能耗':0},
-          {'月份':"6月",'能耗':0},
-          {'月份':"7月",'能耗':0},
-          {'月份':"8月",'能耗':0},
-          {'月份':"9月",'能耗':0},
-          {'月份':"10月",'能耗':0},
-          {'月份':"11月",'能耗':0},
-          {'月份':"12月",'能耗':0},
+          {'月份':"1月",'已使用':month_total_energy,"额定":0,"预估":0,"去年同比":0},
+          {'月份':"2月",'已使用':0,"额定":0,"预估":0,"去年同比":0},
+          {'月份':"3月",'已使用':0,"额定":0,"预估":0,"去年同比":0},
+          {'月份':"4月",'已使用':0,"额定":0,"预估":0,"去年同比":0},
+          {'月份':"5月",'已使用':0,"额定":0,"预估":0,"去年同比":0},
+          {'月份':"6月",'已使用':0,"额定":0,"预估":0,"去年同比":0},
+          {'月份':"7月",'已使用':0,"额定":0,"预估":0,"去年同比":0},
+          {'月份':"8月",'已使用':0,"额定":0,"预估":0,"去年同比":0},
+          {'月份':"9月",'已使用':0,"额定":0,"预估":0,"去年同比":0},
+          {'月份':"10月",'已使用':0,"额定":0,"预估":0,"去年同比":0},
+          {'月份':"11月",'已使用':0,"额定":0,"预估":0,"去年同比":0},
+          {'月份':"12月",'已使用':0,"额定":0,"预估":0,"去年同比":0},
         ]
         this.ringChartData.rows = [
           { '能源': '电', '能耗': this.websockVarData.year_total_energy*0.1229},
