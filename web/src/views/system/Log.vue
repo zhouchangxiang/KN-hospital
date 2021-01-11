@@ -53,17 +53,15 @@
         var that = this
         var params = {
           tableName: this.TableData.tableName,
-          field:"OperationDate",
-          fieldvalue:moment(this.formParameters.searchDate).format("YYYY-MM-DD"),
+          OperationDate:moment(this.formParameters.searchDate).format("YYYY-MM-DD"),
           limit:this.TableData.limit,
           offset:this.TableData.offset - 1
         }
         this.axios.get("/api/CUID",{
           params: params
         }).then(res =>{
-          var data = JSON.parse(res.data)
-          that.TableData.data = data.rows
-          that.TableData.total = data.total
+          that.TableData.data = res.data.data.rows
+          that.TableData.total = res.data.data.total
         },res =>{
           console.log("请求错误")
         })

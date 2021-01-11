@@ -3,7 +3,7 @@
     <el-col :span="24">
       <el-row :gutter="25">
         <el-col :span="9">
-          <p class="color-white text-size-18 marginBottom">websocket 服务</p>
+          <p class="text-size-18 marginBottom">websocket 服务</p>
           <div class="platformContainer" style="height: 400px;">
             <div class="scrollable" style="padding-bottom: 36px;">
               <p v-for="(item,index) in newArr" class="marginBottom">
@@ -17,45 +17,45 @@
           </div>
         </el-col>
         <el-col :span="5">
-          <p class="color-white text-size-18 marginBottom">OPC 服务</p>
+          <p class="text-size-18 marginBottom">OPC 服务</p>
           <div class="platformContainer" style="height: 400px;">
             <p>
               <i class="dotState bg-grayblack" v-if="opcState != '执行正常'"></i>
               <i class="dotState bg-lightgreen" v-if="opcState === '执行正常'"></i>
-              <span class="color-white">运行状态</span>
+              <span class="">运行状态</span>
               <span class="floatRight color-grayblack" v-if="opcState != '执行正常'">{{ opcState }}</span>
               <span class="floatRight color-lightgreen" v-if="opcState === '执行正常'">{{ opcState }}</span>
             </p>
           </div>
         </el-col>
         <el-col :span="5">
-          <p class="color-white text-size-18 marginBottom">历史数据采集服务</p>
+          <p class="text-size-18 marginBottom">历史数据采集服务</p>
           <div class="platformContainer" style="height: 400px;">
             <p>
               <i class="dotState bg-grayblack" v-if="History_Stutus != '执行正常'"></i>
               <i class="dotState bg-lightgreen" v-if="History_Stutus === '执行正常'"></i>
-              <span class="color-white">运行状态</span>
+              <span class="">运行状态</span>
               <span class="floatRight color-grayblack" v-if="History_Stutus != '执行正常'">{{ History_Stutus }}</span>
               <span class="floatRight color-lightgreen" v-if="History_Stutus === '执行正常'">{{ History_Stutus }}</span>
             </p>
           </div>
         </el-col>
         <el-col :span="5">
-          <p class="color-white text-size-18 marginBottom">采集服务统计</p>
+          <p class="text-size-18 marginBottom">采集服务统计</p>
           <div class="platformContainer" style="height: 400px;">
             <p>
-              <span class="color-white">运行成功次数</span>
+              <span class="">运行成功次数</span>
               <span class="floatRight color-lightgreen">{{ Successcount }}</span>
             </p>
             <p>
-              <span class="color-white">运行总次数</span>
+              <span class="">运行总次数</span>
               <span class="floatRight color-lightgreen">{{ Totalcount }}</span>
             </p>
           </div>
         </el-col>
         <el-col :span="24">
           <transition name="el-zoom-in-top">
-            <p id="newArrInfo" v-show="showNewArr" class="color-white text-size-18">
+            <p id="newArrInfo" v-show="showNewArr" class="text-size-18">
               共检测tag值 {{ newArrNum }}个，其中未获取到数据的tag有{{ newArrErrorNum }}个，您可以
               <span class="color-darkblue" style="cursor: pointer;" @click="initWebSocket" v-if="!initLoadding">重新检测服务</span>
               <span class="color-darkblue" v-if="initLoadding">即将重新检测...</span>
