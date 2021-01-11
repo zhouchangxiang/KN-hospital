@@ -165,3 +165,4 @@ def exportx(start_time, end_time, energy_type):
     except Exception as e:
         print(str(e))
         return json.dumps({'code': '200', 'mes': '查询失败', 'error': str(e)}, ensure_ascii=False)
+

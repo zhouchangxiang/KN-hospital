@@ -27,16 +27,100 @@ class Equipment(Base):
     EquipmentCode = Column(Unicode(32), nullable=True)
     # 设备类型
     EquipmentType = Column(Unicode(512), nullable=True)
+    # 设备型号
+    EquipmentModel = Column(Unicode(512), nullable=True)
     # 设备名称
     EquipmentName = Column(Unicode(512), nullable=True)
     # 区域
     Area = Column(Unicode(32), nullable=True)
     # 添加日期
     AddTime = Column(Unicode(32), nullable=True)
-    # 设备状态（正常，维修中）
+    # 设备状态（正常）
     Status = Column(Unicode(32), default="正常", nullable=True)
+    # 供应商
+    Manufacturer = Column(Unicode(128), nullable=True)
+    # 供应商联系人
+    ManufacturerUser = Column(Unicode(128), nullable=True)
+    # 供应商电话
+    ManufacturerPhone = Column(Unicode(128), nullable=True)
+    # 保养公司
+    KeepCompany = Column(Unicode(128), nullable=True)
+    # 保养公司联系人
+    KeepUser = Column(Unicode(128), nullable=True)
+    # 保养公司电话
+    KeepPhone = Column(Unicode(128), nullable=True)
+    # 维修公司
+    RepairCompany = Column(Unicode(128), nullable=True)
+    # 维修公司联系人
+    RepairUser = Column(Unicode(128), nullable=True)
+    # 维修公司
+    RepairPhone = Column(Unicode(128), nullable=True)
     # 注释:
-    Comment = Column(Unicode(32), nullable=True, default='')
+    Comment = Column(Unicode(512), nullable=True, default='')
+
+
+class EquipmentLife(Base):
+    """设备全生命周期"""
+    __tablename__ = 'EquipmentLife'
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
+    # 设备编号
+    EquipmentNo = Column(Unicode(32), nullable=True)
+    # 操作时间
+    OperationTime = Column(Unicode(32), nullable=True, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    # 事项
+    Item = Column(Unicode(32), nullable=True)
+    # 内容
+    Content = Column(Unicode(128), nullable=True)
+    # 处理情况
+    Situation = Column(Unicode(128), nullable=True, default='已处理')
+    # 处理人
+    Name = Column(Unicode(32), nullable=True)
+    # 完成时间
+    CompleteTime = Column(Unicode(32), nullable=True, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+
+
+class Inspection(Base):
+    """巡检记录"""
+    __tablename__ = 'Inspection'
+
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
+    # 设备编号
+    EquipmentNo = Column(Unicode(32), nullable=True)
+    # 巡检时间
+    InspectionTime = Column(Unicode(32), nullable=True, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    # 计划状态（正常,预警，故障，保养）
+    Status = Column(Unicode(32), nullable=True)
+    # 注释:
+    Comment = Column(Unicode(512), nullable=True, default='')
+
+
+class BaoYang(Base):
+    """资产列表-设备保养"""
+    __tablename__ = 'BaoYang'
+
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
+    # 设备编号
+    EquipmentNo = Column(Unicode(32), nullable=True)
+    # 巡检时间
+    BaoYangTime = Column(Unicode(32), nullable=True, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    # 注释:
+    Comment = Column(Unicode(512), nullable=True, default='')
+
+
+class Tags(Base):
+    """设备采集点配置"""
+    __tablename__ = 'Tags'
+    # ID
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
+    # 设备编码:
+    EquipmentCode = Column(Unicode(32), nullable=True)
+    # 采集点参数
+    Tag = Column(Unicode(128), nullable=True)
+    # 描述
+    Comment = Column(Unicode(128), nullable=True)
 
 
 class Plan(Base):
@@ -65,28 +149,32 @@ class KeepPlan(Base):
     ID = Column(Integer, autoincrement=True, primary_key=True)
     # 工单号
     No = Column(Unicode(128), nullable=True, default=datetime.now().strftime('%Y%m%d%H%M%S'))
+    # 保养计划名称
+    KeepName = Column(Unicode(128), nullable=True)
     # 设备名称
     EquipmentName = Column(Unicode(32), nullable=True)
     # 设备编码
     EquipmentCode = Column(Unicode(128), nullable=True)
-    # 制定计划人
+    # 计划负责人
     Worker = Column(Unicode(32), nullable=True)
-    # 工单状态
-    Status = Column(Unicode(32), default="待保养")
-    # 制定计划时间
-    ApplyTime = Column(Unicode(32), nullable=True, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-    # 保养班组
-    # Group = Column(Unicode(32), nullable=True)
-    # 任务开始时间（递增）
-    StartTime = Column(Unicode(32), nullable=True)
-    # 计划描述
-    Describe = Column(Unicode(128), nullable=True)
-    # 工作周期
-    WeekTime = Column(Unicode(128), nullable=True)
-    # 工作类型
-    Type = Column(Unicode(32), nullable=True)
-    # 工作时间
-    WorkTime = Column(Unicode(128), nullable=True)
+    # # 工单状态
+    # Status = Column(Unicode(32), default="待保养")
+    # 保养时间
+    KeepTime = Column(Unicode(32), nullable=True, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    # 进度
+    Speed = Column(Unicode(32), nullable=True)
+
+
+class Responsible(Base):
+    """负责人维护"""
+    __tablename__ = 'Responsible'
+    ID = Column(Integer, autoincrement=True, primary_key=True)
+    # 姓名
+    Name = Column(Unicode(32), nullable=True)
+    # 电话
+    Phone = Column(Unicode(32), nullable=True)
+    # 邮箱
+    Mail = Column(Unicode(32), nullable=True)
 
 
 class KeepTask(Base):
