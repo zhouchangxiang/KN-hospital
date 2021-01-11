@@ -188,8 +188,9 @@
           column:[
             {label:"ID",prop:"ID",type:"input",value:"",disabled:true,showField:false,searchProp:false},
             {prop:"EquipmentCode",label:"设备编码",type:"input",value:""},
-            {prop:"Quantity",label:"数量",type:"input",value:""},
-            {prop:"Power",label:"功率",type:"input",value:""},
+            {prop:"EquipmentName",label:"设备名称 ",type:"input",value:""},
+            {prop:"EquipmentType",label:"设备类型",type:"input",value:""},
+            {prop:"Area",label:"区域",type:"input",value:""},
             {prop:"Comment",label:"描述",type:"input",value:"",dataJudge:[]},
             {prop:"Status",label:"设备状态",type:"input",value:"",dataJudge:[{value:"维修中",color:"#228AD5"},{value:"待接单",color:"#FA7D00"},{value:"正常",color:"#00FAE7"}]},
           ],

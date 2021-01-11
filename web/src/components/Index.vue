@@ -50,6 +50,9 @@
         <el-row>
           <el-col :span="24">
             <div :style="selfHeight" class="aside-menu">
+            <el-menu class="menu-ul" :collapse="menuIsCollapse">
+              <el-menu-item @click="$router.push('/home')"><i class="el-icon-office-building"></i><span slot="title">智慧能源</span></el-menu-item>
+            </el-menu>
             <el-menu class="menu-ul" :default-active="defaultActiveUrl" :collapse="menuIsCollapse" :router="true" @select="menuSelect">
               <template v-for="item in mainMenu" :index="item.url">
                 <el-menu-item v-if="!item.children" :index="item.url"><i :class="item.icon"></i><span slot="title">{{ item.title }}</span></el-menu-item>
@@ -93,7 +96,7 @@
         userInfo:{},
         isFullScreen:false, //是否全屏
         mainMenu:[
-          {title: "楼层选择", url: "/floorData", icon:"el-icon-office-building"},
+          {title: "楼层选择", url: "/floorData", icon:"fa fa-bars"},
           {title: "总控模式", url: "/ControlMode", icon:"el-icon-set-up"},
           {title: "房间控制", url: "/ControlRoom", icon:"el-icon-s-grid"},
           {title: "资产管理", icon:"fa fa-wrench",children:[
@@ -109,9 +112,9 @@
               {title:"人员管理", url: "/Personnel"},
               {title:"角色管理", url: "/Role"},
               {title:"权限维护", url: "/Permission"},
+              {title: "系统日志", url: "/log"},
             ]
           },
-          {title: "系统日志", url: "/log", icon:"fa fa-imdb"},
         ],
         routeLocation:"",
         websock:null,
@@ -143,9 +146,9 @@
     methods:{
       getMenuHeight(){
         if(this.menuIsCollapse){
-          this.selfHeight.height = window.innerHeight - 490+'px';
+          this.selfHeight.height = window.innerHeight - 170 + 'px';
         }else{
-          this.selfHeight.height = window.innerHeight - 360+'px';
+          this.selfHeight.height = window.innerHeight - 170 + 'px';
         }
       },
       menuSelect(url,title){  //点击菜单跳转时  添加query参数避免相同路由跳转时报错

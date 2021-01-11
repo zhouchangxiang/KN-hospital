@@ -59,14 +59,22 @@ body {
   color: #1E222B;
 }
 /* 侧边导航栏 */
+.aside-menu{
+  overflow-y: auto;
+}
+.aside-menu::-webkit-scrollbar {
+  display: none;
+}
 .menu-ul{
-  margin-top: 20px;
   border-right: none;
   background: #002e69;
 }
 .menu-ul .el-menu{
   background-color: #002e69;
   border-right: none;
+}
+.menu-ul .el-menu-item{
+  background-color: #002e69;
 }
 .menu-ul .el-menu-item:hover{
   background: #022047;
@@ -307,6 +315,9 @@ body {
 }
 .marginBottomS{
   margin-bottom: 10px;
+}
+.marginRight{
+  margin-right: 20px;
 }
 /* 文本位置 */
 .vertical-align-middle{

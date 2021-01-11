@@ -10,7 +10,7 @@
 					HSTL能源管控平台
 				</div>
 				<div class="header_right header_div pingfang white font48">
-					天气:<span>{{weather.wea}}</span>温度:<span>{{weather.tem}}</span>空气质量:<span>{{weather.air_level}}</span>
+					天气:<span>{{weather.wea}}</span>温度:<span>{{weather.tem}}℃</span>风向:<span>{{weather.air_level}}</span>
 				</div>
 			</div>
 
@@ -636,14 +636,17 @@
       //获取天气
       getWeather(){
         var that = this
-        this.axios.get("https://www.tianqiapi.com/api/?version=v1&appid=38126558&appsecret=9X3cD127").then(res =>{
-          var data = res.data
+        this.axios.get("http://wthrcdn.etouch.cn/weather_mini",{
+          params:{
+            city:"深圳"
+          }
+        }).then(res =>{
           that.weather = {
-            date:data.data[0].date,
-            wea:data.data[0].wea,
-            tem:data.data[0].tem,
-            air_level:data.data[0].air_level,
-            city:data.city
+            date:moment().format("YYYY-MM-DD"),
+            wea:res.data.data.forecast[0].type,
+            tem:res.data.data.wendu,
+            air_level:res.data.data.forecast[0].fengxiang,
+            city:"深圳"
           }
         },res =>{
           console.log("请求错误")
