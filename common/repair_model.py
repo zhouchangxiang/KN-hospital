@@ -98,6 +98,27 @@ class Inspection(Base):
     Comment = Column(Unicode(512), nullable=True, default='')
 
 
+class YunWei(Base):
+    """运维大师"""
+    __tablename__ = 'YunWei'
+    # ID:
+    ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
+    # 设备编号
+    EquipmentNo = Column(Unicode(32), nullable=True)
+    # 人员编号
+    UserNo = Column(Unicode(32), nullable=True)
+    # 时间
+    YunWeiTime = Column(Unicode(32), nullable=True, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    # 维护位置
+    Position = Column(Unicode(32), nullable=True)
+    # 问题数量
+    WNumber = Column(Unicode(32), nullable=True)
+    # 平台指令
+    Instructions = Column(Unicode(32), nullable=True)
+    # 结果
+    Result = Column(Unicode(32), nullable=True)
+
+
 class BaoYang(Base):
     """资产列表-设备保养"""
     __tablename__ = 'BaoYang'
