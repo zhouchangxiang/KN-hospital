@@ -31,6 +31,8 @@ class Equipment(Base):
     EquipmentModel = Column(Unicode(512), nullable=True)
     # 设备名称
     EquipmentName = Column(Unicode(512), nullable=True)
+    # 楼层
+    Floor = Column(Unicode(32), nullable=True)
     # 区域
     Area = Column(Unicode(32), nullable=True)
     # 添加日期

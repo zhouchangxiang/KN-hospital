@@ -7,6 +7,7 @@ from flask import make_response, Blueprint, request
 from sqlalchemy.exc import InvalidRequestError
 
 from common.asd import db_session
+from common.repair_model import Equipment
 from tools.handle import MyEncoder
 from common.asd import db_session, TagDetail, IncrementElectricTable, IncrementWaterTable, ElectricEnergy, WaterEnergy
 
@@ -14,6 +15,26 @@ from common.asd import db_session, TagDetail, IncrementElectricTable, IncrementW
 foo = Blueprint('foo', __name__)
 
 electric = Blueprint('electric', __name__)
+
+
+@electric.route('/IndexEquipment', methods=['GET'])
+def get_index_equipment():
+    try:
+        query_type_data = db_session.query(Equipment.EquipmentType).filter_by().all()
+        query_floor_data = db_session.query(Equipment.Floor).filter_by().all()
+        equipment_type = list(set(i[0] for i in query_type_data))
+        equipment_floor = list(set(i[0] for i in query_floor_data))
+        data = []
+        for item_floor in equipment_floor:
+            result = {"楼层": item_floor}
+            for item_type in equipment_type:
+                query_result = db_session.query(Equipment).filter_by(Floor=item_floor, EquipmentType=item_type).all()
+                result[item_type] = len(query_result)
+            data.append(result)
+        return json.dumps({'code': '200', 'mes': '查询成功', 'data': data}, ensure_ascii=False)
+    except Exception as e:
+        print(str(e))
+        return json.dumps({'code': '200', 'mes': '查询失败', 'error': str(e)}, ensure_ascii=False)
 
 
 @electric.route('/energy_contrast', methods=['GET'])
