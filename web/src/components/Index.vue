@@ -104,6 +104,7 @@
               {title:"保养任务", url: "/eqMaintenance"},
             ]
           },
+          {title: "按需配能", url: "/EqDetails", icon:"el-icon-files"},
           {title: "病患管理", url: "/Disease", icon:"fa fa-bed"},
           {title: "数据报表", url: "/DataReport", icon:"el-icon-document"},
           {title: "服务诊断", url: "/ServiceDiagnosis", icon:"fa fa-imdb"},

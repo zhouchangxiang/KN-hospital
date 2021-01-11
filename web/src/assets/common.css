@@ -319,6 +319,10 @@ body {
 .marginRight{
   margin-right: 20px;
 }
+.col20{
+  width: 20%;
+  padding: 0 15px;
+}
 /* 文本位置 */
 .vertical-align-middle{
   vertical-align: middle;

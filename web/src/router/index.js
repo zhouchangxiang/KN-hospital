@@ -12,6 +12,7 @@ import DataReport from '@/views/energy/DataReport'
 import ControlMode from '@/views/energy/ControlMode'
 import ControlRoom from '@/views/energy/ControlRoom'
 import Disease from '@/views/energy/Disease'
+import EqDetails from '@/views/energy/EqDetails'
 
 import Organization from '@/views/system/Organization'
 import Personnel from '@/views/system/Personnel'
@@ -38,6 +39,7 @@ export default new Router({
         {path:'/ControlMode',name:'ControlMode',meta:{ title:'总控模式'},component:ControlMode},
         {path:'/ControlRoom',name:'ControlRoom',meta:{ title:'房间控制'},component:ControlRoom},
         {path:'/Disease',name:'Disease',meta:{ title:'病患管理'},component:Disease},
+        {path:'/EqDetails',name:'EqDetails',meta:{ title:'按需配能'},component:EqDetails},
 
         {path:'/Organization',name:'Organization',meta:{ title:'用户架构'},component:Organization},
         {path:'/Personnel',name:'Personnel',meta:{ title:'人员管理'},component:Personnel},
