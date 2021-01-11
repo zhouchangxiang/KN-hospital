@@ -132,11 +132,11 @@
       }
       window.addEventListener('resize', this.getMenuHeight);
       this.getMenuHeight()
-      // if(sessionStorage.getItem("LoginStatus")) {
-      //   this.$store.commit('setUser',sessionStorage.getItem('WorkNumber'))
-      // }else{
-      //   this.$router.push("/login");
-      // }
+      if(sessionStorage.getItem("LoginStatus")) {
+        this.$store.commit('setUser',sessionStorage.getItem('WorkNumber'))
+      }else{
+        this.$router.push("/login");
+      }
     },
     destroyed() {
 

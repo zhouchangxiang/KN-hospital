@@ -168,11 +168,11 @@
 						</header>
 						<div class="bhgl right_item">
 							<p><img src="img/ring.png" alt="">
-								<span class="pingfang white font48"><span style="color: #11f6e7;margin-right: 20px;" class="el-icon-collection-tag"></span>病患管理</span></p>
-							<ve-bar :data="barChartData" :extend="barChartExtend" :colors="barColor" :settings="barChartSettings"></ve-bar>
+								<span class="pingfang white font48"><span style="color: #11f6e7;margin-right: 20px;" class="el-icon-collection-tag"></span>资产统计</span></p>
+							<ve-bar :data="barChartData" :extend="barChartExtend" :colors="barColor" :settings="barChartSettings" height="500px"></ve-bar>
 							<ul>
 								<li v-for="illnes in illness">
-									{{illnes.name}} <span>{{illnes.data}} </span>人
+									{{illnes.name}} <span>{{illnes.data}} </span>
 								</li>
 							</ul>
 						</div>
@@ -382,7 +382,7 @@
         },
         barChartSettings:{
           stack: {
-            'xxx': ['轻', '中' , '重']
+            'xxx': ['水表', '电表' , '制冷设备', '照明设备']
           }
         },
         barChartExtend: {
@@ -394,7 +394,7 @@
             right:20,
             textStyle:{
               color:"#ffffff",
-              fontSize:32
+              fontSize:36
             }
           },
           xAxis:{
@@ -404,7 +404,7 @@
             axisLabel: {
               margin:30,
               color: '#ffffff',  //更改坐标轴文字颜色
-              fontSize : 36      //更改坐标轴文字大小
+              fontSize : 24     //更改坐标轴文字大小
             },
             axisTick:{
               show:true,
@@ -436,9 +436,9 @@
             }
           },
         },
-        barColor:["#024576","#f1a726","#e24e26"],
+        barColor:["#024576","#f1a726","#1E9FFF","#e24e26"],
         barChartData:{
-          columns: ['楼层', '轻', '中', '重'],
+          columns: ['楼层', '水表', '电表', '制冷设备', '照明设备'],
           rows: []
         },
         energyTotal:0,
@@ -487,7 +487,7 @@
       this.initWebSocket()
       this.getWeather();
       this.getNotice();
-      this.getDisease();
+      this.getIndexEquipment();
     },
     computed:{
 
@@ -652,32 +652,27 @@
           console.log("请求错误")
         })
       },
-      //获取病患
-      getDisease(){
+      getIndexEquipment(){
         var that = this
-        var params = {
-          tableName: "Disease",
-        }
-        this.axios.get("/api/CUID",{
-          params: params
-        }).then(res =>{
+        this.axios.get("/api/IndexEquipment",).then(res =>{
           if(res.data.code === "200"){
             that.barChartData.rows = []
-            var RegionNum = 0
-            var MoveNum = 0
-            res.data.data.rows.forEach(item =>{
-              that.barChartData.rows.push({
-                "楼层":item.Floor,
-                "轻":Number(item.LightNumber),
-                "中":Number(item.CentreNumber),
-                "重":Number(item.HeightNumber),
-              })
-              RegionNum += Number(item.Region)
-              MoveNum += Number(item.Move)
+            var Num1 = 0
+            var Num2 = 0
+            var Num3 = 0
+            var Num4 = 0
+            that.barChartData.rows = res.data.data
+            res.data.data.forEach(item =>{
+              Num1 += item['水表']
+              Num2 += item['电表']
+              Num3 += item['制冷设备']
+              Num4 += item['照明设备']
             })
-            that.illness = [
-              {name:"跨区人数",data:RegionNum},
-              {name:"移动人数",data:MoveNum},
+            that.illness =  [
+              {name:"水表",data:Num1},
+              {name:"电表",data:Num2},
+              {name:"制冷设备",data:Num3},
+              {name:"照明设备",data:Num4},
             ]
           }
         },res =>{

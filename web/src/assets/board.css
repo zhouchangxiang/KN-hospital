@@ -407,7 +407,7 @@ body {
 
 .ksynsj_right ul li,
 .bhgl ul li {
-	width: 33.3%;
+	width: 25%;
 	float: left;
 	margin-top: 30px;
 	font-size: 36px;
@@ -418,7 +418,7 @@ body {
 .bhgl ul li span {
 	font-family: roboto;
 	color: #11f6e7;
-	margin: 0 30px;
+	margin: 0 15px;
 	text-decoration: underline;
 }
 
