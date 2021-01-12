@@ -67,6 +67,47 @@
         </el-row>
       </div>
     </el-col>
+    <el-col :span="24">
+      <el-row :gutter="15">
+        <el-col :span="24">
+          <el-form :inline="true">
+            <el-form-item>
+              <el-radio-group v-model="energyType" size="small">
+                <el-radio-button label="水"></el-radio-button>
+                <el-radio-button label="电"></el-radio-button>
+                <el-radio-button label="冷"></el-radio-button>
+                <el-radio-button label="暖"></el-radio-button>
+                <el-radio-button label="汽"></el-radio-button>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="起止时间">
+              <el-date-picker v-model="startTime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择开始时间" size="small"></el-date-picker>
+              ~
+              <el-date-picker v-model="endTime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择结束时间" size="small"></el-date-picker>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="search" size="small">查询</el-button>
+            </el-form-item>
+          </el-form>
+        </el-col>
+        <el-col :span="12">
+          <el-card shadow="never" class="marginBottom">
+            <div slot="header">康宁医院平面展示图</div>
+            <div style="overflow: hidden;clear: both;height: 400px;">
+              <img src="../assets/img/v2-sketch_03.png" style="width: 100%;max-height: 385px;" alt="">
+            </div>
+          </el-card>
+        </el-col>
+        <el-col :span="12">
+          <el-card shadow="never" class="marginBottom">
+            <div slot="header">能源流向示意图</div>
+            <div style="overflow: hidden;clear: both;padding: 30px;">
+              <ve-pie :data="pieChartData" height="340px"></ve-pie>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
+    </el-col>
   </el-row>
 </template>
 
@@ -80,6 +121,13 @@
         yesterday_energy:"", //昨天相同时间小时数的能耗
         yesterday_total_energy:"", //昨天的总能耗
         save_energy:"", //已节约能耗
+        energyType:"",
+        startTime:"",
+        endTime:"",
+        pieChartData:{
+          columns: ['设备类型', '能耗'],
+          rows: []
+        }
       }
     },
     created(){
@@ -130,6 +178,23 @@
       closesocket(){
         this.websock.close()
       },
+      search(){
+        var that = this
+        var params = {
+          energy_type:this.energyType,
+          StartTime: this.startTime,
+          EndTime: this.endTime,
+        }
+        this.axios.get("/api/Pie",{
+          params: params
+        }).then(res =>{
+          if(res.data.code === "200"){
+            console.log(res.data)
+          }
+        },res =>{
+          console.log("请求错误")
+        })
+      }
     }
   }
 </script >
