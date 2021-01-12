@@ -193,7 +193,12 @@
                   <th width="100">结果</th>
                 </tr>
                 <tr v-for="(item,index) in operations">
-                  <td>{{  }}</td>
+                  <td>{{ item.UserNo }}</td>
+                  <td>{{ item.YunWeiTime }}</td>
+                  <td>{{ item.Position }}</td>
+                  <td>{{ item.WNumber }}</td>
+                  <td>{{ item.Instructions }}</td>
+                  <td>{{ item.Result }}</td>
                 </tr>
               </table>
               <table border="2" v-else>
@@ -496,6 +501,7 @@
       this.getNotice();
       this.getIndexEquipment();
       this.setbhgl_margin()
+      this.getYunWeiData()
     },
     computed:{
 
@@ -693,6 +699,31 @@
               {name:"制冷设备",data:Num3},
               {name:"照明设备",data:Num4},
             ]
+          }
+        },res =>{
+          console.log("请求错误")
+        })
+      },
+      getYunWeiData(){
+        var that = this
+        var params = {
+          tableName: "YunWei",
+        }
+        this.axios.get("/api/CUID",{
+          params: params
+        }).then(res =>{
+          if(res.data.code === "200"){
+            that.operations = []
+            res.data.data.rows.forEach(item =>{
+              that.operations.push({
+                UserNo:item.UserNo,
+                YunWeiTime:moment(item.YunWeiTime).format("YYYY-MM-DD"),
+                Position:item.Position,
+                WNumber:item.WNumber,
+                Instructions:item.Instructions,
+                Result:item.Result,
+              })
+            })
           }
         },res =>{
           console.log("请求错误")
