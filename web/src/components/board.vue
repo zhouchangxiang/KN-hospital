@@ -294,6 +294,7 @@
     data(){
       return {
         websockVarData:{},
+        websock:null,
         chartSettings:{},
         ChartExtend: {
           tooltip:{

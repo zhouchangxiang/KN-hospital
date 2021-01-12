@@ -117,13 +117,15 @@
     name: "Home",
     data(){
       return {
+        websockVarData:{},
+        websock:null,
         today_energy:"", //今天已经运行小时数的能耗
         yesterday_energy:"", //昨天相同时间小时数的能耗
         yesterday_total_energy:"", //昨天的总能耗
         save_energy:"", //已节约能耗
-        energyType:"",
-        startTime:"",
-        endTime:"",
+        energyType:"水",
+        startTime:moment().subtract(1, 'days').format("YYYY-MM-DD HH:mm:ss"),
+        endTime:moment().format("YYYY-MM-DD HH:mm:ss"),
         pieChartData:{
           columns: ['设备类型', '能耗'],
           rows: []
@@ -132,6 +134,7 @@
     },
     created(){
       this.initWebSocket()
+      this.search()
     },
     mounted(){
 
@@ -189,7 +192,7 @@
           params: params
         }).then(res =>{
           if(res.data.code === "200"){
-            console.log(res.data)
+            that.pieChartData.rows = res.data.data
           }
         },res =>{
           console.log("请求错误")

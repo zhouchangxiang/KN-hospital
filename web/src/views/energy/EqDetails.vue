@@ -82,8 +82,8 @@
          @size-change="handleSizeChange"
          @current-change="handleCurrentChange">
         </el-pagination>
-        <el-dialog title="设备详情" :visible.sync="EqDetailsDialogVisible" :close-on-click-modal="false" :append-to-body="true" width="40%">
-          <el-col :span="8" v-if="(item,index) in currentTagsValue" :key="index">
+        <el-dialog title="设备详情" :visible.sync="EqDetailsDialogVisible" :close-on-click-modal="false" :append-to-body="true" width="60%">
+          <el-col :span="8" v-for="(item,index) in currentTagsValue" :key="index">
             <p class="marginBottom"><span>{{ item.label }}：</span><span>{{ item.value }}</span></p>
           </el-col>
           <span slot="footer" class="dialog-footer">
@@ -100,6 +100,8 @@
     name: "EqDetails",
     data(){
       return {
+        websockVarData:{},
+        websock:null,
         TableData:{
           tableName:"Equipment",
           data:[],
@@ -171,15 +173,7 @@
         this.getEQTable()
       },
       handleDetails(index,row){
-        this.RowData = row
         this.EqDetailsDialogVisible = true
-        this.getEqTags()
-      },
-      closeEqDetails(){
-        this.EqDetailsDialogVisible = false
-        this.closesocket()
-      },
-      getEqTags(){
         var that = this
         var params = {
           tableName: "Tags"
@@ -189,8 +183,9 @@
         }).then(res =>{
           if(res.data.code === "200"){
             that.currentTags = []
-            res.data.data.rows.forEach(item =>{
-              if(item.EquipmentCode === that.RowData.EquipmentCode){
+            var data = res.data.data.rows
+            data.forEach(item =>{
+              if(item.EquipmentCode === row.EquipmentCode){
                 that.currentTags.push({
                   Tag:item.Tag,
                   Comment:item.Comment,
@@ -202,6 +197,10 @@
         },res =>{
           console.log("请求错误")
         })
+      },
+      closeEqDetails(){
+        this.EqDetailsDialogVisible = false
+        this.closesocket()
       },
       initWebSocket(){ //初始化weosocket
         // this.websock = new WebSocket('ws://' + location.host + '/socket');
@@ -222,7 +221,7 @@
         this.currentTagsValue = []
         this.currentTags.forEach(item =>{
           this.currentTagsValue.push({
-            label:this.websockVarData[item.Comment],
+            label:item.Comment,
             value:this.websockVarData[item.Tag]
           })
         })
