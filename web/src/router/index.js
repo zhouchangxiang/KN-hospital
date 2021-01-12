@@ -11,7 +11,7 @@ import ServiceDiagnosis from '@/views/energy/ServiceDiagnosis'
 import DataReport from '@/views/energy/DataReport'
 import ControlMode from '@/views/energy/ControlMode'
 import ControlRoom from '@/views/energy/ControlRoom'
-import Disease from '@/views/energy/Disease'
+import YunWei from '@/views/energy/YunWei'
 import EqDetails from '@/views/energy/EqDetails'
 
 import Organization from '@/views/system/Organization'
@@ -38,7 +38,7 @@ export default new Router({
         {path:'/DataReport',name:'DataReport',meta:{ title:'数据报表'},component:DataReport},
         {path:'/ControlMode',name:'ControlMode',meta:{ title:'总控模式'},component:ControlMode},
         {path:'/ControlRoom',name:'ControlRoom',meta:{ title:'房间控制'},component:ControlRoom},
-        {path:'/Disease',name:'Disease',meta:{ title:'病患管理'},component:Disease},
+        {path:'/YunWei',name:'YunWei',meta:{ title:'运维管理'},component:YunWei},
         {path:'/EqDetails',name:'EqDetails',meta:{ title:'按需配能'},component:EqDetails},
 
         {path:'/Organization',name:'Organization',meta:{ title:'用户架构'},component:Organization},

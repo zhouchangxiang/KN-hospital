@@ -14,20 +14,21 @@
 <script>
   import tableView from '@/components/CommonTable'
   export default {
-    name: "Disease",
+    name: "YunWei",
     components:{tableView},
     data(){
       return{
         TableData:{
-          tableName:"Disease",
+          tableName:"YunWei",
           column:[
             {label:"ID",prop:"ID",type:"input",value:"",disabled:true,showField:false,searchProp:false},
-            {label:"楼层",prop:"Floor",type:"input",value:""},
-            {label:"轻人数",prop:"LightNumber",type:"input",value:""},
-            {label:"中人数",prop:"CentreNumber",type:"input",value:""},
-            {label:"重人数",prop:"HeightNumber",type:"input",value:""},
-            {label:"跨区人数",prop:"Region",type:"input",value:""},
-            {label:"移动人数",prop:"Move",type:"input",value:""},
+            {label:"设备编号",prop:"EquipmentNo",type:"input",value:""},
+            {label:"人员编号",prop:"UserNo",type:"input",value:""},
+            {label:"时间",prop:"YunWeiTime",type:"datetime",value:""},
+            {label:"维护位置",prop:"Position",type:"input",value:""},
+            {label:"问题数量",prop:"WNumber",type:"input",value:""},
+            {label:"平台指令",prop:"Instructions",type:"input",value:""},
+            {label:"结果",prop:"Result",type:"input",value:""},
           ],
           data:[],
           limit:5,

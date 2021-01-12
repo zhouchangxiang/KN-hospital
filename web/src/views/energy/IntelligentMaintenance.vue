@@ -12,7 +12,15 @@
             </el-form>
             <el-table :data="TableData.data" border ref="multipleTable">
               <el-table-column type="selection"></el-table-column>
+              <el-table-column prop="EquipmentNo" label="设备编号"></el-table-column>
               <el-table-column prop="EquipmentCode" label="设备编码"></el-table-column>
+              <el-table-column prop="EquipmentType" label="设备类型"></el-table-column>
+              <el-table-column prop="EquipmentModel" label="设备型号"></el-table-column>
+              <el-table-column prop="EquipmentName" label="设备名称"></el-table-column>
+              <el-table-column prop="Floor" label="楼层"></el-table-column>
+              <el-table-column prop="Area" label="区域"></el-table-column>
+              <el-table-column prop="AddTime" label="添加日期"></el-table-column>
+              <el-table-column prop="Status" label="设备状态"></el-table-column>
             </el-table>
             <div class="paginationClass">
               <el-pagination background  layout="total, sizes, prev, pager, next, jumper"
@@ -78,13 +86,13 @@
           console.log("请求错误")
         })
       },
-      handleRepairsLogSizeChange(limit){
-        this.repairsLogTableData.limit = limit
-        this.getKeepTaskTable()
+      handleSizeChange(limit){
+        this.TableData.limit = limit
+        this.getEQTable()
       },
-      handleRepairsLogCurrentChange(offset){
-        this.repairsLogTableData.offset = offset
-        this.getKeepTaskTable()
+      handleCurrentChange(offset){
+        this.TableData.offset = offset
+        this.getEQTable()
       },
     }
   }

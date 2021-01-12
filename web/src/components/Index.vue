@@ -105,7 +105,7 @@
             ]
           },
           {title: "按需配能", url: "/EqDetails", icon:"el-icon-files"},
-          {title: "病患管理", url: "/Disease", icon:"fa fa-bed"},
+          {title: "运维管理", url: "/YunWei", icon:"el-icon-set-up"},
           {title: "数据报表", url: "/DataReport", icon:"el-icon-document"},
           {title: "服务诊断", url: "/ServiceDiagnosis", icon:"fa fa-imdb"},
           {title: "系统管理", icon:"el-icon-setting",children:[
