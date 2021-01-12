@@ -2,7 +2,7 @@
   <el-row>
     <el-col :span="24">
       <div class="page-title">
-        <span style="margin-left: 10px;" class="text-size-normol">病患管理</span>
+        <span style="margin-left: 10px;" class="text-size-normol">运维管理</span>
       </div>
       <div class="platformContainer">
         <tableView class="blackComponents" :tableData="TableData" @getTableData="getTableData"></tableView>
