@@ -70,29 +70,34 @@ def count_energy(tags, start_time, end_time):
 
 
 def count_floor_energy(tags, start_time, end_time, water_day_total, total_energy):
-    total = 0.0
-    i = 0
-    floorData = []
-    for tag in tags:
-        i += 1
-        floor_total_energy = 0.0
-        AreaName = f'厚德楼{i}楼'
-        for item in tag:
-            sql = f'select sum(IncremenValue) as value from IncrementElectricTable where Address="{item}" and CollectionDate between {start_time} and {end_time} '
-            data = db_session.execute(sql).fetchall()
-            if data[0]['value'] is not None:
-                floor_total_energy += float(data[0]['value'])
-                total += floor_total_energy
+    try:
+        total = 0.0
+        i = 0
+        floorData = []
+        print('total_energy_2: ', total_energy)
+        for tag in tags:
+            i += 1
+            floor_total_energy = 0.0
+            AreaName = f'厚德楼{i}楼'
+            for item in tag:
+                print('采集点: ', item)
+                sql = f'select sum(IncremenValue) as value from IncrementElectricTable where Address="{item}" and CollectionDate between {start_time} and {end_time} '
+                data = db_session.execute(sql).fetchall()
+                if data[0]['value'] is not None:
+                    floor_total_energy += float(data[0]['value'])
+                    total += floor_total_energy
+                else:
+                    floor_total_energy += 0.0
+                    total += 0.0
+            ratio = '%.2f' % (floor_total_energy / total_energy * 100)
+            if i == 7 or i == 8:
+                floorData.append({'areaName': AreaName, 'electricity': floor_total_energy, 'water': water_day_total, 'ratio': ratio})
             else:
-                floor_total_energy += 0.0
-                total += 0.0
-        ratio = '%.2f' % (floor_total_energy / total_energy * 100)
-        if i == 7 or i == 8:
-            floorData.append({'areaName': AreaName, 'electricity': floor_total_energy, 'water': water_day_total, 'ratio': ratio})
-        else:
-            floorData.append({'areaName': AreaName, 'electricity': floor_total_energy, 'water': 0.0, 'ratio': ratio})
-    return floorData
-
+                floorData.append({'areaName': AreaName, 'electricity': floor_total_energy, 'water': 0.0, 'ratio': ratio})
+        return floorData
+    except Exception as e:
+        print('错误信息：', str(e))
+        return []
 
 while True:
     # 电
@@ -215,6 +220,7 @@ while True:
               ['COM2.KT7F.总有功电量', 'COM2.LIGHT7F.总有功电量'], ['COM2.KT8F.总有功电量', 'COM2.LIGHT8F.总有功电量'],
               ['COM2.KT9F.总有功电量', 'COM2.LIGHT9F.总有功电量'], ['COM2.KT10F.总有功电量', 'COM2.LIGHT10F.总有功电量'],
               ['COM2.KT11F.总有功电量', 'COM2.LIGHT11F.总有功电量'], ['COM2.KT12F.总有功电量', 'COM2.LIGHT12F.总有功电量']]
+    print('today_energy: ', today_energy)
     floor_data = count_floor_energy(L_tags, today_start_time, today_end_time, water_day_total, today_energy)
     data = json.dumps(floor_data, ensure_ascii=False)
     redis_coon.hset(REDIS_TABLENAME, 'floorData', data)

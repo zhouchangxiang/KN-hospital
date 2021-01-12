@@ -31,7 +31,7 @@
                 <el-button type="danger" size="small" @click="del">删除</el-button>
               </el-form-item>
             </el-form>
-            <el-table :data="TableData.data" border ref="multipleTable">
+            <el-table :data="TableData.data" border ref="multipleTable" @selection-change="handleSelectionChange">
               <el-table-column type="selection"></el-table-column>
               <el-table-column prop="EquipmentNo" label="设备编号"></el-table-column>
               <el-table-column prop="EquipmentCode" label="设备编码"></el-table-column>
@@ -297,6 +297,9 @@
       handleCurrentChange(offset){
         this.TableData.offset = offset
         this.getEQTable()
+      },
+      handleSelectionChange(row){
+        this.TableData.multipleSelection = row
       },
       add(){
         this.TableData.dialogVisible = true

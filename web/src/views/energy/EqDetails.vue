@@ -82,6 +82,16 @@
          @size-change="handleSizeChange"
          @current-change="handleCurrentChange">
         </el-pagination>
+        <el-dialog title="设备详情" :visible.sync="EqDetailsDialogVisible" :close-on-click-modal="false" :append-to-body="true" width="40%">
+          <el-form label-width="110px">
+            <el-form-item label="设备编号">
+
+            </el-form-item>
+          </el-form>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="EqDetailsDialogVisible = false">取 消</el-button>
+          </span>
+        </el-dialog>
       </div>
     </div>
   </el-row>
@@ -124,6 +134,7 @@
           EquipmentName:"",
         },
         RowData:{},
+        EqDetailsDialogVisible:false,
       }
     },
     mounted(){
@@ -161,8 +172,8 @@
       },
       handleDetails(index,row){
         this.RowData = row
-        this.showEqDetails = true
-        this.Tags()
+        this.EqDetailsDialogVisible = true
+        this.getEqTags()
       },
       getEqTags(){
         var that = this
