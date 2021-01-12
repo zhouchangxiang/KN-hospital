@@ -51,7 +51,7 @@
           <el-select v-if="item.type === 'select' && item.multiple" multiple v-model="item.value" placeholder="请选择" @change="changeHandleChildSelect(item.value,item.prop)">
             <el-option v-for="(i,d) in item.DownData" :key="d" :label="i[item.showDownField]" :value="i[item.showDownField]"></el-option>
           </el-select>
-          <el-date-picker v-if="item.type === 'datetime'" :disabled="item.disabled" v-model="item.value" type="datetime" placeholder="选择日期时间"></el-date-picker>
+          <el-date-picker v-if="item.type === 'datetime'" :disabled="item.disabled" v-model="item.value" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间"></el-date-picker>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
