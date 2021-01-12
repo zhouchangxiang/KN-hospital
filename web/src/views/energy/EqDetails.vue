@@ -42,7 +42,18 @@
 
 <script>
   export default {
-    name: "EqDetails"
+    name: "EqDetails",
+    data(){
+      return {
+
+      }
+    },
+    mounted(){
+
+    },
+    methods:{
+
+    }
   }
 </script>
 
