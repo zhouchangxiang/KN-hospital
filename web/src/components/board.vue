@@ -169,7 +169,9 @@
 						<div class="bhgl right_item">
 							<p><img src="img/ring.png" alt="">
 								<span class="pingfang white font48"><span style="color: #11f6e7;margin-right: 20px;" class="el-icon-collection-tag"></span>资产统计</span></p>
-							<ve-bar :data="barChartData" :extend="barChartExtend" :colors="barColor" :settings="barChartSettings" height="500px"></ve-bar>
+              <div style="height: 400px;overflow: hidden;position: relative;">
+                <ve-bar style="position: absolute;width:100%;left:0;z-index:1;" v-bind:style="{ top: bhgl_margin + 'px' }" :data="barChartData" :extend="barChartExtend" :colors="barColor" :settings="barChartSettings" height="700px"></ve-bar>
+              </div>
 							<ul>
 								<li v-for="illnes in illness">
 									{{illnes.name}} <span>{{illnes.data}} </span>
@@ -404,7 +406,7 @@
             axisLabel: {
               margin:30,
               color: '#ffffff',  //更改坐标轴文字颜色
-              fontSize : 24     //更改坐标轴文字大小
+              fontSize : 36     //更改坐标轴文字大小
             },
             axisTick:{
               show:true,
@@ -453,6 +455,7 @@
         type: ["电","水","冷","暖","汽"],
         types: ["kW·h","t","kW·h","kW·h","m³"],
         middle_title:"年耗能占比分析",
+        bhgl_margin:0,
         ksynsj_margin:0,
         ksyns_index:0,
         ksynsj:[],
@@ -481,13 +484,18 @@
       }
     },
     mounted() {
+      var that = this
       this.nyzkInterVal()
       this.setksynsj_margin()
       this.setkshnjndb_margin()
       this.initWebSocket()
-      this.getWeather();
+      that.getWeather();
+      setInterval(function(){
+        that.getWeather();
+      },1000 * 60 * 60)
       this.getNotice();
       this.getIndexEquipment();
+      this.setbhgl_margin()
     },
     computed:{
 
@@ -565,6 +573,17 @@
             that.kshnjndb_margin = 0
           }else{
             that.kshnjndb_margin -= 60
+          }
+        },3000)
+      },
+      //资产管理图表滚动
+      setbhgl_margin(){
+        var that = this
+        setInterval(function(){
+          if(that.bhgl_margin + (5 * 60) == 0){
+            that.bhgl_margin = 0
+          }else{
+            that.bhgl_margin -= 60
           }
         },3000)
       },
