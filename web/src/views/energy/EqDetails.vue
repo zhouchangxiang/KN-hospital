@@ -83,13 +83,11 @@
          @current-change="handleCurrentChange">
         </el-pagination>
         <el-dialog title="设备详情" :visible.sync="EqDetailsDialogVisible" :close-on-click-modal="false" :append-to-body="true" width="40%">
-          <el-form label-width="110px">
-            <el-form-item label="设备编号">
-
-            </el-form-item>
-          </el-form>
+          <el-col :span="8" v-if="(item,index) in currentTagsValue" :key="index">
+            <p class="marginBottom"><span>{{ item.label }}：</span><span>{{ item.value }}</span></p>
+          </el-col>
           <span slot="footer" class="dialog-footer">
-            <el-button @click="EqDetailsDialogVisible = false">取 消</el-button>
+            <el-button @click="closeEqDetails">取 消</el-button>
           </span>
         </el-dialog>
       </div>
@@ -135,6 +133,8 @@
         },
         RowData:{},
         EqDetailsDialogVisible:false,
+        currentTags:[], //当前选择设备的所有tag点
+        currentTagsValue:[], //当前选择设备的所有tag点的数据
       }
     },
     mounted(){
@@ -175,6 +175,10 @@
         this.EqDetailsDialogVisible = true
         this.getEqTags()
       },
+      closeEqDetails(){
+        this.EqDetailsDialogVisible = false
+        this.closesocket()
+      },
       getEqTags(){
         var that = this
         var params = {
@@ -184,12 +188,54 @@
           params: params
         }).then(res =>{
           if(res.data.code === "200"){
-            console.log(res.data.data.rows)
+            that.currentTags = []
+            res.data.data.rows.forEach(item =>{
+              if(item.EquipmentCode === that.RowData.EquipmentCode){
+                that.currentTags.push({
+                  Tag:item.Tag,
+                  Comment:item.Comment,
+                })
+              }
+            })
+            that.initWebSocket()
           }
         },res =>{
           console.log("请求错误")
         })
-      }
+      },
+      initWebSocket(){ //初始化weosocket
+        // this.websock = new WebSocket('ws://' + location.host + '/socket');
+        this.websock = new WebSocket('ws://127.0.0.1:5002/socket');
+        this.websock.onmessage = this.websocketonmessage;
+        this.websock.onopen = this.websocketonopen;
+        this.websock.onerror = this.websocketonerror;
+        this.websock.onclose = this.websocketclose;
+      },
+      websocketonopen(){ //连接建立之后执行send方法发送数据
+        this.websocketsend();
+      },
+      websocketonerror(){//连接建立失败重连
+        console.log("websocket连接失败")
+      },
+      websocketonmessage(e){ //数据接收
+        this.websockVarData = JSON.parse(e.data)
+        this.currentTagsValue = []
+        this.currentTags.forEach(item =>{
+          this.currentTagsValue.push({
+            label:this.websockVarData[item.Comment],
+            value:this.websockVarData[item.Tag]
+          })
+        })
+      },
+      websocketsend(Data){//数据发送
+        this.websock.send(Data);
+      },
+      websocketclose(e){  //关闭
+        console.log("websocket关闭")
+      },
+      closesocket(){
+        this.websock.close()
+      },
     }
   }
 </script>
