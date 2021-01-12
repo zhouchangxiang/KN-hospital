@@ -1,7 +1,7 @@
 <template>
   <el-row>
     <el-col :span="24">
-      <div class="page-title">保养计划</div>
+      <div class="page-title">公告管理</div>
       <div class="platformContainer">
         <tableView :tableData="TableData" @getTableData="getTableData"></tableView>
       </div>
@@ -13,19 +13,18 @@
   var moment = require('moment');
   import tableView from '@/components/CommonTable'
   export default {
-    name: "eqMaintenance",
+    name: "Notice",
     components:{tableView},
     data(){
       return {
         TableData:{
-          tableName:"KeepPlan",
+          tableName:"Notice",
           column:[
             {label:"ID",prop:"ID",type:"input",value:"",disabled:true,showField:false,searchProp:false},
-            {prop:"No",label:"工单号",type:"input",value:""},
-            {prop:"KeepName",label:"保养计划名称",type:"input",value:""},
-            {prop:"EquipmentName",label:"设备名称",type:"input",value:""},
-            {prop:"EquipmentCode",label:"设备编码",type:"input",value:""},
-            {prop:"KeepTime",label:"保养时间",type:"input",value:""},
+            {prop:"Title",label:"公告标题",type:"input",value:""},
+            {prop:"Content",label:"工作内容",type:"input",value:""},
+            {prop:"NoticeType",label:"类型",type:"input",value:""},
+            {prop:"Status",label:"状态",type:"input",value:""},
           ],
           data:[],
           limit:5,
@@ -39,6 +38,7 @@
           dialogTitle:'',
           handleType:[
             {type:"primary",label:"添加"},
+            {type:"warning",label:"修改"},
             {type:"danger",label:"删除"},
           ],
         },

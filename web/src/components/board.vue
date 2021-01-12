@@ -276,8 +276,8 @@
             <div class="message">
               <marquee behavior="" direction="up" scrollamount="2">
                 <div class="item" v-for="item in notice">
-                  <p class="pingfang white font48 center">{{ item.noticeTitle }}</p>
-                  <p class="pingfang white font32" v-html="item.noticeContent"></p>
+                  <p class="pingfang white font48 center">{{ item.Title }}</p>
+                  <p class="pingfang white font32" v-html="item.Content"></p>
                 </div>
               </marquee>
             </div>
@@ -465,9 +465,7 @@
         ksyns_index:0,
         ksynsj:[],
         kshnjndb_margin:0,
-        notice:[
-          {noticeTitle:"通知",noticeContent:"这是留言板，请留言提示！"}
-        ],
+        notice:[],
         operations: [], //运维大师数据
         illness: [],
         weather: {}, //天气
@@ -594,7 +592,19 @@
         },3000)
       },
       getNotice(){ //通知栏
-        var that = this;
+        var that = this
+        var params = {
+          tableName: "Notice",
+        }
+        this.axios.get("/api/CUID",{
+          params: params
+        }).then(res =>{
+          if(res.data.code === "200"){
+            that.notice = res.data.data.rows
+          }
+        },res =>{
+          console.log("请求错误")
+        })
       },
       initWebSocket(){ //初始化weosocket
         // this.websock = new WebSocket('ws://' + location.host + '/socket');
@@ -728,7 +738,7 @@
         },res =>{
           console.log("请求错误")
         })
-      }
+      },
     }
   }
 </script>

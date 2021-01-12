@@ -42,7 +42,7 @@
               <el-table-column prop="Area" label="区域"></el-table-column>
               <el-table-column prop="AddTime" label="添加日期"></el-table-column>
               <el-table-column prop="Status" label="设备状态"></el-table-column>
-              <el-table-column label="操作" fixed="right" width="200">
+              <el-table-column label="操作" fixed="right" width="230">
                 <template slot-scope="scope">
                   <el-button size="mini" type="primary" @click="handleXJ(scope.$index, scope.row)">巡检</el-button>
                   <el-button size="mini" type="info" @click="handleDetails(scope.$index, scope.row)">详情</el-button>
@@ -134,26 +134,28 @@
           </div>
         </el-col>
         <el-col :span="24" v-if="showEqDetails">
-          <el-card shadow="never">
+          <el-card shadow="never" class="marginBottom">
             <div slot="header">设备参数</div>
-            <el-col :span="6">
-              <label>设备名称</label>
-              <span>{{ RowData.EquipmentName }}</span>
-            </el-col>
-            <el-col :span="6">
-              <label>设备编号</label>
-              <span>{{ RowData.EquipmentNo }}</span>
-            </el-col>
-            <el-col :span="6">
-              <label>设备类型</label>
-              <span>{{ RowData.EquipmentType }}</span>
-            </el-col>
-            <el-col :span="6">
-              <label>设备型号</label>
-              <span>{{ RowData.EquipmentModel }}</span>
-            </el-col>
+            <div style="overflow: hidden;clear: both;">
+              <el-col :span="6">
+                <label>设备名称</label>
+                <span>{{ RowData.EquipmentName }}</span>
+              </el-col>
+              <el-col :span="6">
+                <label>设备编号</label>
+                <span>{{ RowData.EquipmentNo }}</span>
+              </el-col>
+              <el-col :span="6">
+                <label>设备类型</label>
+                <span>{{ RowData.EquipmentType }}</span>
+              </el-col>
+              <el-col :span="6">
+                <label>设备型号</label>
+                <span>{{ RowData.EquipmentModel }}</span>
+              </el-col>
+            </div>
           </el-card>
-          <el-card shadow="never">
+          <el-card shadow="never" class="marginBottom">
             <div slot="header">全生命周期</div>
             <el-table :data="XJTableData.data" border>
               <el-table-column type="selection"></el-table-column>

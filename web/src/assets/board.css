@@ -544,6 +544,10 @@ body {
   overflow: hidden;
   margin-top: 32px;
 }
+.right_2 .message marquee {
+    width: 100%;
+    height: 100%;
+}
 .right_2 .hnzs .level {
 	width: 850px;
 	float: left;

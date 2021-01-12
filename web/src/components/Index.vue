@@ -101,11 +101,14 @@
           {title: "房间控制", url: "/ControlRoom", icon:"el-icon-s-grid"},
           {title: "资产管理", icon:"fa fa-wrench",children:[
               {title:"资产列表", url: "/IntelligentMaintenance"},
-              {title:"保养任务", url: "/eqMaintenance"},
+              {title:"保养计划", url: "/eqMaintenance"},
             ]
           },
           {title: "按需配能", url: "/EqDetails", icon:"el-icon-files"},
-          {title: "运维管理", url: "/YunWei", icon:"el-icon-set-up"},
+          {title: "维护中心", icon:"el-icon-set-up",children:[
+              {title:"运维大师", url: "/YunWei"},
+              {title:"公告管理", url: "/Notice"},
+            ]},
           {title: "数据报表", url: "/DataReport", icon:"el-icon-document"},
           {title: "服务诊断", url: "/ServiceDiagnosis", icon:"fa fa-imdb"},
           {title: "系统管理", icon:"el-icon-setting",children:[
@@ -132,11 +135,11 @@
       }
       window.addEventListener('resize', this.getMenuHeight);
       this.getMenuHeight()
-      // if(sessionStorage.getItem("LoginStatus")) {
-      //   this.$store.commit('setUser',sessionStorage.getItem('WorkNumber'))
-      // }else{
-      //   this.$router.push("/login");
-      // }
+      if(sessionStorage.getItem("LoginStatus")) {
+        this.$store.commit('setUser',sessionStorage.getItem('WorkNumber'))
+      }else{
+        this.$router.push("/login");
+      }
     },
     destroyed() {
 

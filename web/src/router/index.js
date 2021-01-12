@@ -13,6 +13,7 @@ import ControlMode from '@/views/energy/ControlMode'
 import ControlRoom from '@/views/energy/ControlRoom'
 import YunWei from '@/views/energy/YunWei'
 import EqDetails from '@/views/energy/EqDetails'
+import Notice from '@/views/energy/Notice'
 
 import Organization from '@/views/system/Organization'
 import Personnel from '@/views/system/Personnel'
@@ -38,8 +39,9 @@ export default new Router({
         {path:'/DataReport',name:'DataReport',meta:{ title:'数据报表'},component:DataReport},
         {path:'/ControlMode',name:'ControlMode',meta:{ title:'总控模式'},component:ControlMode},
         {path:'/ControlRoom',name:'ControlRoom',meta:{ title:'房间控制'},component:ControlRoom},
-        {path:'/YunWei',name:'YunWei',meta:{ title:'运维管理'},component:YunWei},
+        {path:'/YunWei',name:'YunWei',meta:{ title:'运维大师'},component:YunWei},
         {path:'/EqDetails',name:'EqDetails',meta:{ title:'按需配能'},component:EqDetails},
+        {path:'/Notice',name:'Notice',meta:{ title:'公告管理'},component:Notice},
 
         {path:'/Organization',name:'Organization',meta:{ title:'用户架构'},component:Organization},
         {path:'/Personnel',name:'Personnel',meta:{ title:'人员管理'},component:Personnel},
