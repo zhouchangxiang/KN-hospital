@@ -17,11 +17,38 @@ foo = Blueprint('foo', __name__)
 electric = Blueprint('electric', __name__)
 
 
+@electric.route('/Pie', methods=['GET'])
+def get_pie():
+    try:
+        start_time = "'" + request.values.get('StartTime') + "'"
+        end_time = "'" + request.values.get('EndTime') + "'"
+        if request.values.get('energy_type') == '水':
+            sql = f'select sum(IncremenValue) as value from IncrementWaterTable where CollectionDate between {start_time} and {end_time} '
+            result = db_session.execute(sql).fetchall()
+            value_data = 0 if result[0]['value'] is None else result[0]['value']
+            data = [{'设备类型': '设备能耗', '能耗': value_data}]
+            return json.dumps({'code': '200', 'mes': '查询成功', 'data': data}, ensure_ascii=False)
+        if request.values.get('energy_type') == '电':
+            sql1 = f'select sum(IncremenValue) as value from IncrementElectricTable where CollectionDate between {start_time} and {end_time} and AreaName like "%照明%"'
+            sql2 = f'select sum(IncremenValue) as value from IncrementElectricTable where CollectionDate between {start_time} and {end_time} and AreaName like "%空調%"'
+            result1 = db_session.execute(sql1).fetchall()
+            result2 = db_session.execute(sql2).fetchall()
+            light_data = 0 if result1[0]['value'] is None else result1[0]['value']
+            kt_data = 0 if result2[0]['value'] is None else result2[0]['value']
+            data = [{'设备类型': '照明设备', '能耗': light_data}, {'设备类型': '制冷设备', '能耗': kt_data}]
+            return json.dumps({'code': '200', 'mes': '查询成功', 'data': data}, ensure_ascii=False)
+        else:
+            return json.dumps({'code': '200', 'mes': '查询成功', 'data': []}, ensure_ascii=False)
+    except Exception as e:
+        print(str(e))
+        return json.dumps({'code': '200', 'mes': '查询失败', 'error': str(e)}, ensure_ascii=False)
+
+
 @electric.route('/IndexEquipment', methods=['GET'])
 def get_index_equipment():
     try:
         query_type_data = db_session.query(Equipment.EquipmentType).filter_by().all()
-        query_floor_data = db_session.query(Equipment.Floor).filter_by().all()
+        query_floor_data = db_session.query(Equipment.Floor).filter_by().order_by(Equipment.Floor.asc()).all()
         equipment_type = list(set(i[0] for i in query_type_data))
         equipment_floor = list(set(i[0] for i in query_floor_data))
         data = []
