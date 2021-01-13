@@ -135,7 +135,7 @@ while True:
     result3 = db_session.execute(sql3).fetchall()
     result4 = db_session.execute(sql4).fetchall()
     result5 = db_session.execute(sql5).fetchall()
-    today_energy = result1[0]['value']
+    today_energy = 1 if result1[0]['value'] is None else result1[0]['value']
     if result1[0]['value'] is not None:
         print(result1[0]['value'])
         redis_coon.hset(REDIS_TABLENAME, 'today_energy', result1[0]['value'])

@@ -163,6 +163,10 @@ class Tags(Base):
     Tag = Column(Unicode(128), nullable=True)
     # 描述
     Comment = Column(Unicode(128), nullable=True)
+    # 设备类型
+    EquipmentType = Column(Unicode(128), nullable=True)
+    # 设备楼层
+    Floor = Column(Unicode(128), nullable=True)
 
 
 class Plan(Base):
