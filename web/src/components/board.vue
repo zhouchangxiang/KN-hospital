@@ -167,9 +167,19 @@
 							资产管理
 						</header>
 						<div class="bhgl right_item">
-							<p><img src="img/ring.png" alt="">
-								<span class="pingfang white font48"><span style="color: #11f6e7;margin-right: 20px;" class="el-icon-collection-tag"></span>资产统计</span></p>
-              <div style="height: 400px;overflow: hidden;position: relative;">
+							<div>
+                <div style="float: left;">
+                  <img src="img/ring.png" alt="">
+                  <span class="pingfang white font48"><span style="color: #11f6e7;margin-right: 20px;" class="el-icon-collection-tag"></span>资产统计</span>
+                </div>
+                <div style="float: right;color: #fff;font-size: 42px;margin: 10px 0;">
+                  <i style="display: inline-block;width: 60px;height: 30px;background: #024576;border-radius: 8px;margin-right: 10px;"></i>水表
+                  <i style="display: inline-block;width: 60px;height: 30px;background: #f1a726;border-radius: 8px;margin-right: 10px;"></i>电表
+                  <i style="display: inline-block;width: 60px;height: 30px;background: #1E9FFF;border-radius: 8px;margin-right: 10px;"></i>制冷设备
+                  <i style="display: inline-block;width: 60px;height: 30px;background: #e24e26;border-radius: 8px;margin-right: 10px;"></i>照明设备
+                </div>
+              </div>
+              <div style="height: 400px;width: 100%;overflow: hidden;position: relative;margin-bottom: 10px;">
                 <ve-bar style="position: absolute;width:100%;left:0;z-index:1;" v-bind:style="{ top: bhgl_margin + 'px' }" :data="barChartData" :extend="barChartExtend" :colors="barColor" :settings="barChartSettings" height="1000px"></ve-bar>
               </div>
 							<ul>
