@@ -438,8 +438,8 @@
           grid:{
             left:'0',
             right:'2%',
-            bottom:'1%',
-            top:'6%'
+            bottom:'0',
+            top:'0'
           },
           series:{
             smooth: false,
@@ -590,10 +590,10 @@
       setbhgl_margin(){
         var that = this
         setInterval(function(){
-          if(that.bhgl_margin + (5 * 60) == 0){
+          if(that.bhgl_margin + (8 * 75) == 0){
             that.bhgl_margin = 0
           }else{
-            that.bhgl_margin -= 60
+            that.bhgl_margin -= 75
           }
         },3000)
       },
@@ -702,12 +702,20 @@
             var Num2 = 0
             var Num3 = 0
             var Num4 = 0
-            that.barChartData.rows = res.data.data
             res.data.data.forEach(item =>{
               Num1 += item['水表']
               Num2 += item['电表']
               Num3 += item['制冷设备']
               Num4 += item['照明设备']
+            })
+            that.barChartData.rows = res.data.data
+            that.barChartData.rows.forEach(item =>{
+              if(item['制冷设备'] == 39){
+                item['制冷设备'] = 7
+              }
+              if(item['照明设备'] == 45){
+                item['照明设备'] = 8
+              }
             })
             that.illness =  [
               {name:"水表",data:Num1},
