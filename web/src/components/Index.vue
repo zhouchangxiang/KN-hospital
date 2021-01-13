@@ -96,9 +96,7 @@
         userInfo:{},
         isFullScreen:false, //是否全屏
         mainMenu:[
-          {title: "楼层选择", url: "/floorData", icon:"fa fa-bars"},
-          {title: "总控模式", url: "/ControlMode", icon:"el-icon-set-up"},
-          {title: "房间控制", url: "/ControlRoom", icon:"el-icon-s-grid"},
+          {title: "总控模式", url: "/ControlMode", icon:"el-icon-s-operation"},
           {title: "资产管理", icon:"fa fa-wrench",children:[
               {title:"资产列表", url: "/IntelligentMaintenance"},
               {title:"保养计划", url: "/eqMaintenance"},
