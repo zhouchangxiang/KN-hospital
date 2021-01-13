@@ -170,7 +170,7 @@
 							<p><img src="img/ring.png" alt="">
 								<span class="pingfang white font48"><span style="color: #11f6e7;margin-right: 20px;" class="el-icon-collection-tag"></span>资产统计</span></p>
               <div style="height: 400px;overflow: hidden;position: relative;">
-                <ve-bar style="position: absolute;width:100%;left:0;z-index:1;" v-bind:style="{ top: bhgl_margin + 'px' }" :data="barChartData" :extend="barChartExtend" :colors="barColor" :settings="barChartSettings" height="700px"></ve-bar>
+                <ve-bar style="position: absolute;width:100%;left:0;z-index:1;" v-bind:style="{ top: bhgl_margin + 'px' }" :data="barChartData" :extend="barChartExtend" :colors="barColor" :settings="barChartSettings" height="1000px"></ve-bar>
               </div>
 							<ul>
 								<li v-for="illnes in illness">
@@ -185,11 +185,11 @@
               </p>
 						  <table border="2" v-if="operations.length">
                 <tr>
-                  <th width="200">人员编号</th>
-                  <th width="100">时间</th>
-                  <th width="200">维护位置</th>
-                  <th width="200">问题数量</th>
-                  <th width="200">平台指令</th>
+                  <th width="150">人员编号</th>
+                  <th width="250">时间</th>
+                  <th width="300">维护位置</th>
+                  <th width="80">问题数量</th>
+                  <th width="100">平台指令</th>
                   <th width="100">结果</th>
                 </tr>
                 <tr v-for="(item,index) in operations">
@@ -398,12 +398,7 @@
             show:false
           },
           legend:{
-            show:true,
-            right:20,
-            textStyle:{
-              color:"#ffffff",
-              fontSize:36
-            }
+            show:false,
           },
           xAxis:{
             show:false,
@@ -412,7 +407,7 @@
             axisLabel: {
               margin:30,
               color: '#ffffff',  //更改坐标轴文字颜色
-              fontSize : 36     //更改坐标轴文字大小
+              fontSize : 42     //更改坐标轴文字大小
             },
             axisTick:{
               show:true,
