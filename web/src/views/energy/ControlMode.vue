@@ -9,7 +9,7 @@
               <div style="overflow: hidden;clear: both;min-height:300px;">
                 <el-form :inline="true">
                   <el-form-item>
-                    <el-radio-group v-model="energyType" size="small">
+                    <el-radio-group v-model="energyType" size="small" @change="getTagsData">
                       <el-radio-button label="电表"></el-radio-button>
                       <el-radio-button label="水表"></el-radio-button>
                       <el-radio-button label="照明设备"></el-radio-button>
@@ -17,8 +17,6 @@
                     </el-radio-group>
                   </el-form-item>
                 </el-form>
-              </div>
-              <div style="overflow: hidden;clear: both;min-height:300px;">
                 <el-col :span="8" v-for="(item,index) in currentTagsValue" :key="index">
                   <p class="marginBottom"><span>{{ item.label }}：</span><span>{{ item.value }}</span></p>
                 </el-col>
@@ -53,7 +51,7 @@
                   <el-switch v-model="halfLightClose" active-text="半开" active-color="#20C7B3"></el-switch>
                 </el-col>
               </div>
-              <div style="overflow: hidden;clear: both;min-height:220px;" v-if="EqType === '制冷设备'">
+              <div style="overflow: hidden;clear: both;min-height:100px;" v-if="EqType === '制冷设备'">
                 <p class="marginBottom">空调控制</p>
                 <el-col :span="12" class="marginBottom">
                   空调1
@@ -88,26 +86,29 @@
         halfLightClose:false,
         KT1Open:false,
         KT2Open:false,
-        floorAct:"1F",
+        floorAct:"厚德楼1楼",
         floorOption:[
-          {label:"1F"},
-          {label:"2F"},
-          {label:"3F"},
-          {label:"4F"},
-          {label:"5F"},
-          {label:"6F"},
-          {label:"7F"},
-          {label:"8F"},
-          {label:"9F"},
-          {label:"10F"},
-          {label:"11F"},
-          {label:"12F"},
+          {label:"厚德楼1楼"},
+          {label:"厚德楼2楼"},
+          {label:"厚德楼3楼"},
+          {label:"厚德楼4楼"},
+          {label:"厚德楼5楼"},
+          {label:"厚德楼6楼"},
+          {label:"厚德楼7楼"},
+          {label:"厚德楼8楼"},
+          {label:"厚德楼9楼"},
+          {label:"厚德楼10楼"},
+          {label:"厚德楼11楼"},
+          {label:"厚德楼12楼"},
         ],
         currentTags:[],
         websockVarData:{},
         websock:null,
         currentTagsValue:[],
       }
+    },
+    mounted(){
+      this.getTagsData()
     },
     destroyed() {
       if(this.websock){
@@ -117,8 +118,10 @@
     methods:{
       selectFloor(label){
         this.floorAct = label
+        this.closesocket()
+        this.getTagsData()
       },
-      getTagsData(index,row){
+      getTagsData(){
         var that = this
         var params = {
           tableName: "Tags",

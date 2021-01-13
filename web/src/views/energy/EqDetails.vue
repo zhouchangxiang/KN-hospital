@@ -4,14 +4,14 @@
       <div class="col20 floatLeft">
         <div class="carouselCard">
           <p class="marginBottomS">水耗</p>
-          <p class="marginBottomS">1234</p>
+          <p class="marginBottomS">{{ shuineng }}</p>
           <p>m³</p>
         </div>
       </div>
       <div class="col20 floatLeft">
         <div class="carouselCard">
           <p class="marginBottomS">电耗</p>
-          <p class="marginBottomS">1234</p>
+          <p class="marginBottomS">{{ dianneng }}</p>
           <p>KW·H</p>
         </div>
       </div>
@@ -102,6 +102,8 @@
       return {
         websockVarData:{},
         websock:null,
+        dianneng:0,
+        shuineng:0,
         TableData:{
           tableName:"Equipment",
           data:[],
@@ -141,6 +143,7 @@
     },
     mounted(){
       this.getEQTable()
+      this.initWebSocket()
     },
     methods:{
       getEQTable(){
@@ -192,7 +195,6 @@
                 })
               }
             })
-            that.initWebSocket()
           }
         },res =>{
           console.log("请求错误")
@@ -200,7 +202,6 @@
       },
       closeEqDetails(){
         this.EqDetailsDialogVisible = false
-        this.closesocket()
       },
       initWebSocket(){ //初始化weosocket
         // this.websock = new WebSocket('ws://' + location.host + '/socket');
@@ -218,6 +219,8 @@
       },
       websocketonmessage(e){ //数据接收
         this.websockVarData = JSON.parse(e.data)
+        this.dianneng = this.websockVarData.year_total_energy
+        this.shuineng = this.websockVarData.water_year_total
         this.currentTagsValue = []
         this.currentTags.forEach(item =>{
           this.currentTagsValue.push({
