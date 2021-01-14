@@ -21,7 +21,7 @@ Vue.config.productionTip = false
 Vue.prototype.axios = axios
 Vue.prototype.qs = qs
 Vue.use(VCharts)
-import has from './assets/js/btnPermissions.js';
+// import has from './assets/js/btnPermissions.js';
 
 Vue.config.productionTip = false
 

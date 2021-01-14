@@ -1,191 +1,184 @@
 <template>
   <el-row :gutter="15">
     <el-col :span="24">
-      <TabControl :TabControl="TabControl"></TabControl>
-      <el-row :gutter="15" v-if="TabControl.TabControlCurrent === '设备台账'">
-        <el-col :span="24" v-if="!showRepairsForm && !showMaintainForm && !showKeepPlanForm">
-          <div class="tableContainer">
-            <tableView class="blackComponents" :tableData="TableData" @getTableData="getEQTable" @repairs="repairs" @handleEQRowClick="handleEQRowClick" @drawUpKeepPlan="drawUpKeepPlan" @seeKeepPlan="seeKeepPlan"></tableView>
-          </div>
-          <el-dialog :title="TableData.rowClickData.EquipmentCode + '保养计划'" :visible.sync="keepPlandialogVisible" width="70%">
-            <el-table :data="KeepPlanTableData.data" border>
-              <el-table-column v-for="(item,index) in KeepPlanTableData.column" :key="index" :prop="item.prop" :label="item.label"></el-table-column>
-            </el-table>
-            <span slot="footer" class="dialog-footer">
-              <el-button @click="keepPlandialogVisible = false">取 消</el-button>
-            </span>
-          </el-dialog>
-          <el-form :inline="true" class="marginBottom">
-            <el-radio-group v-model="showLogTypeValue" :border="false">
-              <el-radio-button v-for="item in showLogType" :key="item.label" :label="item.label"></el-radio-button>
-            </el-radio-group>
-          </el-form>
-          <div class="tableContainer blackComponents" v-if="showLogTypeValue === '维修记录'">
-            <el-form :inline="true">
-              <el-form-item>
-                <el-button type="primary" icon="el-icon-s-claim" @click="seeMaintainForm">查看维修单</el-button>
-              </el-form-item>
-            </el-form>
-            <el-table :data="repairsLogTableData.data" border ref="multipleTableRepairsLog" @selection-change="handleRepairsLogSelectionChange" @row-click="handleRepairsLogRowClick">
-              <el-table-column type="selection"></el-table-column>
-              <el-table-column v-for="(item,index) in repairsLogTableData.column" :key="index" :prop="item.prop" :label="item.label"></el-table-column>
-            </el-table>
-            <div class="paginationClass">
-              <el-pagination background  layout="total, sizes, prev, pager, next, jumper"
-               :total="repairsLogTableData.total"
-               :current-page="repairsLogTableData.offset"
-               :page-sizes="[5,10,20]"
-               :page-size="repairsLogTableData.limit"
-               @size-change="handleRepairsLogSizeChange"
-               @current-change="handleRepairsLogCurrentChange">
-              </el-pagination>
-            </div>
-          </div>
-          <div class="platformContainer blackComponents" v-if="showLogTypeValue === '保养记录'">
-            <el-table :data="keepLogTableData.data" border ref="multipleTableKeepLog" @selection-change="handleKeepLogSelectionChange" @row-click="handleKeepLogRowClick">
-              <el-table-column type="selection"></el-table-column>
-              <el-table-column v-for="(item,index) in keepLogTableData.column" :key="index" :prop="item.prop" :label="item.label"></el-table-column>
-            </el-table>
-            <div class="paginationClass">
-              <el-pagination background  layout="total, sizes, prev, pager, next, jumper"
-               :total="keepLogTableData.total"
-               :current-page="keepLogTableData.offset"
-               :page-sizes="[5,10,20]"
-               :page-size="keepLogTableData.limit"
-               @size-change="handleKeepLogSizeChange"
-               @current-change="handleKeepLogCurrentChange">
-              </el-pagination>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span="24" v-if="showRepairsForm">
-          <el-button @click="showRepairsForm = false" icon="el-icon-back" class="marginBottom">返回列表</el-button>
-          <div class="platformContainer blackComponents">
-            <el-divider>设备报修信息</el-divider>
-            <table class="elementTable marginBottom">
-              <tr>
-                <td>设备编码：{{ TableData.multipleSelection[0].EquipmentCode }}</td>
-              </tr>
-              <tr>
-                <td colspan="4"><p class="marginBottom">故障阐述：</p><el-input type="textarea" v-model="faultCondition"></el-input></td>
-              </tr>
-            </table>
-            <el-button @click="submitRepairs" type="primary">提交报修信息</el-button>
-          </div>
-        </el-col>
-        <el-col :span="24" v-if="showMaintainForm">
-          <el-button @click="showMaintainForm = false" icon="el-icon-back" class="marginBottom">返回列表</el-button>
-          <div class="platformContainer">
-            <el-divider>设备维修记录单</el-divider>
-            <table class="elementTable marginBottom">
-              <tr>
-                <td>工单号：{{ repairsLogTableData.multipleSelection[0].No }}</td>
-                <td>设备编码：{{ repairsLogTableData.multipleSelection[0].EquipmentCode }}</td>
-              </tr>
-              <tr>
-                <td>报修人：{{ repairsLogTableData.multipleSelection[0].Worker }}</td>
-                <td>报修时间：{{ repairsLogTableData.multipleSelection[0].ApplyTime }}</td>
-              </tr>
-              <tr>
-                <td>维修人（接单人）：{{ repairsLogTableData.multipleSelection[0].ReceiveWorker }}</td>
-                <td>接单时间：{{ repairsLogTableData.multipleSelection[0].ReceiveTime }}</td>
-              </tr>
-              <tr>
-                <td>维修内容：{{ repairsLogTableData.multipleSelection[0].Content }}</td>
-                <td>完成时间：{{ repairsLogTableData.multipleSelection[0].EndTime }}</td>
-              </tr>
-            </table>
-          </div>
-        </el-col>
-        <el-col :span="24" v-if="showKeepPlanForm">
-          <el-button @click="showKeepPlanForm = false" icon="el-icon-back" class="marginBottom">返回列表</el-button>
-          <div class="platformContainer blackComponents">
-            <el-divider>制定保养计划</el-divider>
-            <table class="elementTable marginBottom">
-              <tr>
-                <td colspan="2">设备编码：{{ KeepPlanEquipmentCode.join() }}</td>
-              </tr>
-              <tr>
-                <td>
-                  任务开始时间：<el-date-picker v-model="keepTaskStartTime" type="datetime" :clearable="false" :editable="false"></el-date-picker>
-                </td>
-                <td>
-                  制定类型：
-                  <el-radio-group v-model="KeepTypeRadio">
-                    <el-radio label="单次">单次制定</el-radio>
-                    <el-radio label="周期">周期制定</el-radio>
-                  </el-radio-group>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <el-form :inline="true">
-                    <el-form-item label="保养周期：" style="margin-bottom: 0;">
-                      <el-select v-model="weekNumber" placeholder="请选择">
-                        <el-option label="1" value="1"></el-option>
-                        <el-option label="2" value="2"></el-option>
-                        <el-option label="3" value="3"></el-option>
-                        <el-option label="4" value="4"></el-option>
-                        <el-option label="5" value="5"></el-option>
-                        <el-option label="6" value="6"></el-option>
-                        <el-option label="7" value="7"></el-option>
-                        <el-option label="8" value="8"></el-option>
-                        <el-option label="9" value="9"></el-option>
-                        <el-option label="10" value="10"></el-option>
-                        <el-option label="11" value="11"></el-option>
-                      </el-select>
-                    </el-form-item>
-                    <el-form-item style="margin-bottom: 0;">
-                      <el-select v-model="weekTime" placeholder="请选择">
-                        <el-option v-for="item in weekTimeType" :key="item.value" :label="item.label" :value="item.value">
-                        </el-option>
-                      </el-select>
-                    </el-form-item>
-                  </el-form>
-                </td>
-                <td>
-                  <el-form>
-                    <el-form-item label="计划描述：" style="margin-bottom: 0;">
-                      <el-input type="textarea" v-model="KeekPlanContent"></el-input>
-                    </el-form-item>
-                  </el-form>
-                </td>
-              </tr>
-            </table>
-            <el-button @click="submitKeekPlan" type="primary">提交保养计划</el-button>
-          </div>
-        </el-col>
-      </el-row>
-      <el-row :gutter="15" v-if="TabControl.TabControlCurrent === '设备维修任务'">
-        <el-col :span="24">
-          <div class="tableContainer">
-            <tableView :tableData="RepairTableData" @getTableData="getRepairTable" @takeOrder="takeOrder" @maintainOK="maintainOK"></tableView>
-          </div>
-        </el-col>
-      </el-row>
-      <el-row :gutter="15" v-if="TabControl.TabControlCurrent === '设备保养任务'">
-        <el-col :span="24">
+      <el-row :gutter="15">
+        <el-col :span="24" v-if="!showEqDetails">
+          <div class="page-title">资产列表</div>
           <div class="tableContainer">
             <el-form :inline="true">
-              <el-form-item>
-                <el-button type="primary" @click="KeepOK" v-has="['设备保养工作']">保养完成</el-button>
+              <el-form-item label="设备类型">
+                <el-radio-group v-model="EquipmentTypeValue">
+                  <el-radio v-for="(item,index) in EquipmentTypeOptions" :key="index" :label="item.value">{{ item.name }}</el-radio>
+                </el-radio-group>
               </el-form-item>
             </el-form>
-            <el-table :data="KeepTaskTableData.data" border ref="multipleTableKeepTask" @selection-change="handleKeepTaskSelectionChange" @row-click="handleKeepTaskRowClick">
+            <el-form :inline="true">
+              <el-form-item label="设备编码">
+                <el-input v-model="searchField.EquipmentCode" placeholder="请输入设备编码" size="small"></el-input>
+              </el-form-item>
+              <el-form-item label="设备名称">
+                <el-input v-model="searchField.EquipmentName" placeholder="请输入设备名称" size="small"></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" size="small" @click="getEQTable">查询</el-button>
+              </el-form-item>
+            </el-form>
+            <el-form :inline="true">
+              <el-form-item>
+                <el-button type="primary" size="small" @click="add">新增</el-button>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="danger" size="small" @click="del">删除</el-button>
+              </el-form-item>
+            </el-form>
+            <el-table :data="TableData.data" border ref="multipleTable" @selection-change="handleSelectionChange">
               <el-table-column type="selection"></el-table-column>
-              <el-table-column v-for="(item,index) in KeepTaskTableData.column" :key="index" :prop="item.prop" :label="item.label"></el-table-column>
+              <el-table-column prop="EquipmentNo" label="设备编号"></el-table-column>
+              <el-table-column prop="EquipmentCode" label="设备编码"></el-table-column>
+              <el-table-column prop="EquipmentType" label="设备类型"></el-table-column>
+              <el-table-column prop="EquipmentModel" label="设备型号"></el-table-column>
+              <el-table-column prop="EquipmentName" label="设备名称"></el-table-column>
+              <el-table-column prop="Floor" label="楼层"></el-table-column>
+              <el-table-column prop="Area" label="区域"></el-table-column>
+              <el-table-column prop="AddTime" label="添加日期"></el-table-column>
+              <el-table-column prop="Status" label="设备状态"></el-table-column>
+              <el-table-column label="操作" fixed="right" width="230">
+                <template slot-scope="scope">
+                  <el-button size="mini" type="primary" @click="handleXJ(scope.$index, scope.row)">巡检</el-button>
+                  <el-button size="mini" type="info" @click="handleDetails(scope.$index, scope.row)">详情</el-button>
+                  <el-button size="mini" type="success" @click="handleBY(scope.$index, scope.row)">保养</el-button>
+                </template>
+              </el-table-column>
             </el-table>
             <div class="paginationClass">
               <el-pagination background  layout="total, sizes, prev, pager, next, jumper"
-               :total="KeepTaskTableData.total"
-               :current-page="KeepTaskTableData.offset"
+               :total="TableData.total"
+               :current-page="TableData.offset"
                :page-sizes="[5,10,20]"
-               :page-size="KeepTaskTableData.limit"
-               @size-change="handleKeepTaskSizeChange"
-               @current-change="handleKeepTaskCurrentChange">
+               :page-size="TableData.limit"
+               @size-change="handleSizeChange"
+               @current-change="handleCurrentChange">
               </el-pagination>
             </div>
+            <el-dialog :title="TableData.dialogTitle" :visible.sync="TableData.dialogVisible" :close-on-click-modal="false" :append-to-body="true" width="40%">
+              <el-form label-width="110px">
+                <el-form-item label="设备编号">
+                  <el-input v-model="TableData.field.EquipmentNo"></el-input>
+                </el-form-item>
+                <el-form-item label="设备编码">
+                  <el-input v-model="TableData.field.EquipmentCode"></el-input>
+                </el-form-item>
+                <el-form-item label="设备类型">
+                  <el-input v-model="TableData.field.EquipmentType"></el-input>
+                </el-form-item>
+                <el-form-item label="设备型号">
+                  <el-input v-model="TableData.field.EquipmentModel"></el-input>
+                </el-form-item>
+                <el-form-item label="设备名称">
+                  <el-input v-model="TableData.field.EquipmentName"></el-input>
+                </el-form-item>
+                <el-form-item label="楼层">
+                  <el-input v-model="TableData.field.Floor"></el-input>
+                </el-form-item>
+                <el-form-item label="区域">
+                  <el-input v-model="TableData.field.Area"></el-input>
+                </el-form-item>
+              </el-form>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="TableData.dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="save">保存</el-button>
+              </span>
+            </el-dialog>
+            <el-dialog title="巡检" :visible.sync="XJdialogVisible" :close-on-click-modal="false" :append-to-body="true" width="40%">
+              <el-form label-width="110px">
+                <el-form-item label="设备编号">
+                  <el-input v-model="XJField.EquipmentNo"></el-input>
+                </el-form-item>
+                <el-form-item label="计划状态">
+                  <el-select v-model="XJField.Status">
+                    <el-option label="正常" value="正常"></el-option>
+                    <el-option label="预警" value="预警"></el-option>
+                    <el-option label="故障" value="故障"></el-option>
+                    <el-option label="保养" value="保养"></el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="巡检时间">
+                  <el-date-picker v-model="XJField.InspectionTime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间"></el-date-picker>
+                </el-form-item>
+                <el-form-item label="注释">
+                  <el-input v-model="XJField.Comment"></el-input>
+                </el-form-item>
+              </el-form>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="XJdialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="saveXJ">立即提交</el-button>
+              </span>
+            </el-dialog>
+            <el-dialog title="保养" :visible.sync="BYdialogVisible" :close-on-click-modal="false" :append-to-body="true" width="40%">
+              <el-form label-width="110px">
+                <el-form-item label="设备编号">
+                  <el-input v-model="BYField.EquipmentNo"></el-input>
+                </el-form-item>
+                <el-form-item label="保养时间">
+                  <el-date-picker v-model="BYField.BaoYangTime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间"></el-date-picker>
+                </el-form-item>
+                <el-form-item label="注释">
+                  <el-input v-model="BYField.Comment"></el-input>
+                </el-form-item>
+              </el-form>
+              <span slot="footer" class="dialog-footer">
+                <el-button @click="BYdialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="saveBY">立即提交</el-button>
+              </span>
+            </el-dialog>
           </div>
+        </el-col>
+        <el-col :span="24" v-if="showEqDetails">
+          <el-card shadow="never" class="marginBottom">
+            <div slot="header">设备参数</div>
+            <div style="overflow: hidden;clear: both;">
+              <el-col :span="6">
+                <label>设备名称</label>
+                <span>{{ RowData.EquipmentName }}</span>
+              </el-col>
+              <el-col :span="6">
+                <label>设备编号</label>
+                <span>{{ RowData.EquipmentNo }}</span>
+              </el-col>
+              <el-col :span="6">
+                <label>设备类型</label>
+                <span>{{ RowData.EquipmentType }}</span>
+              </el-col>
+              <el-col :span="6">
+                <label>设备型号</label>
+                <span>{{ RowData.EquipmentModel }}</span>
+              </el-col>
+            </div>
+          </el-card>
+          <el-card shadow="never" class="marginBottom">
+            <div slot="header">全生命周期</div>
+            <el-table :data="XJTableData.data" border>
+              <el-table-column type="selection"></el-table-column>
+              <el-table-column prop="EquipmentNo" label="设备编号"></el-table-column>
+              <el-table-column prop="InspectionTime" label="巡检时间"></el-table-column>
+              <el-table-column prop="Status" label="计划状态"></el-table-column>
+              <el-table-column prop="Comment" label="注释"></el-table-column>
+            </el-table>
+            <div class="paginationClass">
+              <el-pagination background  layout="total, sizes, prev, pager, next, jumper"
+               :total="XJTableData.total"
+               :current-page="XJTableData.offset"
+               :page-sizes="[5,10,20]"
+               :page-size="XJTableData.limit"
+               @size-change="handleXJSizeChange"
+               @current-change="handleXJCurrentChange">
+              </el-pagination>
+            </div>
+          </el-card>
+          <el-card shadow="never">
+            <div slot="header">设备运行趋势变化图</div>
+            <ve-histogram :data="chartData"></ve-histogram>
+          </el-card>
         </el-col>
       </el-row>
     </el-col>
@@ -193,169 +186,78 @@
 </template>
 
 <script>
-  import tableView from '@/components/CommonTable'
-  import TabControl from '@/components/TabControl'
   var moment = require('moment');
   export default {
     name: "IntelligentMaintenance",
-    components:{tableView,TabControl},
     data(){
       return {
-        TabControl:{
-          TabControlCurrent:"",
-          TabControlOptions:[
-            {name:"设备台账"},
-            {name:"设备维修任务"},
-            {name:"设备保养任务"},
-          ],
-        },
+        showEqDetails:false,
         TableData:{
           tableName:"Equipment",
-          column:[
-            {label:"ID",prop:"ID",type:"input",value:"",disabled:true,showField:false,searchProp:false},
-            {prop:"EquipmentCode",label:"设备编码",type:"input",value:""},
-            {prop:"Quantity",label:"数量",type:"input",value:""},
-            {prop:"Power",label:"功率",type:"input",value:""},
-            {prop:"Comment",label:"描述",type:"input",value:"",dataJudge:[]},
-            {prop:"Status",label:"设备状态",type:"input",value:"",dataJudge:[{value:"维修中",color:"#228AD5"},{value:"待接单",color:"#FA7D00"},{value:"正常",color:"#00FAE7"}]},
-          ],
           data:[],
           limit:5,
           offset:1,
           total:0,
           multipleSelection:[],
-          tableSelection:true, //是否在第一列添加复选框
-          tableSelectionRadio:false, //是否需要单选
-          searchProp:"",
-          searchVal:"",
-          handleType:[
-            {type:"warning",label:"快速报修",clickEvent:"repairs"},
-            {type:"primary",label:"制定保养计划",clickEvent:"drawUpKeepPlan"},
-            {type:"primary",label:"查看保养计划",clickEvent:"seeKeepPlan"},
-          ],
-          rowClick:"handleEQRowClick",
-          rowClickData:{},
+          dialogTitle:"",
+          dialogVisible:false,
+          field: {
+            EquipmentNo:"",
+            EquipmentCode:"",
+            EquipmentType:"",
+            EquipmentModel:"",
+            EquipmentName:"",
+            Floor:"",
+            Area:"",
+          }
         },
-        showLogTypeValue:"维修记录",
-        showLogType:[
-          {label:"维修记录"},
-          {label:"保养记录"},
+        EquipmentTypeValue:"",
+        EquipmentTypeOptions:[
+          {name:"所有",value:""},
+          {name:"电表",value:"电表"},
+          {name:"水表",value:"水表"},
+          {name:"制冷设备",value:"制冷设备"},
+          {name:"照明设备",value:"照明设备"},
         ],
-        repairsLogTableData:{ //维修记录表参数
-          column:[
-            {prop:"No",label:"工单号"},
-            {prop:"EquipmentCode",label:"设备编码"},
-            {prop:"ReceiveWorker",label:"维修人"},
-            {prop:"Status",label:"工单状态"},
-          ],
+        searchField:{
+          EquipmentCode:"",
+          EquipmentName:"",
+        },
+        RowData:{},
+        XJdialogVisible:false,
+        XJField:{
+          EquipmentNo:"",
+          InspectionTime:"",
+          Status:"",
+          Comment:"",
+        },
+        BYdialogVisible:false,
+        BYField:{
+          EquipmentNo:"",
+          BaoYangTime:"",
+          Comment:"",
+        },
+        XJTableData:{
+          tableName:"Inspection",
           data:[],
           limit:5,
           offset:1,
           total:0,
-          multipleSelection:[],
-          tableSelection:true, //是否在第一列添加复选框
-          tableSelectionRadio:true, //是否需要单选
         },
-        RepairTableData:{  //维修任务表
-          tableName:"repair",
-          column:[
-            {label:"ID",prop:"ID",type:"input",value:"",disabled:true,showField:false,searchProp:false},
-            {prop:"Status",label:"工单状态",type:"input",value:"",dataJudge:[{value:"待接单",color:"#FA7D00"},{value:"维修中",color:"#228AD5"}]},
-            {prop:"No",label:"工单号",type:"input",value:""},
-            {prop:"EquipmentCode",label:"设备编码",type:"input",value:""},
-            {prop:"FaultExpound",label:"故障阐述",type:"input",value:"",searchProp:false},
-            {prop:"Worker",label:"报修人",type:"input",value:""},
-            {prop:"ApplyTime",label:"报修时间",type:"input",value:"",searchProp:false},
-            {prop:"ReceiveWorker",label:"接单人",type:"input",value:"",searchProp:false},
-            {prop:"ReceiveTime",label:"接单时间",type:"input",value:"",searchProp:false},
-          ],
-          data:[],
-          limit:5,
-          offset:1,
-          total:0,
-          multipleSelection:[],
-          tableSelection:true, //是否在第一列添加复选框
-          tableSelectionRadio:true, //是否需要单选
-          searchProp:"",
-          searchVal:"",
-          handleType:[
-            {type:"primary",label:"我要接单",clickEvent:"takeOrder"},
-            {type:"success",label:"维修完成",clickEvent:"maintainOK"},
-          ],
-        },
-        showRepairsForm:false,
-        faultCondition:"", //故障阐述内容
-        showMaintainForm:false,
-        showKeepPlanForm:false,
-        KeepPlanEquipmentCode:"",
-        KeepTaskTableData:{ //保养任务表参数
-          column:[
-            {prop:"Status",label:"工单状态"},
-            {prop:"No",label:"工单号"},
-            {prop:"EquipmentCode",label:"设备编码"},
-            {prop:"Worker",label:"制定计划人"},
-            {prop:"ApplyTime",label:"制定计划时间"},
-            {prop:"StartTime",label:"任务开始时间"},
-            {prop:"WorkTime",label:"工作截止时间"},
-            {prop:"Describe",label:"计划描述"},
-            {prop:"Content",label:"保养内容"},
-            {prop:"WeekTime",label:"工作周期"},
-          ],
-          data:[],
-          limit:5,
-          offset:1,
-          total:0,
-          multipleSelection:[],
-        },
-        keepTaskStartTime:moment().format("YYYY-MM-DD HH:ss:mm"),
-        KeepTypeRadio:"周期",
-        weekNumber:"",
-        weekTime:"周",
-        weekTimeType:[
-          {label:"周",value:"周"},
-          {label:"月",value:"月"},
-          {label:"年",value:"年"},
-        ],
-        KeekPlanContent:"",
-        keepLogTableData:{
-          column:[
-            {prop:"No",label:"工单号"},
-            {prop:"EquipmentCode",label:"设备编码"},
-            {prop:"Worker",label:"制定计划人"},
-            {prop:"ApplyTime",label:"制定计划时间"},
-            {prop:"StartTime",label:"任务开始时间"},
-            {prop:"EndTime",label:"完成工作时间"},
-            {prop:"Describe",label:"计划描述"},
-            {prop:"Content",label:"保养内容"},
-            {prop:"WeekTime",label:"工作周期"},
-            {prop:"Status",label:"工单状态"},
-          ],
-          data:[],
-          limit:5,
-          offset:1,
-          total:0,
-          multipleSelection:[],
-        },
-        KeepPlanTableData:{ //保养计划表参数
-          column:[
-            {prop:"No",label:"工单号"},
-            {prop:"EquipmentCode",label:"设备编码"},
-            {prop:"Worker",label:"制定计划人"},
-            {prop:"ApplyTime",label:"制定计划时间"},
-            {prop:"StartTime",label:"任务开始时间"},
-            {prop:"WorkTime",label:"工作截止时间"},
-            {prop:"Describe",label:"计划描述"},
-            {prop:"WeekTime",label:"工作周期"},
-          ],
-          data:[],
-        },
-        keepPlandialogVisible:false,
+        chartData:{
+          columns: ['时间', '故障次数', '预警次数', '保养次数'],
+          rows: [
+            {"时间":"2019-04","故障次数":3,"预警次数":0,"保养次数":0},
+            {"时间":"2019-05","故障次数":0,"预警次数":1,"保养次数":0},
+            {"时间":"2019-07","故障次数":0,"预警次数":1,"保养次数":0},
+            {"时间":"2019-11","故障次数":2,"预警次数":0,"保养次数":0},
+            {"时间":"2020-03","故障次数":0,"预警次数":0,"保养次数":0},
+          ]
+        }
       }
     },
     created(){
       this.getEQTable()
-      this.getRepairTable()
-      this.getKeepTaskTable()
     },
     mounted(){
 
@@ -371,382 +273,198 @@
         var that = this
         var params = {
           tableName: this.TableData.tableName,
+          EquipmentType: this.EquipmentTypeValue,
+          EquipmentCode:this.searchField.EquipmentCode,
+          EquipmentName:this.searchField.EquipmentName,
           limit:this.TableData.limit,
           offset:this.TableData.offset - 1
         }
         this.axios.get("/api/CUID",{
           params: params
         }).then(res =>{
-          that.TableData.data = res.data.data.rows
-          that.TableData.total = res.data.data.total
-        },res =>{
-          console.log("请求错误")
-        })
-      },
-      handleEQRowClick(){ //台账点击行事件
-        var that = this
-        var params = {
-          limit:this.repairsLogTableData.limit,
-          offset:this.repairsLogTableData.offset
-        }
-        this.axios.get("/api/record/"+this.TableData.rowClickData.EquipmentCode,{
-          params: params
-        }).then(res =>{
-          if(res.data.code === "10001"){
-            this.repairsLogTableData.data = res.data.data.rows
-            this.repairsLogTableData.total = res.data.data.total
-          }
-        },res =>{
-          console.log("请求错误")
-        })
-        var params1 = {
-          limit:this.keepLogTableData.limit,
-          offset:this.keepLogTableData.offset
-        }
-        this.axios.get("/api/keep_record/"+this.TableData.rowClickData.EquipmentCode,{
-          params: params1
-        }).then(res =>{
-          if(res.data.code === "10001"){
-            this.keepLogTableData.data = res.data.data.rows
-            this.keepLogTableData.total = res.data.data.total
+          if(res.data.code === "200"){
+            that.TableData.data = res.data.data.rows
+            that.TableData.total = res.data.data.total
           }
         },res =>{
           console.log("请求错误")
         })
       },
-      handleRepairsLogSelectionChange(val){ //选中维修记录
-        this.repairsLogTableData.multipleSelection = val;
+      handleSizeChange(limit){
+        this.TableData.limit = limit
+        this.getEQTable()
       },
-      handleRepairsLogRowClick(row){ //点击维修记录行
-        this.$refs.multipleTableRepairsLog.clearSelection();
-        this.$refs.multipleTableRepairsLog.toggleRowSelection(row)
+      handleCurrentChange(offset){
+        this.TableData.offset = offset
+        this.getEQTable()
       },
-      handleRepairsLogSizeChange(limit){
-        this.repairsLogTableData.limit = limit
-        this.getKeepTaskTable()
+      handleSelectionChange(row){
+        this.TableData.multipleSelection = row
       },
-      handleRepairsLogCurrentChange(offset){
-        this.repairsLogTableData.offset = offset
-        this.getKeepTaskTable()
+      add(){
+        this.TableData.dialogVisible = true
+        this.TableData.dialogTitle = "新增"
       },
-      seeMaintainForm(){ //查看维修单
-        if(this.repairsLogTableData.multipleSelection.length === 1){
-          this.showMaintainForm = true
-        }else{
-          this.$message({
-            type: 'info',
-            message: '请选择一项维修记录单'
-          });
-        }
-      },
-      repairs(){  //报修
-        if(this.TableData.multipleSelection.length === 1){
-          if(this.TableData.multipleSelection[0].Status === "正常"){
-            this.showRepairsForm = true
-          }else{
-            this.$message({
-              type: 'info',
-              message: '此设备已在维修流程中'
-            });
+      save(){
+        if(this.TableData.dialogTitle === "新增"){
+          var params = {
+            tableName:this.TableData.tableName,
+            EquipmentNo:this.TableData.field.EquipmentNo,
+            EquipmentCode:this.TableData.field.EquipmentCode,
+            EquipmentType:this.TableData.field.EquipmentType,
+            EquipmentModel:this.TableData.field.EquipmentModel,
+            EquipmentName:this.TableData.field.EquipmentName,
+            Floor:this.TableData.field.Floor,
+            Area:this.TableData.field.Area,
+            AddTime:moment().format("YYYY-MM-DD HH:mm:ss")
           }
-        }else{
-          this.$message({
-            type: 'info',
-            message: '请选择一项需要报修的设备'
-          });
-        }
-      },
-      submitRepairs(){ //提交报修
-        var that = this
-        var params = {
-          EquipmentCode: this.TableData.multipleSelection[0].EquipmentCode,
-          FaultExpound:this.faultCondition,
-          ApplyTime:moment().format("YYYY-MM-DD HH:mm:ss")
-        }
-        this.axios.post("/api/repair",this.qs.stringify(params)).then(res =>{
-          if(res.data.code == 10000){
-            this.$message({
-              type: 'success',
-              message: res.data.message
-            });
-            this.showRepairsForm = false
-            this.getEQTable()
-            this.getRepairTable()
-          }else{
-            this.$message({
-              type: 'info',
-              message: res.data.message
-            });
-          }
-        },res =>{
-          console.log("请求错误")
-        })
-      },
-      drawUpKeepPlan(){ //制定保养计划
-        if(this.TableData.multipleSelection.length != 0){
-          this.showKeepPlanForm = true
-          var EquipmentCodeArr = []
-          this.TableData.multipleSelection.forEach(item =>{
-            EquipmentCodeArr.push(item.EquipmentCode)
-          })
-          this.KeepPlanEquipmentCode = EquipmentCodeArr
-        }else{
-          this.$message({
-            type: 'info',
-            message: '请选择设备来制定保养计划'
-          });
-        }
-      },
-      submitKeekPlan(){ //提交保养计划
-        var that = this
-        var params = {
-          EquipmentCode: this.KeepPlanEquipmentCode,
-          StartTime:moment(this.keepTaskStartTime).format("YYYY-MM-DD HH:ss:mm"),
-          ApplyTime:moment().format("YYYY-MM-DD HH:ss:mm"),
-          Type:this.KeepTypeRadio,
-          WeekTime:this.weekNumber + this.weekTime,
-          Describe:this.KeekPlanContent
-        }
-        this.axios.post("/api/keep_plan",params).then(res =>{
-          if(res.data.code == 10001){
-            this.$message({
-              type: 'success',
-              message: res.data.message
-            });
-            this.showKeepPlanForm = false
-            this.getEQTable()
-            this.getKeepTaskTable()
-          }else{
-            this.$message({
-              type: 'info',
-              message: res.data.message
-            });
-          }
-        },res =>{
-          console.log("请求错误")
-        })
-      },
-      seeKeepPlan(){  //查看设备保养计划
-        if(this.TableData.multipleSelection.length === 1){
-          this.KeepPlanTableData.data = []
-          this.keepPlandialogVisible = true
-          this.axios.get("/api/get_keep_plan/"+this.TableData.multipleSelection[0].EquipmentCode).then(res =>{
-            if(res.data.code === "10001"){
-              this.KeepPlanTableData.data = res.data.data
+          this.axios.post("/api/CUID",this.qs.stringify(params)).then(res =>{
+            if(res.data.code === "200"){
+              this.$message({
+                type: 'success',
+                message: res.data.message
+              });
+              this.getEQTable()
+            }else{
+              this.$message({
+                type: 'info',
+                message: res.data.message
+              });
             }
+            this.TableData.dialogVisible = false
           },res =>{
             console.log("请求错误")
           })
-        }else{
-          this.$message({
-            type: 'info',
-            message: '请选择一项设备查看保养计划'
-          });
         }
       },
-      getRepairTable(){ //获取维修任务表
+      del(){
+        var params = {tableName:this.TableData.tableName}
+          var mulId = []
+          if(this.TableData.multipleSelection.length >= 1){
+            this.TableData.multipleSelection.forEach(item =>{
+              mulId.push({id:item.ID});
+            })
+            params.delete_data = JSON.stringify(mulId)
+            this.$confirm('确定删除所选记录？', '提示', {
+              distinguishCancelAndClose:true,
+              type: 'warning'
+            }).then(()  => {
+              this.axios.delete("/api/CUID",{
+                params: params
+              }).then(res =>{
+                if(res.data.code === "200"){
+                  this.$message({
+                    type: 'success',
+                    message: res.data.message
+                  });
+                }
+                this.getEQTable()
+              },res =>{
+                console.log("请求错误")
+              })
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消删除'
+              });
+            });
+          }else{
+            this.$message({
+              message: '至少选择一条数据进行删除',
+              type: 'warning'
+            });
+          }
+      },
+      handleXJ(index,row){
+        this.XJdialogVisible = true
+        this.RowData = row
+        this.XJField.EquipmentNo = row.EquipmentNo
+      },
+      handleDetails(index,row){
+        this.RowData = row
+        this.showEqDetails = true
+        this.getXJTableData()
+      },
+      handleBY(index,row){
+        this.BYdialogVisible = true
+        this.RowData = row
+        this.BYField.EquipmentNo = row.EquipmentNo
+      },
+      saveXJ(){
+        var params = {
+          tableName:"Inspection",
+          EquipmentNo:this.XJField.EquipmentNo,
+          InspectionTime:this.XJField.InspectionTime,
+          Status:this.XJField.Status,
+          Comment:this.XJField.Comment,
+        }
+        this.axios.post("/api/CUID",this.qs.stringify(params)).then(res =>{
+          if(res.data.code === "200"){
+            this.$message({
+              type: 'success',
+              message: res.data.message
+            });
+          }else{
+            this.$message({
+              type: 'info',
+              message: res.data.message
+            });
+          }
+          this.XJdialogVisible = false
+        },res =>{
+          console.log("请求错误")
+        })
+      },
+      saveBY(){
+        var params = {
+          tableName:"BaoYang",
+          EquipmentNo:this.RowData.EquipmentNo,
+          BaoYangTime:this.BYField.BaoYangTime,
+          Comment:this.BYField.Comment,
+        }
+        this.axios.post("/api/CUID",this.qs.stringify(params)).then(res =>{
+          if(res.data.code === "200"){
+            this.$message({
+              type: 'success',
+              message: res.data.message
+            });
+          }else{
+            this.$message({
+              type: 'info',
+              message: res.data.message
+            });
+          }
+          this.BYdialogVisible = false
+        },res =>{
+          console.log("请求错误")
+        })
+      },
+      getXJTableData(){
         var that = this
         var params = {
-          tableName: this.RepairTableData.tableName,
-          limit:this.RepairTableData.limit,
-          offset:this.RepairTableData.offset - 1
+          tableName: this.XJTableData.tableName,
+          EquipmentNo: this.RowData.EquipmentNo,
+          limit:this.XJTableData.limit,
+          offset:this.XJTableData.offset - 1
         }
         this.axios.get("/api/CUID",{
           params: params
         }).then(res =>{
-          that.RepairTableData.data = res.data.data.rows
-          that.RepairTableData.total = res.data.data.total
-        },res =>{
-          console.log("请求错误")
-        })
-      },
-      takeOrder(){ //接单
-        if(this.RepairTableData.multipleSelection.length === 1){
-          if(this.RepairTableData.multipleSelection[0].Status === "待接单"){
-            this.$confirm('确定接收此维修任务？', '提示', {
-              distinguishCancelAndClose:true,
-              type: 'warning'
-            }).then(()  => {
-              var params =  {
-                No:this.RepairTableData.multipleSelection[0].No,
-                Time:moment().format("YYYY-MM-DD HH:mm:ss"),
-                EquipmentCode:this.RepairTableData.multipleSelection[0].EquipmentCode
-              }
-              this.axios.patch("/api/repair_task/jiedan",this.qs.stringify(params)).then(res =>{
-                if(res.data.code === "10001"){
-                  this.$message({
-                    type: 'success',
-                    message: res.data.message
-                  });
-                  this.getEQTable()
-                  this.getRepairTable()
-                }else{
-                  this.$message({
-                    type: 'info',
-                    message: res.data.message
-                  });
-                }
-              },res =>{
-                console.log("请求错误")
-              })
-            }).catch(() => {
-              this.$message({
-                type: 'info',
-                message: '已取消接单'
-              });
-            });
-          }else{
-            this.$message({
-              type: 'info',
-              message: '此设备已在维修中'
-            });
-          }
-        }else{
-          this.$message({
-            type: 'info',
-            message: '请选择一条任务接单'
-          });
-        }
-      },
-      maintainOK(){
-        if(this.RepairTableData.multipleSelection.length === 1){
-          if(this.RepairTableData.multipleSelection[0].Status === "维修中"){
-            this.$prompt('确定完成此维修任务？请输入维修内容', '提示', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
-            }).then(({value})  => {
-              var params = {
-                  EquipmentCode:this.RepairTableData.multipleSelection[0].EquipmentCode,
-                  No:this.RepairTableData.multipleSelection[0].No,
-                  EndTime:moment().format("YYYY-MM-DD HH:mm:ss"),
-                  Content:value
-                }
-              this.axios.patch("/api/repair_task/over",this.qs.stringify(params)).then(res =>{
-                if(res.data.code === "10001"){
-                  this.$message({
-                    type: 'success',
-                    message: res.data.message
-                  });
-                  this.getEQTable()
-                  this.getRepairTable()
-                }else{
-                  this.$message({
-                    type: 'info',
-                    message: res.data.message
-                  });
-                }
-              },res =>{
-                console.log("请求错误")
-              })
-            }).catch(() => {
-              this.$message({
-                type: 'info',
-                message: '已取消完成操作'
-              });
-            });
-          }else{
-            this.$message({
-              type: 'info',
-              message: '此项报修申请还未接单'
-            });
-          }
-        }else{
-          this.$message({
-            type: 'info',
-            message: '请选择一项任务完成维修'
-          });
-        }
-      },
-      getKeepTaskTable(){ //获取保养任务表
-        var that = this
-        var params = {
-          limit:this.KeepTaskTableData.limit,
-          offset:this.KeepTaskTableData.offset
-        }
-        this.axios.get("/api/keep_task",{
-          params: params
-        }).then(res =>{
-          if(res.data.code === "10001"){
-            this.KeepTaskTableData.data = res.data.data.rows
-            this.KeepTaskTableData.total = res.data.data.total
+          if(res.data.code === "200"){
+            that.XJTableData.data = res.data.data.rows
+            that.XJTableData.total = res.data.data.total
           }
         },res =>{
           console.log("请求错误")
         })
       },
-      handleKeepTaskSelectionChange(val){ //选中保养任务
-        this.KeepTaskTableData.multipleSelection = val;
+      handleXJSizeChange(limit){
+        this.XJTableData.limit = limit
+        this.getXJTableData()
       },
-      handleKeepTaskRowClick(row){ //点击保养任务行
-        this.$refs.multipleTableKeepTask.clearSelection();
-        this.$refs.multipleTableKeepTask.toggleRowSelection(row)
-      },
-      handleKeepTaskSizeChange(limit){
-        this.KeepTaskTableData.limit = limit
-        this.getKeepTaskTable()
-      },
-      handleKeepTaskCurrentChange(offset){
-        this.KeepTaskTableData.offset = offset
-        this.getKeepTaskTable()
-      },
-      KeepOK(){ //保养完成
-        if(this.KeepTaskTableData.multipleSelection.length === 1){
-          this.$prompt('确定完成此保养任务？请输入保养内容', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-          }).then(({value})  => {
-            var params = {
-                No:this.KeepTaskTableData.multipleSelection[0].No,
-                EndTime:moment().format("YYYY-MM-DD HH:mm:ss"),
-                Content:value
-              }
-            this.axios.post("/api/keep_task",this.qs.stringify(params)).then(res =>{
-              if(res.data.code === "10001"){
-                this.$message({
-                  type: 'success',
-                  message: res.data.message
-                });
-                this.getEQTable()
-                this.getKeepTaskTable()
-              }else{
-                this.$message({
-                  type: 'info',
-                  message: res.data.message
-                });
-              }
-            },res =>{
-              console.log("请求错误")
-            })
-          }).catch(() => {
-            this.$message({
-              type: 'info',
-              message: '已取消完成操作'
-            });
-          });
-        }else{
-          this.$message({
-            type: 'info',
-            message: '请选择一项保养任务'
-          });
-        }
-      },
-      getKeepLogTable(){ //点击保养记录表
-
-      },
-      handleKeepLogSelectionChange(val){ //选中保养记录
-        this.keepLogTableData.multipleSelection = val;
-      },
-      handleKeepLogRowClick(row){ //点击保养记录行
-        this.$refs.multipleTableKeepLog.clearSelection();
-        this.$refs.multipleTableKeepLog.toggleRowSelection(row)
-      },
-      handleKeepLogSizeChange(limit){
-        this.keepLogTableData.limit = limit
-        this.getKeepLogTable()
-      },
-      handleKeepLogCurrentChange(offset){
-        this.keepLogTableData.offset = offset
-        this.getKeepLogTable()
+      handleXJCurrentChange(offset){
+        this.XJTableData.offset = offset
+        this.getXJTableData()
       },
     }
   }

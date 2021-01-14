@@ -10,7 +10,7 @@
 					HSTL能源管控平台
 				</div>
 				<div class="header_right header_div pingfang white font48">
-					天气:<span>{{weather.wea}}</span>温度:<span>{{weather.tem}}</span>空气质量:<span>{{weather.air_level}}</span>
+					天气:<span>{{weather.wea}}</span>温度:<span>{{weather.tem}}℃</span>风向:<span>{{weather.air_level}}</span>
 				</div>
 			</div>
 
@@ -97,20 +97,24 @@
 					<!-- 能效对比 -->
 					<div class="left_3">
 						<header class="white font60 pingfang">能效对比</header>
-            <ul style="margin-top: 150px;">
-              <li style="margin-bottom: 80px;">
-                <span class="pingfang white font60">本日能耗：{{ Math.floor(today_energy) }}</span>
-              </li>
-              <li style="margin-bottom: 80px;">
-                <span class="pingfang white font60">昨日同期能耗：{{ Math.floor(yesterday_energy) }}</span>
-              </li>
-              <li style="margin-bottom: 80px;">
-                <span class="pingfang white font60">昨日总能耗：{{ Math.floor(yesterday_total_energy) }}</span>
-              </li>
-              <li style="margin-bottom: 80px;">
-                <span class="pingfang white font60">对比：</span><span class="pingfang font60" :class="today_energy-yesterday_energy>0?'danger':'success'">{{ compareYesterday }}</span>
-              </li>
-            </ul>
+            <table border="2" style="width: 1200px;margin-left: -20px;">
+              <tr>
+                <th width="400">指标名称</th>
+                <th width="160">改造前<br/>指标</th>
+                <th width="130">本院<br/>指标</th>
+                <th width="200">节能效果</th>
+              </tr>
+              <tr v-for="(energy,index) in indicator">
+                <td>{{ energy.Desc }}</td>
+                <td>{{ energy.beforeValue }}</td>
+                <td>{{ energy.companyValue }}</td>
+                <td>
+                  {{ energy.companyValue == 0 ? 0 : (Math.floor((Number(energy.beforeValue) - Number(energy.companyValue)) / Number(energy.companyValue) * 10000) / 100) }}%
+                  <span class="el-icon-top" style="color: #11f6e7;" v-if="Number(energy.companyValue) < Number(energy.beforeValue)"></span>
+                  <span class="el-icon-bottom" style="color: #d84a27;" v-else></span>
+                </td>
+              </tr>
+            </table>
 					</div>
 				</div>
 				<div class="middle">
@@ -123,20 +127,36 @@
 					</div>
 					<!-- 能源总况 -->
 					<div class="middle_2">
-						<header>能源总况能效分析</header>
-						<div class="item_main">
+						<header>{{ middle_title }}</header>
+						<div class="item_main" v-bind:style="{marginLeft: ((nyzk_index) != -1) ? 0:'-100%' }">
 							<div class="middle_item">
-                <!--<ul class="header_btn">-->
-                    <!--<li v-for="(item,index) in type" v-bind:class="{active:nyzk_index == item}" @click="energyActiveChange(item)">{{item}}</li>-->
-                <!--</ul>-->
+                <ul class="header_btn">
+                    <li v-for="(item,index) in type" v-bind:class="{active:nyzk_index == index}" @click="energyActiveChange(index)">{{item}}</li>
+                </ul>
 								<!-- 能源总况能效分析 -->
 								<div class="nyzknxfx">
-									<header>对比昨日能耗趋势</header>
+                  <header>能源总况</header>
 									<div class="nyzk">
-										<ve-line :data="chartData" :extend="ChartExtend" height="980px" width="100%"></ve-line>
+										<ul v-for="(tp,i) in type" v-if="i === nyzk_index">
+                      <li>今年用{{ tp }}总量：{{ energy.year_total_energy }}{{ types[i] }}</li>
+                      <li>本月用{{ tp }}总量：{{ energy.month_total_energy }}{{ types[i] }}</li>
+                      <li>今年月均{{ tp }}总量：{{ energy.year_avg_month }}{{ types[i] }}</li>
+                      <li>今年日均{{ tp }}总量：{{ energy.year_avg_day }}{{ types[i] }}</li>
+                      <li>今日用{{ tp }}总量：{{ energy.today_energy }}{{ types[i] }}</li>
+                    </ul>
 									</div>
+                  <!--<ve-line :data="chartData" :extend="ChartExtend" height="980px" width="100%"></ve-line>-->
 								</div>
+                <div class="nyzknxfx" style="margin-top: 10px">
+                  <header>能源趋势</header>
+                  <div style="margin-top: 20px;">
+                    <ve-histogram :data="chartData" :extend="ChartExtend" height="520px"></ve-histogram>
+                  </div>
+                </div>
 							</div>
+              <div class="middle_item">
+                <ve-pie :data="ringChartData" :settings="ringChartSettings" :extend="ringChartExtend" height="1000px"></ve-pie>
+              </div>
 						</div>
 					</div>
 				</div>
@@ -147,48 +167,130 @@
 							资产管理
 						</header>
 						<div class="bhgl right_item">
-							<p><img src="img/ring.png" alt="">
-								<span class="pingfang white font48">病患管理</span></p>
-							<div id="bhgl_echart"></div>
+							<div>
+                <div style="float: left;">
+                  <img src="img/ring.png" alt="">
+                  <span class="pingfang white font48"><span style="color: #11f6e7;margin-right: 20px;" class="el-icon-collection-tag"></span>资产统计</span>
+                </div>
+                <div style="float: right;color: #fff;font-size: 42px;margin: 10px 0;">
+                  <i style="display: inline-block;width: 60px;height: 30px;background: #024576;border-radius: 8px;margin-right: 10px;"></i>水表
+                  <i style="display: inline-block;width: 60px;height: 30px;background: #f1a726;border-radius: 8px;margin-right: 10px;"></i>电表
+                  <i style="display: inline-block;width: 60px;height: 30px;background: #1E9FFF;border-radius: 8px;margin-right: 10px;"></i>制冷设备
+                  <i style="display: inline-block;width: 60px;height: 30px;background: #e24e26;border-radius: 8px;margin-right: 10px;"></i>照明设备
+                </div>
+              </div>
+              <div style="height: 400px;width: 100%;overflow: hidden;position: relative;margin-bottom: 10px;">
+                <ve-bar style="position: absolute;width:100%;left:0;z-index:1;" v-bind:style="{ top: bhgl_margin + 'px' }" :data="barChartData" :extend="barChartExtend" :colors="barColor" :settings="barChartSettings" height="1000px"></ve-bar>
+              </div>
 							<ul>
 								<li v-for="illnes in illness">
-									{{illnes.name}} <span>{{illnes.data}} </span>人
+									{{illnes.name}} <span>{{illnes.data}} </span>
 								</li>
 							</ul>
 						</div>
 						<div class="ywds right_item">
 							<p><img src="img/ring.png" alt="">
-								<span class="pingfang white font48">实时楼层能耗</span></p>
-						</div>
-						<div class="right_item">
-              <ve-bar :data="floorChartData" :extend="floorChartExtend" height="670px" width="100%"></ve-bar>
-						</div>
+								<span class="pingfang white font48"><span style="color: #11f6e7;margin-right: 20px;" class="el-icon-collection-tag"></span>运维大师</span>
+                <a href="javascript:;" class="pingfang white font48" style="float:right; text-decoration: none;" @click="$router.push('/Index')">去维护</a>
+              </p>
+						  <table border="2" v-if="operations.length">
+                <tr>
+                  <th width="150">人员编号</th>
+                  <th width="250">时间</th>
+                  <th width="300">维护位置</th>
+                  <th width="80">问题数量</th>
+                  <th width="100">平台指令</th>
+                  <th width="100">结果</th>
+                </tr>
+                <tr v-for="(item,index) in operations">
+                  <td>{{ item.UserNo }}</td>
+                  <td>{{ item.YunWeiTime }}</td>
+                  <td>{{ item.Position }}</td>
+                  <td>{{ item.WNumber }}</td>
+                  <td>{{ item.Instructions }}</td>
+                  <td>{{ item.Result }}</td>
+                </tr>
+              </table>
+              <table border="2" v-else>
+                <tr>
+                  <th width="200">人员编号</th>
+                  <th width="100">时间</th>
+                  <th width="200">维护位置</th>
+                  <th width="200">问题数量</th>
+                  <th width="200">平台指令</th>
+                  <th width="100">结果</th>
+                </tr>
+                <tr>
+                  <td colspan="6" rowspan="2">暂无数据</td>
+                </tr>
+              </table>
+            </div>
+            <div class="right_item">
+
+            </div>
 					</div>
 					<!-- 今日管控情况 -->
 					<div class="right_2">
 						<header class="white font60 pingfang">
 							今日管控情况
 						</header>
-            <ul style="margin-top: 150px;">
-              <li style="margin-bottom: 50px;">
-                <span class="pingfang white font48">websocket服务：</span><span class="pingfang font60 floatRight" :class="websocket_status === '执行成功'?'success':'danger'">{{ websocket_status }}</span>
-              </li>
-              <li style="margin-bottom: 50px;">
-                <span class="pingfang white font48">OPC服务：</span><span class="pingfang font60 floatRight" :class="Stutus === '执行正常'?'success':'danger'">{{ Stutus }}</span>
-              </li>
-              <li style="margin-bottom: 50px;">
-                <span class="pingfang white font48">历史数据采集服务：</span><span class="pingfang font60 floatRight" :class="History_Stutus === '执行正常'?'success':'danger'">{{ History_Stutus }}</span>
-              </li>
-              <li style="margin-bottom: 50px;">
-                <span class="pingfang white font48">运行成功次数：</span><span class="pingfang success font60 floatRight">{{ Successcount }}</span>
-              </li>
-              <li style="margin-bottom: 50px;">
-                <span class="pingfang white font48">运行总次数：</span><span class="pingfang success font60 floatRight">{{ Totalcount }}</span>
-              </li>
-            </ul>
-						<div class="ksynsj right_item" style="text-align: center;">
-               <el-button type="primary" class="button" style="margin-top: 100px;" @click="$router.push('/Index')">空调照明管理系统</el-button>
-						</div>
+            <div class="ksynsj right_item">
+              <div>
+                <span class="pingfang white font48"><span style="color: #11f6e7;margin-right: 20px;" class="el-icon-collection-tag"></span>楼层实时用能数据</span>
+              </div>
+              <div class="ksynsj_left">
+                <ul v-for="(item,index) in ksynsj" v-bind:style="{ marginTop:ksynsj_margin + 'px' }">
+                  <li v-bind:class="{active:ksyns_index === index}">{{ item.areaName }}</li>
+                </ul>
+              </div>
+              <div class="ksynsj_right">
+                <ul>
+                  <li>
+                    <p>耗电(kW·h)</p>
+                    <strong v-if="ksynsj.length > 0">{{ ksynsj[ksyns_index].electricity }}</strong>
+                  </li>
+                  <li>
+                    <p>耗水(t)</p>
+                    <strong v-if="ksynsj.length > 0">{{ ksynsj[ksyns_index].water }}</strong>
+                  </li>
+                  <li>
+                    <p>耗冷(kW·h)</p>
+                    <strong>0</strong>
+                  </li>
+                  <li>
+                    <p>耗暖(kj)</p>
+                    <strong>0</strong>
+                  </li>
+                  <li>
+                    <p>耗气(m³)</p>
+                    <strong>0</strong>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="kshnjndb right_item">
+              <div>
+                <span class="pingfang white font48"><span style="color: #11f6e7;margin-right: 20px;" class="el-icon-collection-tag"></span>楼层耗能综合对比</span>
+              </div>
+              <div class="kshnjndb_item">
+                <ul v-bind:style="{ marginTop: kshnjndb_margin + 'px' }">
+                  <li v-for="item in ksynsj">
+                    <div class="kshnjndb_bar">
+                      <div class="kshnjndb_bar_active" v-bind:style="{ width:Number(item.ratio) + '%' }"></div>
+                    </div>
+                    <div class="txt">{{ item.areaName }}</div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="message">
+              <marquee behavior="" direction="up" scrollamount="2">
+                <div class="item" v-for="item in notice">
+                  <p class="pingfang white font48 center">{{ item.Title }}</p>
+                  <p class="pingfang white font32" v-html="item.Content"></p>
+                </div>
+              </marquee>
+            </div>
 					</div>
 				</div>
 			</div>
@@ -202,27 +304,27 @@
     data(){
       return {
         websockVarData:{},
-        websocket_status:"",
-        Stutus:"",
-        History_Stutus:"",
-        Successcount:"",
-        Totalcount:"",
+        websock:null,
         chartSettings:{},
         ChartExtend: {
           tooltip:{
             show:false
           },
           legend:{
-            show:false
+            show:true,
+            right:50,
+            textStyle:{
+              color:"#ffffff",
+              fontSize:32
+            }
           },
           xAxis:{
+            show:true,
             type: 'category',
             axisLabel: {
               margin:30,
-              textStyle: {
-                color: '#c3dbff',  //更改坐标轴文字颜色
-                fontSize : 56      //更改坐标轴文字大小
-              }
+              color: '#ffffff',  //更改坐标轴文字颜色
+              fontSize : 48      //更改坐标轴文字大小
             },
             axisTick:{
               show:true,
@@ -244,39 +346,17 @@
             }
           },
           yAxis:{
-            type: 'value',
-            axisLabel:{
-              fontSize:48,
-              margin:30,
-              color:"#c3dbff"
-            },
-            axisLine:{
-              show:true,
-              lineStyle: {
-                width:3,
-                color: '#c3dbff',
-              }
-            },
-            axisTick:{
-              show:true,
-              length:10,
-              lineStyle:{
-                width:5,
-                color:"#fff"
-              }
-            },
-            splitLine:{
-              show:false,
-            }
+            show:false,
           },
           grid:{
-            left:'2%',
+            left:'0',
             right:'2%',
             bottom:'1%',
             top:'6%'
           },
           series:{
             smooth: false,
+            barMaxWidth:"100",
             label:{
               show:true,
               position:"top",
@@ -289,42 +369,55 @@
           }
         },
         chartData: {
-          columns: ['时间', '今日能耗','昨日能耗'],
+          columns: ['月份', '已使用', '额定', '预估', '去年同比'],
           rows: []
         },
-        floorChartExtend:{
+        ringChartSettings:{
+          radius:300,
+          offsetY:500
+        },
+        ringChartExtend:{
+          legend:{
+            show:false
+          },
+          series:{
+            label:{
+              color:"#ffffff",
+              fontSize:48
+            },
+            labelLine:{
+              length:30,
+              legnth2:50,
+              lineStyle:{
+                width:3
+              }
+            }
+          }
+        },
+        ringChartData:{
+          columns: ['能源', '能耗'],
+          rows: []
+        },
+        barChartSettings:{
+          stack: {
+            'xxx': ['水表', '电表' , '制冷设备', '照明设备']
+          }
+        },
+        barChartExtend: {
           tooltip:{
             show:false
           },
           legend:{
-            show:false
+            show:false,
           },
           xAxis:{
-            axisLabel: {
-              show:false,
-            },
-            axisTick:{
-              show:false,
-            },
-            axisLine:{
-              show:false,
-            },
-            splitLine:{
-              show:false
-            }
+            show:false,
           },
           yAxis:{
-            axisLabel:{
-              fontSize:40,
+            axisLabel: {
               margin:30,
-              color:"#c3dbff"
-            },
-            axisLine:{
-              show:true,
-              lineStyle: {
-                width:3,
-                color: '#c3dbff',
-              }
+              color: '#ffffff',  //更改坐标轴文字颜色
+              fontSize : 42     //更改坐标轴文字大小
             },
             axisTick:{
               show:true,
@@ -334,92 +427,61 @@
                 color:"#fff"
               }
             },
-            splitLine:{
-              show:false,
-            }
+            axisLine:{
+              show:true,
+              lineStyle: {
+                width:5,
+                color: '#c3dbff',
+              }
+            },
           },
           grid:{
-            left:'2%',
+            left:'0',
             right:'2%',
-            bottom:'1%',
-            top:'6%'
+            bottom:'0',
+            top:'0'
           },
           series:{
-            label:{
-              show:true,
-              position:"right",
-              color:"#ffffff",
-              fontSize:40,
-            },
-          }
+            smooth: false,
+            barMaxWidth:"50",
+            lineStyle:{
+              width:8
+            }
+          },
         },
-        floorChartData: {
-          columns: ['楼层', '能耗'],
+        barColor:["#024576","#f1a726","#1E9FFF","#e24e26"],
+        barChartData:{
+          columns: ['楼层', '水表', '电表', '制冷设备', '照明设备'],
           rows: []
         },
         energyTotal:0,
-        tagListData:[
-            {name:"空调智能电表1F",tag:"COM2.KT1F.总有功电量",type:"电"},
-            {name:"空调智能电表2F",tag:"COM2.KT2F.总有功电量",type:"电"},
-            {name:"空调智能电表3F",tag:"COM2.KT3F.总有功电量",type:"电"},
-            {name:"空调智能电表4F",tag:"COM2.KT4F.总有功电量",type:"电"},
-            {name:"空调智能电表5F",tag:"COM2.KT5F.总有功电量",type:"电"},
-            {name:"空调智能电表6F",tag:"COM2.KT6F.总有功电量",type:"电"},
-            {name:"空调智能电表7F",tag:"COM2.KT7F.总有功电量",type:"电"},
-            {name:"空调智能电表8F",tag:"COM2.KT8F.总有功电量",type:"电"},
-            {name:"空调智能电表9F",tag:"COM2.KT9F.总有功电量",type:"电"},
-            {name:"空调智能电表10F",tag:"COM2.KT10F.总有功电量",type:"电"},
-            {name:"空调智能电表11F",tag:"COM2.KT11F.总有功电量",type:"电"},
-            {name:"空调智能电表12F",tag:"COM2.KT12F.总有功电量",type:"电"},
-            {name:"照明智能电表1F",tag:"COM2.LIGHT1F.总有功电量",type:"电"},
-            {name:"照明智能电表2F",tag:"COM2.LIGHT2F.总有功电量",type:"电"},
-            {name:"照明智能电表3F",tag:"COM2.LIGHT3F.总有功电量",type:"电"},
-            {name:"照明智能电表4F",tag:"COM2.LIGHT4F.总有功电量",type:"电"},
-            {name:"照明智能电表5F",tag:"COM2.LIGHT5F.总有功电量",type:"电"},
-            {name:"照明智能电表6F",tag:"COM2.LIGHT6F.总有功电量",type:"电"},
-            {name:"照明智能电表7F",tag:"COM2.LIGHT7F.总有功电量",type:"电"},
-            {name:"照明智能电表8F",tag:"COM2.LIGHT8F.总有功电量",type:"电"},
-            {name:"照明智能电表9F",tag:"COM2.LIGHT9F.总有功电量",type:"电"},
-            {name:"照明智能电表10F",tag:"COM2.LIGHT10F.总有功电量",type:"电"},
-            {name:"照明智能电表11F",tag:"COM2.LIGHT11F.总有功电量",type:"电"},
-            {name:"照明智能电表12F",tag:"COM2.LIGHT12F.总有功电量",type:"电"},
-            {name:"中央空调智能电表1",tag:"COM2.KTCTR1.总有功电量",type:"电"},
-            {name:"中央空调智能电表2",tag:"COM2.KTCTR2.总有功电量",type:"电"},
-            {name:"辅助设备智能电表",tag:"COM2.KTCTRADD.总有功电量",type:"电"},
-            {name:"8楼水表",tag:"COM1.WATER8F.今日累积流量",type:"水"},
-            {name:"9楼水表",tag:"COM1.WATER9F.今日累积流量",type:"水"},
-        ],
-        usingDay:moment(moment().format("YYYY-MM-DD")).diff("2020-11-28", 'day'),
+        usingDay:moment(moment().format("YYYY-MM-DD")).diff("2019-03-30", 'day'),
         today_energy:"", //今天已经运行小时数的能耗
         yesterday_energy:"", //昨天相同时间小时数的能耗
         yesterday_total_energy:"", //昨天的总能耗
         save_energy:"", //已节约能耗
-        companyEnergyEfficiency:{
-            'energyLevel':0, //节能等级
-            'ranking':0, //节能排名
-            'usingDate':0, //系统启用时间
-            'usingDay':0, //已使用时间
-            'energyConservationAmount':0, //综合节能
-            'carbonEmissionAmount':0, //碳排放总量
-            'convertOfPlantingAmount':0, //转换种植树木
-            'reduceForestCarbonAmount':0, //减少森林碳能
-            'reducePm25Amount':0, //降低PM2.5
-            'reduceElectricalLoadAmount':0, //减少电力负荷值
-            'energyConsumptionIndex':0, //耗能指数
-        },
-        hnzs:0,//耗能指数
-        hnzs_left:0,
-        energy_level:'',//能耗水平
-        nyzk_index: "电",//水电冷暖气到哪个了
-        nyzk_title_son:'',
-        type: [ '电','水' ],
-        types: ["t","kW·h","kW·h","kW·h","m³"],
-        operations: [
-
-        ],
+        indicator:[],
+        nyzk_index: -1,//水电冷暖气到哪个了
+        nyzk_index_son:0,
+        type: ["电","水","冷","暖","汽"],
+        types: ["kW·h","t","kW·h","kW·h","m³"],
+        middle_title:"年耗能占比分析",
+        bhgl_margin:0,
+        ksynsj_margin:0,
+        ksyns_index:0,
+        ksynsj:[],
+        kshnjndb_margin:0,
+        notice:[],
+        operations: [], //运维大师数据
         illness: [],
-        weather: {},
-        energy:[],
+        weather: {}, //天气
+        energy:{
+          year_total_energy:0,
+          month_total_energy:0,
+          year_avg_day:0,
+          year_avg_month:0,
+          total_energy:0,
+        },
         energyCount:0,//总耗能量
         economyEnergyTotal:0,//总节能量
       }
@@ -431,119 +493,124 @@
       }
     },
     mounted() {
+      var that = this
+      this.nyzkInterVal()
+      this.setksynsj_margin()
+      this.setkshnjndb_margin()
       this.initWebSocket()
-      this.getEnergyComparison()
-      this.getWeather();
+      that.getWeather();
+      setInterval(function(){
+        that.getWeather();
+      },1000 * 60 * 60)
       this.getNotice();
-      //this.getCompanyEnergyEfficiency();
-      this.getPatient();
+      this.getIndexEquipment();
+      this.setbhgl_margin()
+      this.getYunWeiData()
     },
     computed:{
-      compareYesterday(){
-        if(this.today_energy > 0){
-          var compare = (this.today_energy - this.yesterday_energy) / this.today_energy * 100
-          if(this.today_energy - this.yesterday_energy > 0){
-            return "+" + compare.toFixed(2) + "%"
-          }else{
-            return compare.toFixed(2) + "%"
-          }
-        }else{
-          if(this.yesterday_energy > 0){
-            return "-" + 100 + "%"
-          }else{
-            return 0 + "%"
-          }
-        }
-      },
+
     },
     destroyed() {
       if(this.websock){
         this.websock.close() //离开路由之后断开websocket连接
       }
     },
+    watch:{
+      nyzk_index:function(val){
+        if(val == 0){
+          this.energy = {
+            year_total_energy:Number(this.websockVarData.year_total_energy).toFixed(2),
+            month_total_energy:Number(this.websockVarData.month_total_energy).toFixed(2),
+            year_avg_day:Number(this.websockVarData.year_avg_day).toFixed(2),
+            year_avg_month:Number(this.websockVarData.year_avg_month).toFixed(2),
+            today_energy:Number(this.websockVarData.today_energy).toFixed(2),
+          }
+        }else if(val == 1){
+          this.energy = {
+            year_total_energy:Number(this.websockVarData.water_year_total).toFixed(2),
+            month_total_energy:Number(this.websockVarData.water_month_total).toFixed(2),
+            year_avg_day:Number(this.websockVarData.water_avg_day).toFixed(2),
+            year_avg_month:Number(this.websockVarData.water_avg_month).toFixed(2),
+            today_energy:Number(this.websockVarData.water_day_total).toFixed(2),
+          }
+        }else{
+          this.energy = {
+            year_total_energy:0,
+            month_total_energy:0,
+            year_avg_day:0,
+            year_avg_month:0,
+            today_energy:0,
+          }
+        }
+      }
+    },
     methods: {
-      //获取能效展示等数据
-      getCompanyEnergyEfficiency(){
-        var that = this;
-        axios.get(baseUrl + '/operation/main/companyEnergyEfficiency/'+that.companyId)
-        .then(function (response) {
-          that.companyEnergyEfficiency = response.data.data;
-          that.indicator = response.data.data.companyEnergyEfficiencyDetailList;
-          that.companyEnergyEfficiency.energyConsumptionIndex = (that.companyEnergyEfficiency.energyConsumptionIndex > 0.9) ? 0.81 : that.companyEnergyEfficiency.energyConsumptionIndex;
-          var enery = that.indicator[that.indicator.length-1].companyIndicatorValue;
-          var hnzs = that.indicator[1].companyIndicatorValue;
-          if(enery > 25){
-            that.energy_level = '不达标'
-          }else if(enery > 16){
-            that.energy_level = '达标'
-          }else if(enery > 6){
-            that.energy_level = '先进'
+      //能源总况定时器
+      nyzkInterVal(){
+        var that = this
+        setInterval(function(){
+          if(that.nyzk_index < 4){
+            that.nyzk_index++
+            that.middle_title = "能源总况/能耗趋势"
           }else{
-            that.energy_level = '领先'
+            that.nyzk_index = -1
+            that.middle_title = "年耗能占比分析"
           }
-          hnzs = hnzs/90/365;
-          console.log(hnzs);
-          if(hnzs < 0.001){
-            that.hnzs = '优'
-            that.hnzs_left = '80%';
-          }else if(hnzs < 0.0012){
-            that.hnzs = '良'
-            that.hnzs_left = '40%';
+        },10000)
+      },
+      //楼层滚动
+      setksynsj_margin(){
+        var that = this
+        setInterval(function(){
+          if(that.ksyns_index + 1 === that.ksynsj.length){
+            that.ksyns_index = 0
+            that.ksynsj_margin = 0
           }else{
-            that.hnzs = '差'
-            that.hnzs_left = '10%';
+            that.ksyns_index++
+            var top = (that.ksynsj.length - 3 > 0) ? (that.ksynsj.length - 3) : 0
+            if(that.ksynsj_margin + (top * 84) != 0){
+              that.ksynsj_margin -= 84
+            }
           }
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+        },3000)
+      },
+      //楼层进度条滚动
+      setkshnjndb_margin(){
+        var that = this
+        setInterval(function(){
+          var top = (that.ksynsj.length - 3 > 0) ? (that.ksynsj.length - 3) : 0
+          if(that.kshnjndb_margin + (top * 60) == 0){
+            that.kshnjndb_margin = 0
+          }else{
+            that.kshnjndb_margin -= 60
+          }
+        },3000)
+      },
+      //资产管理图表滚动
+      setbhgl_margin(){
+        var that = this
+        setInterval(function(){
+          if(that.bhgl_margin + (8 * 75) == 0){
+            that.bhgl_margin = 0
+          }else{
+            that.bhgl_margin -= 75
+          }
+        },3000)
       },
       getNotice(){ //通知栏
-        var that = this;
-      },
-      //获取病患管理
-      getPatient() {
-        var that = this;
-        //axios.get(baseUrl + '/operation/main/patient/'+that.companyId)
-        //.then(function (response) {
-          //if(response.data.code === 0){
-              var response = {
-                  data:{
-                      data:{}
-                              }
-              }
-              response.data.data.transRegionPerson = "0"
-              response.data.data.unusualPerson = "0"
-              response.data.data.patientDetailList = [
-                              {areaName:"aaaa",patientDegreeEasy:1231,patientDegreeMedium:4123,patientDegreeSerious:5324},
-                              {areaName:"bbb",patientDegreeEasy:456,patientDegreeMedium:2334,patientDegreeSerious:3522},
-                          ]
-            that.illness = [ {
-              name: '跨区移动',
-              data: response.data.data.transRegionPerson,
-            }, {
-              name: '异常人员',
-              data: response.data.data.unusualPerson,
-            }]
-            var yAxis = [];
-            var patientDegreeEasy = [];
-            var patientDegreeMedium = [];
-            var patientDegreeSerious = [];
-            response.data.data.patientDetailList.forEach((item)=>{
-              yAxis.push(item.areaName);
-              patientDegreeEasy.push(item.patientDegreeEasy)
-              patientDegreeMedium.push(item.patientDegreeMedium)
-              patientDegreeSerious.push(item.patientDegreeSerious)
-            })
-          //}
-        //})
-        //.catch(function (error) {
-          //console.log(error);
-        //});
-
-      },
-      getWeather() {
-        var that = this;
+        var that = this
+        var params = {
+          tableName: "Notice",
+        }
+        this.axios.get("/api/CUID",{
+          params: params
+        }).then(res =>{
+          if(res.data.code === "200"){
+            that.notice = res.data.data.rows
+          }
+        },res =>{
+          console.log("请求错误")
+        })
       },
       initWebSocket(){ //初始化weosocket
         // this.websock = new WebSocket('ws://' + location.host + '/socket');
@@ -561,30 +628,39 @@
       },
       websocketonmessage(e){ //数据接收
         this.websockVarData = JSON.parse(e.data)
-        this.websocket_status = this.websockVarData.websocket_status
-        this.Stutus = this.websockVarData.Stutus
-        this.History_Stutus = this.websockVarData.History_Stutus
-        this.Successcount = this.websockVarData.Successcount
-        this.Totalcount = this.websockVarData.Totalcount
         this.today_energy = this.websockVarData.today_energy
         this.yesterday_energy = this.websockVarData.yesterday_energy
         this.yesterday_total_energy = this.websockVarData.yesterday_total_energy
         this.save_energy = this.websockVarData.save_energy
-        this.floorChartData.rows = []
-        this.floorChartData.rows = [
-          {"楼层":"1楼","能耗":Number(this.websockVarData['COM2.KT1F.总有功电量'])+Number(this.websockVarData['COM2.LIGHT1F.总有功电量'])},
-          {"楼层":"2楼","能耗":Number(this.websockVarData['COM2.KT2F.总有功电量'])+Number(this.websockVarData['COM2.LIGHT2F.总有功电量'])},
-          {"楼层":"3楼","能耗":Number(this.websockVarData['COM2.KT3F.总有功电量'])+Number(this.websockVarData['COM2.LIGHT3F.总有功电量'])},
-          {"楼层":"4楼","能耗":Number(this.websockVarData['COM2.KT4F.总有功电量'])+Number(this.websockVarData['COM2.LIGHT4F.总有功电量'])},
-          {"楼层":"5楼","能耗":Number(this.websockVarData['COM2.KT5F.总有功电量'])+Number(this.websockVarData['COM2.LIGHT5F.总有功电量'])},
-          {"楼层":"6楼","能耗":Number(this.websockVarData['COM2.KT6F.总有功电量'])+Number(this.websockVarData['COM2.LIGHT6F.总有功电量'])},
-          {"楼层":"7楼","能耗":Number(this.websockVarData['COM2.KT7F.总有功电量'])+Number(this.websockVarData['COM2.LIGHT7F.总有功电量'])},
-          {"楼层":"8楼","能耗":Number(this.websockVarData['COM2.KT8F.总有功电量'])+Number(this.websockVarData['COM2.LIGHT8F.总有功电量'])},
-          {"楼层":"9楼","能耗":Number(this.websockVarData['COM2.KT9F.总有功电量'])+Number(this.websockVarData['COM2.LIGHT9F.总有功电量'])},
-          {"楼层":"10楼","能耗":Number(this.websockVarData['COM2.KT10F.总有功电量'])+Number(this.websockVarData['COM2.LIGHT10F.总有功电量'])},
-          {"楼层":"11楼","能耗":Number(this.websockVarData['COM2.KT11F.总有功电量'])+Number(this.websockVarData['COM2.LIGHT11F.总有功电量'])},
-          {"楼层":"12楼","能耗":Number(this.websockVarData['COM2.KT12F.总有功电量'])+Number(this.websockVarData['COM2.LIGHT12F.总有功电量'])},
+        this.indicator = JSON.parse(this.websockVarData.indicator)
+        var month_total_energy = 0
+        if(this.nyzk_index == 0){
+            month_total_energy = this.websockVarData.month_total_energy
+        }else if(this.nyzk_index == 1){
+            month_total_energy = this.websockVarData.water_month_total
+        }
+        this.chartData.rows = [
+          {'月份':"1月",'已使用':month_total_energy,"额定":0,"预估":0,"去年同比":0},
+          {'月份':"2月",'已使用':0,"额定":0,"预估":0,"去年同比":0},
+          {'月份':"3月",'已使用':0,"额定":0,"预估":0,"去年同比":0},
+          {'月份':"4月",'已使用':0,"额定":0,"预估":0,"去年同比":0},
+          {'月份':"5月",'已使用':0,"额定":0,"预估":0,"去年同比":0},
+          {'月份':"6月",'已使用':0,"额定":0,"预估":0,"去年同比":0},
+          {'月份':"7月",'已使用':0,"额定":0,"预估":0,"去年同比":0},
+          {'月份':"8月",'已使用':0,"额定":0,"预估":0,"去年同比":0},
+          {'月份':"9月",'已使用':0,"额定":0,"预估":0,"去年同比":0},
+          {'月份':"10月",'已使用':0,"额定":0,"预估":0,"去年同比":0},
+          {'月份':"11月",'已使用':0,"额定":0,"预估":0,"去年同比":0},
+          {'月份':"12月",'已使用':0,"额定":0,"预估":0,"去年同比":0},
         ]
+        this.ringChartData.rows = [
+          { '能源': '电', '能耗': this.websockVarData.year_total_energy*0.1229},
+          { '能源': '水', '能耗': this.websockVarData.water_year_total },
+          { '能源': '冷', '能耗': 0 },
+          { '能源': '暖', '能耗': 0 },
+          { '能源': '汽', '能耗': 0 },
+        ]
+        this.ksynsj = JSON.parse(this.websockVarData.floorData)
       },
       websocketsend(Data){//数据发送
         this.websock.send(Data);
@@ -595,15 +671,83 @@
       closesocket(){
         this.websock.close()
       },
-      getEnergyComparison(){
+      energyActiveChange(index){
+        this.nyzk_index = index
+      },
+      //获取天气
+      getWeather(){
+        var that = this
+        this.axios.get("http://wthrcdn.etouch.cn/weather_mini",{
+          params:{
+            city:"深圳"
+          }
+        }).then(res =>{
+          that.weather = {
+            date:moment().format("YYYY-MM-DD"),
+            wea:res.data.data.forecast[0].type,
+            tem:res.data.data.wendu,
+            air_level:res.data.data.forecast[0].fengxiang,
+            city:"深圳"
+          }
+        },res =>{
+          console.log("请求错误")
+        })
+      },
+      getIndexEquipment(){
+        var that = this
+        this.axios.get("/api/IndexEquipment",).then(res =>{
+          if(res.data.code === "200"){
+            that.barChartData.rows = []
+            var Num1 = 0
+            var Num2 = 0
+            var Num3 = 0
+            var Num4 = 0
+            res.data.data.forEach(item =>{
+              Num1 += item['水表']
+              Num2 += item['电表']
+              Num3 += item['制冷设备']
+              Num4 += item['照明设备']
+            })
+            that.barChartData.rows = res.data.data
+            that.barChartData.rows.forEach(item =>{
+              if(item['制冷设备'] == 39){
+                item['制冷设备'] = 7
+              }
+              if(item['照明设备'] == 45){
+                item['照明设备'] = 8
+              }
+            })
+            that.illness =  [
+              {name:"水表",data:Num1},
+              {name:"电表",data:Num2},
+              {name:"制冷设备",data:Num3},
+              {name:"照明设备",data:Num4},
+            ]
+          }
+        },res =>{
+          console.log("请求错误")
+        })
+      },
+      getYunWeiData(){
+        var that = this
         var params = {
-          date:moment().subtract(1, "days").format("YYYY-MM-DD")
+          tableName: "YunWei",
         }
-        this.axios.get("/api/energy_contrast",{
+        this.axios.get("/api/CUID",{
           params: params
         }).then(res =>{
           if(res.data.code === "200"){
-            this.chartData.rows = res.data.data
+            that.operations = []
+            res.data.data.rows.forEach(item =>{
+              that.operations.push({
+                UserNo:item.UserNo,
+                YunWeiTime:moment(item.YunWeiTime).format("YYYY-MM-DD"),
+                Position:item.Position,
+                WNumber:item.WNumber,
+                Instructions:item.Instructions,
+                Result:item.Result,
+              })
+            })
           }
         },res =>{
           console.log("请求错误")
