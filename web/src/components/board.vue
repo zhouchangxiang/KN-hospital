@@ -164,7 +164,7 @@
 					<!-- 资产管理 -->
 					<div class="right_1">
 						<header class="white font60 pingfang">
-							资产管理
+							全生命周期管理
 						</header>
 						<div class="bhgl right_item">
 							<div>
