@@ -59,6 +59,9 @@ def get_index_equipment():
                 result[item_type] = len(query_result)
             data.append(result)
         return json.dumps({'code': '200', 'mes': '查询成功', 'data': data}, ensure_ascii=False)
+    except InvalidRequestError:
+        db_session.rollback()
+        return json.dumps({'code': '200', 'mes': '事务回滚'}, ensure_ascii=False)
     except Exception as e:
         print(str(e))
         return json.dumps({'code': '200', 'mes': '查询失败', 'error': str(e)}, ensure_ascii=False)
@@ -127,10 +130,10 @@ def energys():
                              "StartTime": request.values.get('start_time'), "EndTime": request.values.get('end_time'), "Unit": "m³"})
             # data = [(result[0], result[1], '%.2f' % result[2], request.values.get('start_time'), request.values.get('end_time'), 'm³') for result in results]
         return json.dumps({'code': '200', 'mes': '查询成功', 'data': data}, ensure_ascii=False)
-    # except InvalidRequestError:
+    except InvalidRequestError:
     #     print('rollback()')
-    #     db_session.rollback()
-    #     return json.dumps({'code': '200', 'mes': '事务回滚'}, ensure_ascii=False)
+        db_session.rollback()
+        return json.dumps({'code': '200', 'mes': '事务回滚'}, ensure_ascii=False)
     except Exception as e:
         # db_session.rollback()
         print(str(e))

@@ -8,7 +8,7 @@ from flask_login import current_user
 import pymssql
 from database import constant
 from enum import Enum, IntEnum, unique
-import mysql
+import pymysql
 DB_URL = 'mysql+pymysql://root:Hstl_2020@127.0.0.1:3306/hstl?charset=utf8&autocommit=true'
 
 engine = create_engine(DB_URL, pool_size=5, max_overflow=2, pool_timeout=30, pool_recycle=1800)#Qcsw@758@192.168.2.123  root@127.0.0.1

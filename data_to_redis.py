@@ -4,11 +4,12 @@ import calendar
 import redis
 from datetime import datetime, date, timedelta
 
-from database.constant import REDIS_PASSWORD, REDIS_HOST, REDIS_TABLENAME
+# from database.constant import REDIS_PASSWORD, REDIS_HOST, REDIS_TABLENAME
 from common.asd import db_session
 
-redis_coon = redis.Redis(host=REDIS_HOST, password=REDIS_PASSWORD, decode_responses=True)
-
+# redis_coon = redis.Redis(host=REDIS_HOST, password=REDIS_PASSWORD, decode_responses=True)
+redis_coon = redis.Redis(host='127.0.0.1', password='liaicheng*521', decode_responses=True)
+REDIS_TABLENAME = 'data_realtime'
 month_of_days31 = [1, 3, 5, 7, 8, 10, 12]
 month_of_days30 = [4, 6, 9, 11]
 feb_month = 2

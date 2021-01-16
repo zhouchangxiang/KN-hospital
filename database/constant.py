@@ -2,7 +2,8 @@ import configparser
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CONFIG_DIR = os.path.join(BASE_DIR, r'database\config.ini')
+# CONFIG_DIR = os.path.join(BASE_DIR, r'database\config.ini')
+CONFIG_DIR = "D:\\KN-hospital\\database\\config.ini"
 config = configparser.ConfigParser()
 config.read(CONFIG_DIR, encoding='UTF-8')
 
