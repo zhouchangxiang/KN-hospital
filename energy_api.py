@@ -1,4 +1,6 @@
 import json
+import socket
+
 import xlwt
 from io import BytesIO
 import pandas as pd
@@ -6,9 +8,10 @@ from datetime import datetime, timedelta
 from flask import make_response, Blueprint, request
 from sqlalchemy.exc import InvalidRequestError
 
+from common.KN_model import RunError
 from common.asd import db_session
 from common.repair_model import Equipment
-from tools.handle import MyEncoder
+from tools.handle import MyEncoder, log
 from common.asd import db_session, TagDetail, IncrementElectricTable, IncrementWaterTable, ElectricEnergy, WaterEnergy
 
 
@@ -19,29 +22,25 @@ electric = Blueprint('electric', __name__)
 
 @electric.route('/Pie', methods=['GET'])
 def get_pie():
-    try:
-        start_time = "'" + request.values.get('StartTime') + "'"
-        end_time = "'" + request.values.get('EndTime') + "'"
-        if request.values.get('energy_type') == '水':
-            sql = f'select sum(IncremenValue) as value from IncrementWaterTable where CollectionDate between {start_time} and {end_time} '
-            result = db_session.execute(sql).fetchall()
-            value_data = 0 if result[0]['value'] is None else result[0]['value']
-            data = [{'设备类型': '设备能耗', '能耗': value_data}]
-            return json.dumps({'code': '200', 'mes': '查询成功', 'data': data}, ensure_ascii=False)
-        if request.values.get('energy_type') == '电':
-            sql1 = f'select sum(IncremenValue) as value from IncrementElectricTable where CollectionDate between {start_time} and {end_time} and AreaName like "%照明%"'
-            sql2 = f'select sum(IncremenValue) as value from IncrementElectricTable where CollectionDate between {start_time} and {end_time} and AreaName like "%空調%"'
-            result1 = db_session.execute(sql1).fetchall()
-            result2 = db_session.execute(sql2).fetchall()
-            light_data = 0 if result1[0]['value'] is None else result1[0]['value']
-            kt_data = 0 if result2[0]['value'] is None else result2[0]['value']
-            data = [{'设备类型': '照明设备', '能耗': light_data}, {'设备类型': '制冷设备', '能耗': kt_data}]
-            return json.dumps({'code': '200', 'mes': '查询成功', 'data': data}, ensure_ascii=False)
-        else:
-            return json.dumps({'code': '200', 'mes': '查询成功', 'data': []}, ensure_ascii=False)
-    except Exception as e:
-        print(str(e))
-        return json.dumps({'code': '200', 'mes': '查询失败', 'error': str(e)}, ensure_ascii=False)
+    start_time = "'" + request.values.get('StartTime') + "'"
+    end_time = "'" + request.values.get('EndTime') + "'"
+    if request.values.get('energy_type') == '水':
+        sql = f'select sum(IncremenValue) as value from IncrementWaterTable where CollectionDate between {start_time} and {end_time} '
+        result = db_session.execute(sql).fetchall()
+        value_data = 0 if result[0]['value'] is None else result[0]['value']
+        data = [{'设备类型': '设备能耗', '能耗': value_data}]
+        return json.dumps({'code': '200', 'mes': '查询成功', 'data': data}, ensure_ascii=False)
+    if request.values.get('energy_type') == '电':
+        sql1 = f'select sum(IncremenValue) as value from IncrementElectricTable where CollectionDate between {start_time} and {end_time} and AreaName like "%照明%"'
+        sql2 = f'select sum(IncremenValue) as value from IncrementElectricTable where CollectionDate between {start_time} and {end_time} and AreaName like "%空調%"'
+        result1 = db_session.execute(sql1).fetchall()
+        result2 = db_session.execute(sql2).fetchall()
+        light_data = 0 if result1[0]['value'] is None else result1[0]['value']
+        kt_data = 0 if result2[0]['value'] is None else result2[0]['value']
+        data = [{'设备类型': '照明设备', '能耗': light_data}, {'设备类型': '制冷设备', '能耗': kt_data}]
+        return json.dumps({'code': '200', 'mes': '查询成功', 'data': data}, ensure_ascii=False)
+    else:
+        return json.dumps({'code': '200', 'mes': '查询成功', 'data': []}, ensure_ascii=False)
 
 
 @electric.route('/IndexEquipment', methods=['GET'])
@@ -59,8 +58,18 @@ def get_index_equipment():
                 result[item_type] = len(query_result)
             data.append(result)
         return json.dumps({'code': '200', 'mes': '查询成功', 'data': data}, ensure_ascii=False)
-    except InvalidRequestError:
+    except InvalidRequestError as e:
         db_session.rollback()
+        re_path = request.path
+        re_func = request.url_rule.endpoint.split('.')[1]
+        re_method = request.method
+        # root_path = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+        # file_path = os.path.join(root_path, 'logs\\logs.txt')
+        ip = socket.gethostbyname(socket.gethostname())
+        now_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        db_session.add(RunError(Time=now_time, IP=ip, Path=re_path, Func=re_func, Method=re_method, Error=str(e)))
+        db_session.commit()
+        log(str(e))
         return json.dumps({'code': '200', 'mes': '事务回滚'}, ensure_ascii=False)
     except Exception as e:
         print(str(e))
@@ -130,9 +139,18 @@ def energys():
                              "StartTime": request.values.get('start_time'), "EndTime": request.values.get('end_time'), "Unit": "m³"})
             # data = [(result[0], result[1], '%.2f' % result[2], request.values.get('start_time'), request.values.get('end_time'), 'm³') for result in results]
         return json.dumps({'code': '200', 'mes': '查询成功', 'data': data}, ensure_ascii=False)
-    except InvalidRequestError:
+    except InvalidRequestError as e:
     #     print('rollback()')
         db_session.rollback()
+        re_path = request.path
+        re_func = request.url_rule.endpoint.split('.')[1]
+        re_method = request.method
+        # root_path = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+        # file_path = os.path.join(root_path, 'logs\\logs.txt')
+        ip = socket.gethostbyname(socket.gethostname())
+        now_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        db_session.add(RunError(Time=now_time, IP=ip, Path=re_path, Func=re_func, Method=re_method, Error=str(e)))
+        log(str(e))
         return json.dumps({'code': '200', 'mes': '事务回滚'}, ensure_ascii=False)
     except Exception as e:
         # db_session.rollback()

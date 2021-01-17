@@ -9,6 +9,9 @@ from flask_sqlalchemy import BaseQuery
 from sqlalchemy.ext.declarative import DeclarativeMeta
 from sqlalchemy.orm.collections import InstrumentedList
 
+from common.KN_model import RunError
+from common.asd import db_session
+
 
 def get_time_stamp(s):
     time_array = time.strptime(s)
@@ -38,7 +41,7 @@ def get_root_path():
     return os.path.join(path, 'instruction')
 
 
-def log(e, login_user):
+def log(e):
     """
     程序日志记录
     :param e:捕获异常参数`
@@ -46,15 +49,18 @@ def log(e, login_user):
     root_path = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
     file_path = os.path.join(root_path, 'logs\\logs.txt')
     call_func = sys._getframe().f_back.f_code.co_name
-    # pass
-    user = login_user if login_user is None else 'no login'
+    # user = login_user if login_user is None else 'no login'
     with open(file_path, 'a') as f:
-        print(f'{datetime.datetime.now()} -- {user} -- {call_func} --- {e}' + "\n\n")
-        f.write(f'{datetime.datetime.now()} -- {user} -- {call_func} --- {e}' + "\n\n")
+        print(f'{datetime.datetime.now()} -- {call_func} --- {e}' + "\n\n")
+        f.write(f'{datetime.datetime.now()} -- {call_func} --- {e}' + "\n\n")
+        db_session.add(RunError(Time=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), Func=call_func, Error=e))
+        db_session.commit()
+    return ''
 
 
 class MyEncoder(json.JSONEncoder):
     """自定义序列化类"""
+
     def default(self, obj):
         """
         自定义编码

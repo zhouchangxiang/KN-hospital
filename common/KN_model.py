@@ -34,3 +34,24 @@ class Notice(Base):
     # 创建时间
     NoticeTime = Column(Unicode(64), nullable=True, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
+
+class RunError(Base):
+    """系统运行错误 """
+    __tablename__ = 'RunError'
+    ID = Column(Integer, autoincrement=True, primary_key=True)
+    # 发生时间
+    Time = Column(Unicode(32), default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    # 操作IP
+    IP = Column(Unicode(32), nullable=True)
+    # 请求路径
+    Path = Column(Unicode(32), nullable=True)
+    # 调用函数
+    Func = Column(Unicode(32), nullable=True)
+    # 请求方法
+    Method = Column(Unicode(32), nullable=True)
+    # 错误信息
+    Error = Column(Unicode(128), nullable=True)
+
+
+Base.metadata.create_all(engine)
+
