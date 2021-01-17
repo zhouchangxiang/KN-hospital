@@ -3,11 +3,13 @@ import time
 import redis
 from datetime import datetime
 
-from database.db_operate import REDIS_PASSWORD, REDIS_HOST, REDIS_TABLENAME
+# from database.db_operate import REDIS_PASSWORD, REDIS_HOST, REDIS_TABLENAME
 from common.asd import db_session, TagDetail, IncrementElectricTable, IncrementWaterTable, ElectricEnergy, WaterEnergy
 from tools.handle import my_log
 
-redis_coon = redis.Redis(host=REDIS_HOST, password=REDIS_PASSWORD, decode_responses=True)
+# redis_coon = redis.Redis(host=REDIS_HOST, password=REDIS_PASSWORD, decode_responses=True)
+redis_coon = redis.Redis(host='127.0.0.1', password='liaicheng*521', decode_responses=True)
+REDIS_TABLENAME = 'data_realtime'
 
 
 while True:

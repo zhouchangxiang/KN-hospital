@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, Unicode
 from datetime import datetime
 
-from common.asd import Base
+from common.asd import Base, engine
 
 
 class RunError(Base):

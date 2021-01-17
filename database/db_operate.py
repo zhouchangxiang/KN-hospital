@@ -2,8 +2,8 @@ import configparser
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CONFIG_DIR = os.path.join(BASE_DIR, r'database\config.ini')
-# CONFIG_DIR = "D:\\KN-hospital\\database\\config.ini"
+# CONFIG_DIR = os.path.join(BASE_DIR, r'database\config.ini')
+CONFIG_DIR = "D:\\KN-hospital\\database\\config.ini"
 config = configparser.ConfigParser()
 config.read(CONFIG_DIR, encoding='UTF-8')
 
@@ -20,4 +20,4 @@ MES_DATABASE_PASSWD = config['MES_DataBase']['password']
 MES_DATABASE_NAME = config['MES_DataBase']['database']
 MES_DATABASE_CHARSET = config['MES_DataBase']['charset']
 
-DB_URL = 'mysql+pymysql://root:1qaz2wsx@127.0.0.1:3306/hstl?charset=utf8&autocommit=true'
+DB_URL = 'mysql+pymysql://root:Hstl_2020@127.0.0.1:3306/hstl?charset=utf8&autocommit=true'
