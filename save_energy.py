@@ -3,7 +3,7 @@ import time
 import redis
 from datetime import datetime, date, timedelta
 
-from database.constant import REDIS_PASSWORD, REDIS_HOST, REDIS_TABLENAME
+from database.db_operate import REDIS_PASSWORD, REDIS_HOST, REDIS_TABLENAME
 from common.asd import db_session
 
 redis_coon = redis.Redis(host=REDIS_HOST, password=REDIS_PASSWORD, decode_responses=True)

@@ -8,7 +8,7 @@ from flask_login import current_user
 
 from common.asd import db_session
 from common.BSFramwork import AlchemyEncoder
-from common.repair_model import Repair, Equipment, RepairTask, KeepPlan, KeepTask, KeepRecord
+from common.KN_model import Repair, Equipment, RepairTask, KeepPlan, KeepTask, KeepRecord
 from common.MESLogger import logger, insertSyslog
 
 repair = Blueprint('repair', __name__)

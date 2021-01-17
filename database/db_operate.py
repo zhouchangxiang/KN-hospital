@@ -1,25 +1,23 @@
-import json
+import configparser
+import os
 
-import redis
-from sqlalchemy import create_engine, and_
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
-from flask_login import current_user
-import pymssql
-from database import constant
-from enum import Enum, IntEnum, unique
-import pymysql
-DB_URL = 'mysql+pymysql://root:Hstl_2020@127.0.0.1:3306/hstl?charset=utf8&autocommit=true'
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CONFIG_DIR = os.path.join(BASE_DIR, r'database\config.ini')
+# CONFIG_DIR = "D:\\KN-hospital\\database\\config.ini"
+config = configparser.ConfigParser()
+config.read(CONFIG_DIR, encoding='UTF-8')
 
-engine = create_engine(DB_URL, pool_size=5, max_overflow=2, pool_timeout=30, pool_recycle=1800)#Qcsw@758@192.168.2.123  root@127.0.0.1
-Session = sessionmaker(bind=engine)
-db_session = Session()
-pool = redis.ConnectionPool(host=constant.REDIS_HOST, password=constant.REDIS_PASSWORD,decode_responses=True)
-Base = declarative_base(engine)
+REDIS_HOST = config['data_realtime_server']['host']
+REDIS_TABLENAME = config['data_realtime_server']['tablename']
+# REDIS_ZENGLIANG = config['data_realtime_server']['db_zengliang']
+REDIS_PORT = int(config['data_realtime_server']['port']) if config['data_realtime_server'][
+    'port'].isdigit() else 6379
+REDIS_PASSWORD = config['data_realtime_server']['password']
 
-class SchedulingStatus(Enum):
-    Locl = "1" #排产表批次已经生产则为锁定状态
-    Unlock = "0" #批次还未生产
+MES_DATABASE_HOST = config['MES_DataBase']['host']
+MES_DATABASE_USER = config['MES_DataBase']['user']
+MES_DATABASE_PASSWD = config['MES_DataBase']['password']
+MES_DATABASE_NAME = config['MES_DataBase']['database']
+MES_DATABASE_CHARSET = config['MES_DataBase']['charset']
 
-
-
+DB_URL = 'mysql+pymysql://root:1qaz2wsx@127.0.0.1:3306/hstl?charset=utf8&autocommit=true'

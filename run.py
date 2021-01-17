@@ -3,7 +3,7 @@ import json
 import socket
 
 from flask import Flask, abort, request, render_template
-from flask_bootstrap import Bootstrap
+# from flask_bootstrap import Bootstrap
 from flask_cors import CORS
 from flask_restful import reqparse, abort, Api, Resource
 
@@ -17,10 +17,10 @@ from system_backend.SystemManagement import account_auth
 from system_backend.SystemManagement.account_auth import login_auth
 from common.common_cuid import select, update, delete, insert
 from tools.MyEncode import MyEncoder
-from tools.handle import log
+from tools.handle import my_log
 
 app = Flask(__name__)
-bootstrap = Bootstrap(app)
+# bootstrap = Bootstrap(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'qeqhdasdqiqd131'
@@ -76,7 +76,8 @@ def error_handler(e):
     print(result)
     db_session.add(RunError(Time=now_time, IP=ip, Path=re_path, Func=re_func, Method=re_method, Error=e))
     db_session.commit()
-    log(e)
+    db_session.close()
+    my_log(e)
     return json.dumps({'code': '2000', 'msg': result}, cls=MyEncoder, ensure_ascii=False)
 
 

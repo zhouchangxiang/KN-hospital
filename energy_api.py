@@ -9,9 +9,9 @@ from flask import make_response, Blueprint, request
 from sqlalchemy.exc import InvalidRequestError
 
 from common.KN_model import RunError
-from common.asd import db_session
-from common.repair_model import Equipment
-from tools.handle import MyEncoder, log
+from common.KN_model import Equipment
+from tools.MyEncode import MyEncoder
+from tools.handle import my_log
 from common.asd import db_session, TagDetail, IncrementElectricTable, IncrementWaterTable, ElectricEnergy, WaterEnergy
 
 
@@ -38,6 +38,7 @@ def get_pie():
         light_data = 0 if result1[0]['value'] is None else result1[0]['value']
         kt_data = 0 if result2[0]['value'] is None else result2[0]['value']
         data = [{'设备类型': '照明设备', '能耗': light_data}, {'设备类型': '制冷设备', '能耗': kt_data}]
+        db_session.close()
         return json.dumps({'code': '200', 'mes': '查询成功', 'data': data}, ensure_ascii=False)
     else:
         return json.dumps({'code': '200', 'mes': '查询成功', 'data': []}, ensure_ascii=False)
@@ -57,9 +58,12 @@ def get_index_equipment():
                 query_result = db_session.query(Equipment).filter_by(Floor=item_floor, EquipmentType=item_type).all()
                 result[item_type] = len(query_result)
             data.append(result)
+        db_session.close()
         return json.dumps({'code': '200', 'mes': '查询成功', 'data': data}, ensure_ascii=False)
     except InvalidRequestError as e:
+        print('/IndexEquipment', '1')
         db_session.rollback()
+        print('/IndexEquipment', '2')
         re_path = request.path
         re_func = request.url_rule.endpoint.split('.')[1]
         re_method = request.method
@@ -69,7 +73,7 @@ def get_index_equipment():
         now_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         db_session.add(RunError(Time=now_time, IP=ip, Path=re_path, Func=re_func, Method=re_method, Error=str(e)))
         db_session.commit()
-        log(str(e))
+        my_log(str(e))
         return json.dumps({'code': '200', 'mes': '事务回滚'}, ensure_ascii=False)
     except Exception as e:
         print(str(e))
@@ -105,6 +109,7 @@ def energy_contrast():
                     today_value = ' '
                 data = {'时间':  hours[i], '今日能耗': today_value, '对比日能耗': yesterday_value}
                 rows.append(data)
+            db_session.close()
         return json.dumps({'code': '200', 'mes': '查询成功', 'data': rows}, cls=MyEncoder, ensure_ascii=False)
     except Exception as e:
         print(str(e))
@@ -138,10 +143,12 @@ def energys():
                 data.append({"AreaName": result[0], "Address": result[1], "Value": value,
                              "StartTime": request.values.get('start_time'), "EndTime": request.values.get('end_time'), "Unit": "m³"})
             # data = [(result[0], result[1], '%.2f' % result[2], request.values.get('start_time'), request.values.get('end_time'), 'm³') for result in results]
+        db_session.close()
         return json.dumps({'code': '200', 'mes': '查询成功', 'data': data}, ensure_ascii=False)
     except InvalidRequestError as e:
-    #     print('rollback()')
+        print('/energy', '1')
         db_session.rollback()
+        print('/energy', '2')
         re_path = request.path
         re_func = request.url_rule.endpoint.split('.')[1]
         re_method = request.method
@@ -150,7 +157,7 @@ def energys():
         ip = socket.gethostbyname(socket.gethostname())
         now_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         db_session.add(RunError(Time=now_time, IP=ip, Path=re_path, Func=re_func, Method=re_method, Error=str(e)))
-        log(str(e))
+        my_log(str(e))
         return json.dumps({'code': '200', 'mes': '事务回滚'}, ensure_ascii=False)
     except Exception as e:
         # db_session.rollback()

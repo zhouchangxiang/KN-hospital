@@ -1,30 +1,15 @@
-# /******************************************************************************************
-# ************* STK make model usage:
-# ************* version: print python3.6.3  version
-# ************* make: make Python file
-# ************* STK makemodel.py 1.0.0
-# ************* @author Xujin
-# ************* @date 2019-08-09 15:58:36
-# ************* @Model 
-# ******************************************************************************************/
-
-# 引入必要的类库
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, relationship
-from sqlalchemy import create_engine, Column, ForeignKey, Table, DateTime, Integer, String
-from sqlalchemy import Column, DateTime, Float, Integer, String, Unicode, BigInteger
-from sqlalchemy.dialects.mssql.base import BIT
-from datetime import datetime
-from flask_login import LoginManager
-from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine, Column, DateTime, Float, Integer, Unicode
 
+from database.db_operate import DB_URL
 
 # 创建对象的基类
-from database.db_operate import DB_URL
-engine = create_engine(DB_URL)
+engine = create_engine(DB_URL, pool_size=10, max_overflow=10, pool_timeout=60, pool_recycle=1800)
 Session = sessionmaker(bind=engine)
 db_session = Session()
 Base = declarative_base(engine)
+
 
 # TagDetail_START:
 class TagDetail(Base):
@@ -71,9 +56,6 @@ class TagDetail(Base):
 
     # 是否导出
     # IsExport = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
-
-
-# TagDetail_END:
 
 
 # ElectricEnergy_START:
@@ -139,8 +121,6 @@ class ElectricEnergy(Base):
     AreaName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
 
-# ElectricEnergy_END:
-
 # WaterEnergy_START:
 class WaterEnergy(Base):
     """水能"""
@@ -192,9 +172,6 @@ class WaterEnergy(Base):
     AreaName = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
 
-# WaterEnergy_END:
-
-
 # 水增量表
 class IncrementWaterTable(Base):
     __tablename__ = "IncrementWaterTable"
@@ -243,6 +220,7 @@ class IncrementWaterTable(Base):
 
     # 增量库插入标识
     insertFlag = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
+
 
 # 电增量表
 class IncrementElectricTable(Base):
@@ -293,7 +271,6 @@ class IncrementElectricTable(Base):
     # 增量库插入标识
     insertFlag = Column(Unicode(32), primary_key=False, autoincrement=False, nullable=True)
 
+
 # 生成表单的执行语句_START
 Base.metadata.create_all(engine)
-
-# 生成表单的执行语句_END

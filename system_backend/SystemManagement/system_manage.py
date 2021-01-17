@@ -14,7 +14,7 @@ from common import MESLogger, autocode
 from flask_login import current_user, LoginManager
 from common.BSFramwork import AlchemyEncoder
 from common.system import Organization, Factory, DepartmentManager, Role
-from database import constant
+from database import db_operate
 
 DB_URL = 'mysql+pymysql://root:Hstl_2020@127.0.0.1:3306/hstl?charset=utf8'
 
@@ -64,15 +64,15 @@ def systemcollecting():
         data = request.values
         try:
             dir = {}
-            pool = redis.ConnectionPool(host=constant.REDIS_HOST)
-            redis_conn = redis.Redis(connection_pool=pool, password=constant.REDIS_PASSWORD, decode_responses=True)
+            pool = redis.ConnectionPool(host=db_operate.REDIS_HOST)
+            redis_conn = redis.Redis(connection_pool=pool, password=db_operate.REDIS_PASSWORD, decode_responses=True)
             dir["name"] = "采集服务"
-            dir["startTime"] = returnb(redis_conn.hget(constant.REDIS_TABLENAME, "collecting_server_start"))
-            dir["endTime"] = returnb(redis_conn.hget(constant.REDIS_TABLENAME, "collecting_server_end"))
-            dir["successNumber"] = returnb(redis_conn.hget(constant.REDIS_TABLENAME, "collecting_server_runcount"))
-            dir["errorNumber"] = returnb(redis_conn.hget(constant.REDIS_TABLENAME, "collecting_server_failcount"))
-            dir["totalNumber"] = int(returnb(redis_conn.hget(constant.REDIS_TABLENAME, "collecting_server_runcount")))+int(returnb(redis_conn.hget(constant.REDIS_TABLENAME, "collecting_server_failcount")))
-            dir["state"] = returnb(redis_conn.hget(constant.REDIS_TABLENAME, "collecting_server_status"))
+            dir["startTime"] = returnb(redis_conn.hget(db_operate.REDIS_TABLENAME, "collecting_server_start"))
+            dir["endTime"] = returnb(redis_conn.hget(db_operate.REDIS_TABLENAME, "collecting_server_end"))
+            dir["successNumber"] = returnb(redis_conn.hget(db_operate.REDIS_TABLENAME, "collecting_server_runcount"))
+            dir["errorNumber"] = returnb(redis_conn.hget(db_operate.REDIS_TABLENAME, "collecting_server_failcount"))
+            dir["totalNumber"] = int(returnb(redis_conn.hget(db_operate.REDIS_TABLENAME, "collecting_server_runcount"))) + int(returnb(redis_conn.hget(db_operate.REDIS_TABLENAME, "collecting_server_failcount")))
+            dir["state"] = returnb(redis_conn.hget(db_operate.REDIS_TABLENAME, "collecting_server_status"))
             return json.dumps(dir, cls=AlchemyEncoder, ensure_ascii=False)
         except Exception as e:
             print(e)
@@ -89,15 +89,15 @@ def systemredisdb():
         data = request.values
         try:
             dir = {}
-            pool = redis.ConnectionPool(host=constant.REDIS_HOST)
-            redis_conn = redis.Redis(connection_pool=pool, password=constant.REDIS_PASSWORD, decode_responses=True)
+            pool = redis.ConnectionPool(host=db_operate.REDIS_HOST)
+            redis_conn = redis.Redis(connection_pool=pool, password=db_operate.REDIS_PASSWORD, decode_responses=True)
             dir["name"] = "写入历史数据库服务"
-            dir["startTime"] = returnb(redis_conn.hget(constant.REDIS_TABLENAME, "redis_insertdb_server_start"))
-            dir["endTime"] = returnb(redis_conn.hget(constant.REDIS_TABLENAME, "redis_insertdb_server_end"))
-            dir["successNumber"] = returnb(redis_conn.hget(constant.REDIS_TABLENAME, "redis_insertdb_server_runcount"))
-            dir["errorNumber"] = returnb(redis_conn.hget(constant.REDIS_TABLENAME, "redis_insertdb_server_failcount"))
-            dir["totalNumber"] = int(returnb(redis_conn.hget(constant.REDIS_TABLENAME, "redis_insertdb_server_runcount")))+int(returnb(redis_conn.hget(constant.REDIS_TABLENAME, "redis_insertdb_server_failcount")))
-            dir["state"] = returnb(redis_conn.hget(constant.REDIS_TABLENAME, "redis_insertdb_server_status"))
+            dir["startTime"] = returnb(redis_conn.hget(db_operate.REDIS_TABLENAME, "redis_insertdb_server_start"))
+            dir["endTime"] = returnb(redis_conn.hget(db_operate.REDIS_TABLENAME, "redis_insertdb_server_end"))
+            dir["successNumber"] = returnb(redis_conn.hget(db_operate.REDIS_TABLENAME, "redis_insertdb_server_runcount"))
+            dir["errorNumber"] = returnb(redis_conn.hget(db_operate.REDIS_TABLENAME, "redis_insertdb_server_failcount"))
+            dir["totalNumber"] = int(returnb(redis_conn.hget(db_operate.REDIS_TABLENAME, "redis_insertdb_server_runcount"))) + int(returnb(redis_conn.hget(db_operate.REDIS_TABLENAME, "redis_insertdb_server_failcount")))
+            dir["state"] = returnb(redis_conn.hget(db_operate.REDIS_TABLENAME, "redis_insertdb_server_status"))
             return json.dumps(dir, cls=AlchemyEncoder, ensure_ascii=False)
         except Exception as e:
             print(e)
@@ -114,15 +114,15 @@ def systemdbincrment():
         data = request.values
         try:
             dir = {}
-            pool = redis.ConnectionPool(host=constant.REDIS_HOST)
-            redis_conn = redis.Redis(connection_pool=pool, password=constant.REDIS_PASSWORD, decode_responses=True)
+            pool = redis.ConnectionPool(host=db_operate.REDIS_HOST)
+            redis_conn = redis.Redis(connection_pool=pool, password=db_operate.REDIS_PASSWORD, decode_responses=True)
             dir["name"] = "写入增量服务"
-            dir["startTime"] = returnb(redis_conn.hget(constant.REDIS_TABLENAME, "redis_incremeninsertdb_server_start"))
-            dir["endTime"] = returnb(redis_conn.hget(constant.REDIS_TABLENAME, "redis_incremeninsertdb_server_end"))
-            dir["successNumber"] = returnb(redis_conn.hget(constant.REDIS_TABLENAME, "redis_incremeninsertdb_server_runcount"))
-            dir["errorNumber"] = returnb(redis_conn.hget(constant.REDIS_TABLENAME, "redis_incremeninsertdb_server_failcount"))
-            dir["totalNumber"] = int(returnb(redis_conn.hget(constant.REDIS_TABLENAME, "redis_incremeninsertdb_server_runcount")))+int(returnb(redis_conn.hget(constant.REDIS_TABLENAME, "redis_incremeninsertdb_server_failcount")))
-            dir["state"] = returnb(redis_conn.hget(constant.REDIS_TABLENAME, "redis_incremeninsertdb_server_status"))
+            dir["startTime"] = returnb(redis_conn.hget(db_operate.REDIS_TABLENAME, "redis_incremeninsertdb_server_start"))
+            dir["endTime"] = returnb(redis_conn.hget(db_operate.REDIS_TABLENAME, "redis_incremeninsertdb_server_end"))
+            dir["successNumber"] = returnb(redis_conn.hget(db_operate.REDIS_TABLENAME, "redis_incremeninsertdb_server_runcount"))
+            dir["errorNumber"] = returnb(redis_conn.hget(db_operate.REDIS_TABLENAME, "redis_incremeninsertdb_server_failcount"))
+            dir["totalNumber"] = int(returnb(redis_conn.hget(db_operate.REDIS_TABLENAME, "redis_incremeninsertdb_server_runcount"))) + int(returnb(redis_conn.hget(db_operate.REDIS_TABLENAME, "redis_incremeninsertdb_server_failcount")))
+            dir["state"] = returnb(redis_conn.hget(db_operate.REDIS_TABLENAME, "redis_incremeninsertdb_server_status"))
             return json.dumps(dir, cls=AlchemyEncoder, ensure_ascii=False)
         except Exception as e:
             print(e)
@@ -139,15 +139,15 @@ def systemwebsocket():
         data = request.values
         try:
             dir = {}
-            pool = redis.ConnectionPool(host=constant.REDIS_HOST)
-            redis_conn = redis.Redis(connection_pool=pool, password=constant.REDIS_PASSWORD, decode_responses=True)
+            pool = redis.ConnectionPool(host=db_operate.REDIS_HOST)
+            redis_conn = redis.Redis(connection_pool=pool, password=db_operate.REDIS_PASSWORD, decode_responses=True)
             dir["name"] = "实时数据服务（websocket）"
-            dir["startTime"] = returnb(redis_conn.hget(constant.REDIS_TABLENAME, "websocket_start"))
-            dir["endTime"] = returnb(redis_conn.hget(constant.REDIS_TABLENAME, "websocket_end"))
-            dir["successNumber"] = returnb(redis_conn.hget(constant.REDIS_TABLENAME, "websocket_runcount"))
-            dir["errorNumber"] = returnb(redis_conn.hget(constant.REDIS_TABLENAME, "websocket_failcount"))
-            dir["totalNumber"] = int(returnb(redis_conn.hget(constant.REDIS_TABLENAME, "websocket_runcount")))+int(returnb(redis_conn.hget(constant.REDIS_TABLENAME, "websocket_failcount")))
-            dir["state"] = returnb(redis_conn.hget(constant.REDIS_TABLENAME, "websocket_status"))
+            dir["startTime"] = returnb(redis_conn.hget(db_operate.REDIS_TABLENAME, "websocket_start"))
+            dir["endTime"] = returnb(redis_conn.hget(db_operate.REDIS_TABLENAME, "websocket_end"))
+            dir["successNumber"] = returnb(redis_conn.hget(db_operate.REDIS_TABLENAME, "websocket_runcount"))
+            dir["errorNumber"] = returnb(redis_conn.hget(db_operate.REDIS_TABLENAME, "websocket_failcount"))
+            dir["totalNumber"] = int(returnb(redis_conn.hget(db_operate.REDIS_TABLENAME, "websocket_runcount"))) + int(returnb(redis_conn.hget(db_operate.REDIS_TABLENAME, "websocket_failcount")))
+            dir["state"] = returnb(redis_conn.hget(db_operate.REDIS_TABLENAME, "websocket_status"))
             return json.dumps(dir, cls=AlchemyEncoder, ensure_ascii=False)
         except Exception as e:
             print(e)
@@ -196,13 +196,13 @@ def selectTree():
 
 
 
-pool = redis.ConnectionPool(host=constant.REDIS_HOST,decode_responses=True)
+pool = redis.ConnectionPool(host=db_operate.REDIS_HOST, decode_responses=True)
 redis_conn = redis.Redis(connection_pool=pool)
 def selectRedisBykey(data):
     '''通过key查询增加修改Redis单个的值'''
     try:
         key = data.get("key")
-        value = redis_conn.hget(constant.REDIS_TABLENAME, key)
+        value = redis_conn.hget(db_operate.REDIS_TABLENAME, key)
         return json.dumps(value, cls=AlchemyEncoder, ensure_ascii=False)
     except Exception as e:
         print(e)
@@ -214,7 +214,7 @@ def addUpdateRedisBykey(data):
     try:
         key = data.get("key")
         value = data.get("value")
-        redis_conn.hset(constant.REDIS_TABLENAME, key, value)
+        redis_conn.hset(db_operate.REDIS_TABLENAME, key, value)
         return json.dumps("OK", cls=AlchemyEncoder, ensure_ascii=False)
     except Exception as e:
         print(e)

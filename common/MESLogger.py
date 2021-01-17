@@ -97,6 +97,8 @@ class MESLogger(logging.getLoggerClass()):
 logger = MESLogger('./logs', 'log')
 
 from common.system import SysLog, db_session, AuditTrace
+
+
 # 插入日志OperationType OperationContent OperationDate UserName ComputerName IP
 def insertSyslog(operationType, operationContent, userName):
     try:
@@ -110,13 +112,14 @@ def insertSyslog(operationType, operationContent, userName):
 
         db_session.add(
             SysLog(OperationType=operationType, OperationContent=operationContent,
-                   OperationDate=datetime.datetime.now(), UserName=userName,
+                   OperationDate=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), UserName=userName,
                    ComputerName=ComputerName, IP=socket.gethostbyname(ComputerName)))
         db_session.commit()
     except Exception as e:
         db_session.rollback()
         print(e)
         logger.error(e)
+
 
 def insertAuditTrace(Operation, DeitalMSG, TableName, User, Other):
     '''
@@ -137,7 +140,7 @@ def insertAuditTrace(Operation, DeitalMSG, TableName, User, Other):
         if Other == None: Other = ""
         db_session.add(
             AuditTrace(Operation=Operation, DeitalMSG=DeitalMSG,
-                   ReviseDate=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), User=User, Other=Other))
+                       ReviseDate=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'), User=User, Other=Other))
         db_session.commit()
     except Exception as e:
         db_session.rollback()

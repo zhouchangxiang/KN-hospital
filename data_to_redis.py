@@ -8,7 +8,7 @@ from datetime import datetime, date, timedelta
 from common.asd import db_session
 
 # redis_coon = redis.Redis(host=REDIS_HOST, password=REDIS_PASSWORD, decode_responses=True)
-from tools.handle import log
+from tools.handle import my_log
 
 redis_coon = redis.Redis(host='127.0.0.1', password='liaicheng*521', decode_responses=True)
 REDIS_TABLENAME = 'data_realtime'
@@ -72,7 +72,9 @@ def count_energy(tags, start_time, end_time):
                 result += 0.0
         return result
     except Exception as err:
-        log(err)
+        db_session.rollback()
+        db_session.close()
+        my_log(err)
 
 
 def count_floor_energy(tags, start_time, end_time, water_day_total, total_energy):
@@ -101,8 +103,10 @@ def count_floor_energy(tags, start_time, end_time, water_day_total, total_energy
             else:
                 floorData.append({'areaName': AreaName, 'electricity': floor_total_energy, 'water': 0.0, 'ratio': ratio})
         return floorData
-    except Exception as e:
-        log(e)
+    except Exception as err:
+        db_session.rollback()
+        db_session.close()
+        my_log(err)
         return []
 
 
@@ -235,4 +239,6 @@ while True:
         print('结束计算能耗数据')
         time.sleep(180)
     except Exception as e:
-        log(e)
+        db_session.rollback()
+        db_session.close()
+        my_log(e)

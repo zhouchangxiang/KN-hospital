@@ -3,9 +3,9 @@ import time
 import redis
 from datetime import datetime
 
-from database.constant import REDIS_PASSWORD, REDIS_HOST, REDIS_TABLENAME
+from database.db_operate import REDIS_PASSWORD, REDIS_HOST, REDIS_TABLENAME
 from common.asd import db_session, TagDetail, IncrementElectricTable, IncrementWaterTable, ElectricEnergy, WaterEnergy
-from tools.handle import log
+from tools.handle import my_log
 
 redis_coon = redis.Redis(host=REDIS_HOST, password=REDIS_PASSWORD, decode_responses=True)
 
@@ -45,7 +45,7 @@ while True:
         print('结束写入增量数据')
         time.sleep(600)
     except Exception as err:
-        log(err)
+        my_log(err)
 
 
 # def write_old_data():
