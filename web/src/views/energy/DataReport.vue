@@ -94,7 +94,7 @@
       }
     },
     created(){
-
+      this.searchElcetricityTime()
     },
     methods:{
       exportExcel(){
