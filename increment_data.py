@@ -38,10 +38,13 @@ while True:
                     # else:
                     #     pass
             if tag.Type == '水表':
-                db_session.add(
-                    IncrementWaterTable(AreaName=tag.AreaName, IncremenValue=data, IncremenType='水', CollectionDate=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                                        Address=tag.Address))
-                db_session.commit()
+                old_data = redis_coon.hget(REDIS_TABLENAME, tag.Address + '_old')
+                value = float(data) - float(old_data)
+                if value > 0.0:
+                    db_session.add(
+                        IncrementWaterTable(AreaName=tag.AreaName, IncremenValue=data, IncremenType='水', CollectionDate=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                                            Address=tag.Address))
+                    db_session.commit()
             else:
                 pass
         print('结束写入增量数据')
