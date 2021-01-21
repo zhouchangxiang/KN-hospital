@@ -4,6 +4,124 @@ from datetime import datetime
 from common.asd import Base, engine
 
 
+class CleanRecord(Base):
+    """清洗记录"""
+    __tablename__ = 'CleanRecord'
+    ID = Column(Integer, autoincrement=True, primary_key=True)
+    # 日期
+    Time = Column(Unicode(128), default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+    # 具体位置
+    Position = Column(Unicode(512), nullable=True)
+    # 盘管台数
+    PanAmount = Column(Unicode(512), nullable=True)
+    # 清洗消毒回风口过滤网及台数
+    HuiFengAmount = Column(Unicode(512), nullable=True)
+    # 清洗消毒送风口个数
+    SongFengAmount = Column(Unicode(512), nullable=True)
+    # 托水盘清洗加药台数
+    TuoPanAmount = Column(Unicode(512), nullable=True)
+    # 乙方人员
+    YUser = Column(Unicode(512), nullable=True)
+    # 甲方人员
+    JUser = Column(Unicode(512), nullable=True)
+    # 备注
+    Comment = Column(Unicode(512), nullable=True)
+
+
+class NoClean(Base):
+    """未清洗记录"""
+    __tablename__ = 'NoClean'
+    ID = Column(Integer, autoincrement=True, primary_key=True)
+    # 日期
+    Time = Column(Unicode(128), nullable=True)
+    # 位置
+    Position = Column(Unicode(512), nullable=True)
+    # 设备编号
+    EquipmentNo = Column(Unicode(512), nullable=True)
+
+
+class WaterOperation(Base):
+    """水处理工作单"""
+    __tablename__ = 'WaterOperation'
+    ID = Column(Integer, autoincrement=True, primary_key=True)
+    # 甲方单位名称
+    A1 = Column(Unicode(128), nullable=True)
+    # 水处理工作内容
+    A2 = Column(Unicode(128), nullable=True)
+    # 7001
+    A3 = Column(Unicode(128), nullable=True)
+    # 8002
+    B3 = Column(Unicode(128), nullable=True)
+    # 8005
+    C3 = Column(Unicode(128), nullable=True)
+    # 8006
+    D3 = Column(Unicode(128), nullable=True)
+    # 8010
+    E3 = Column(Unicode(128), nullable=True)
+    # 8020
+    F3 = Column(Unicode(128), nullable=True)
+    # 8022
+    G3 = Column(Unicode(128), nullable=True)
+    # 8026
+    H3 = Column(Unicode(128), nullable=True)
+    # 8036
+    I3 = Column(Unicode(128), nullable=True)
+    # 9002
+    A4 = Column(Unicode(128), nullable=True)
+    # 9008
+    B4 = Column(Unicode(128), nullable=True)
+    # 9016
+    C4 = Column(Unicode(128), nullable=True)
+    # 9017
+    D4 = Column(Unicode(128), nullable=True)
+    # 9009
+    E4 = Column(Unicode(128), nullable=True)
+    # 9010
+    F4 = Column(Unicode(128), nullable=True)
+    # 9004B
+    G4 = Column(Unicode(128), nullable=True)
+    # 9004A
+    H4 = Column(Unicode(128), nullable=True)
+    # 9005
+    I4 = Column(Unicode(128), nullable=True)
+    # 清洗冷却塔盘
+    A5 = Column(Unicode(128), nullable=True)
+    B5 = Column(Unicode(128), nullable=True)
+    C5 = Column(Unicode(128), nullable=True)
+    A6 = Column(Unicode(128), nullable=True)
+    B6 = Column(Unicode(128), nullable=True)
+    C6 = Column(Unicode(128), nullable=True)
+    A8 = Column(Unicode(128), nullable=True)
+    # 7001
+    A9 = Column(Unicode(128), nullable=True)
+    # 8002
+    B9 = Column(Unicode(128), nullable=True)
+    # 8010
+    C9 = Column(Unicode(128), nullable=True)
+    # 9004B
+    D9 = Column(Unicode(128), nullable=True)
+    # 9004A
+    E9 = Column(Unicode(128), nullable=True)
+    # 9010
+    F9 = Column(Unicode(128), nullable=True)
+    # 9015
+    G9 = Column(Unicode(128), nullable=True)
+    # 9005
+    H9 = Column(Unicode(128), nullable=True)
+    # 9007
+    I9 = Column(Unicode(128), nullable=True)
+    A10 = Column(Unicode(128), nullable=True)
+    B10 = Column(Unicode(128), nullable=True)
+    A11 = Column(Unicode(128), nullable=True)
+    B11 = Column(Unicode(128), nullable=True)
+    A12 = Column(Unicode(128), nullable=True)
+    A13 = Column(Unicode(128), nullable=True)
+    B13 = Column(Unicode(128), nullable=True)
+    C13 = Column(Unicode(128), nullable=True)
+    A14 = Column(Unicode(128), nullable=True)
+    A15 = Column(Unicode(128), nullable=True)
+
+
 class RunError(Base):
     """系统运行错误 """
     __tablename__ = 'RunError'

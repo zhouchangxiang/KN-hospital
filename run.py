@@ -6,6 +6,7 @@ from flask import Flask, abort, request, render_template
 # from flask_bootstrap import Bootstrap
 from flask_cors import CORS
 from flask_restful import reqparse, abort, Api, Resource
+from flask_mail import Mail, Message
 
 from common.KN_model import RunError
 from database.db_operate import DB_URL
@@ -21,12 +22,30 @@ from tools.handle import my_log
 
 app = Flask(__name__)
 # bootstrap = Bootstrap(app)
+# app.config['MAIL_SERVER'] = 'smtp.qq.com'
+# app.config['MAIL_PORT'] = 465
+# app.config['MAIL_USE_SSL'] = True
+# app.config['MAIL_USE_TLS'] = False
+# app.config['MAIL_USERNAME'] = '1975436224@qq.com'
+# app.config['MAIL_PASSWORD'] = 'ojmaofijpvkcfaac'
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = 'qeqhdasdqiqd131'
+app.config['SECRET_KEY'] = 'ruiiiecemxbaebgh'
 account_auth.login_manager.init_app(app)
-api = Api(app)
 
+app.config.update(
+    DEBUG=True,
+    MAIL_SERVER='smtp.qq.com',
+    MAIL_PROT=465,
+    MAIL_USE_TLS=True,
+    MAIL_USE_SSL=False,
+    MAIL_USERNAME='1975436224@qq.com',
+    MAIL_PASSWORD='ojmaofijpvkcfaac',
+    MAIL_DEBUG=True
+)
+
+api = Api(app)
+mail = Mail(app)
 
 CORS(app, supports_credentials=True)
 app.register_blueprint(energy)
@@ -50,6 +69,14 @@ class CUIDList(Resource):
 
 
 api.add_resource(CUIDList, '/CUID')
+
+
+# def send_async_email(app1, msg):
+#     with app1.app_context():
+#         mail.send(msg)
+#
+#
+# send_async_email(app, 'Hello, Mr.Huang')
 
 
 def main():
@@ -79,6 +106,20 @@ def error_handler(e):
     db_session.close()
     my_log(e)
     return json.dumps({'code': '2000', 'msg': result}, cls=MyEncoder, ensure_ascii=False)
+
+
+@app.route('/send_mail')
+def email_send_charactor():
+    message = Message("hello flask-mail", sender="1975436224@qq.com", recipients=["2563814081@qq.com"]
+                      )
+    message.body = 'flask-mail测试代码'
+    try:
+        mail.send(message)
+        print('8' * 10)
+        return '发送成功，请注意查收~'
+    except Exception as e:
+        print(e)
+        return str(e)
 
 
 if __name__ == '__main__':
