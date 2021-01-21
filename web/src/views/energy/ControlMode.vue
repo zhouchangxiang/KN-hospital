@@ -67,7 +67,12 @@
         </el-row>
       </el-col>
       <el-col :span="6">
-        <div class="platformContainer" v-for="(item,index) in floorOption" :class="{'bg-darkblue':item.label === floorAct}" :key="index" @click="selectFloor(item.label)">{{ item.label }}</div>
+        <div v-for="(item,index) in floorOption" :key="index">
+          <div class="platformContainer" :class="{'bg-darkblue':item.label === floorAct}" @click="selectFloor(item.label)">{{ item.label }}</div>
+          <el-col :span="12" v-if="item.area" v-for="(areaItem,areaIndex) in item.area" :key="areaIndex">
+            <div class="platformContainer text-size-14" :class="{'bg-darkblue':areaItem.label === floorArea && item.label === floorAct}" @click="selectFloorArea(item.label,areaItem.label)">{{ areaItem.label }}</div>
+          </el-col>
+        </div>
       </el-col>
     </el-col>
   </el-row>
@@ -87,6 +92,7 @@
         KT1Open:false,
         KT2Open:false,
         floorAct:"厚德楼1楼",
+        floorArea:"",
         floorOption:[
           {label:"厚德楼1楼"},
           {label:"厚德楼2楼"},
@@ -95,8 +101,14 @@
           {label:"厚德楼5楼"},
           {label:"厚德楼6楼"},
           {label:"厚德楼7楼"},
-          {label:"厚德楼8楼"},
-          {label:"厚德楼9楼"},
+          {label:"厚德楼8楼",area:[
+              {label:"男病房"},
+              {label:"女病房"},
+            ]},
+          {label:"厚德楼9楼",area:[
+              {label:"男病房"},
+              {label:"女病房"},
+            ]},
           {label:"厚德楼10楼"},
           {label:"厚德楼11楼"},
           {label:"厚德楼12楼"},
@@ -120,6 +132,16 @@
         this.floorAct = label
         this.closesocket()
         this.getTagsData()
+      },
+      selectFloorArea(label,areaLabel){
+        this.floorAct = label
+        this.floorArea = areaLabel
+        if(this.floorArea === "男病房"){
+          this.closesocket()
+          this.getTagsData()
+        }else if(this.floorArea === "女病房"){
+          this.currentTagsValue = []
+        }
       },
       getTagsData(){
         var that = this

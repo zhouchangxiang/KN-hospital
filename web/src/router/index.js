@@ -9,6 +9,8 @@ import eqMaintenance from '@/views/energy/eqMaintenance'
 import ServiceDiagnosis from '@/views/energy/ServiceDiagnosis'
 import DataReport from '@/views/energy/DataReport'
 import ControlMode from '@/views/energy/ControlMode'
+import KTmaintenance from '@/views/energy/KTmaintenance'
+import waterLogging from '@/views/energy/waterLogging'
 import YunWei from '@/views/energy/YunWei'
 import EqDetails from '@/views/energy/EqDetails'
 import Notice from '@/views/energy/Notice'
@@ -36,6 +38,8 @@ export default new Router({
         {path:'/DataReport',name:'DataReport',meta:{ title:'数据报表'},component:DataReport},
         {path:'/ControlMode',name:'ControlMode',meta:{ title:'总控模式'},component:ControlMode},
         {path:'/YunWei',name:'YunWei',meta:{ title:'运维大师'},component:YunWei},
+        {path:'/KTmaintenance',name:'KTmaintenance',meta:{ title:'空调维保'},component:KTmaintenance},
+        {path:'/waterLogging',name:'waterLogging',meta:{ title:'水处理工作记录'},component:waterLogging},
         {path:'/EqDetails',name:'EqDetails',meta:{ title:'按需配能'},component:EqDetails},
         {path:'/Notice',name:'Notice',meta:{ title:'公告管理'},component:Notice},
 

@@ -105,6 +105,8 @@
           {title: "按需配能", url: "/EqDetails", icon:"el-icon-files"},
           {title: "维护中心", icon:"el-icon-set-up",children:[
               {title:"运维大师", url: "/YunWei"},
+              {title:"空调维保", url: "/KTmaintenance"},
+              {title:"水处理工作记录", url: "/waterLogging"},
               {title:"公告管理", url: "/Notice"},
             ]},
           {title: "数据报表", url: "/DataReport", icon:"el-icon-document"},
@@ -133,11 +135,11 @@
       }
       window.addEventListener('resize', this.getMenuHeight);
       this.getMenuHeight()
-      if(sessionStorage.getItem("LoginStatus")) {
-        this.$store.commit('setUser',sessionStorage.getItem('WorkNumber'))
-      }else{
-        this.$router.push("/login");
-      }
+      // if(sessionStorage.getItem("LoginStatus")) {
+      //   this.$store.commit('setUser',sessionStorage.getItem('WorkNumber'))
+      // }else{
+      //   this.$router.push("/login");
+      // }
     },
     destroyed() {
 

@@ -1,15 +1,15 @@
 <template>
   <div>
-    <el-form :inline="true" v-if="tableData.hasOwnProperty('searchProp') || tableData.hasOwnProperty('searchVal')">
-      <el-form-item>
+    <el-form :inline="true">
+      <el-form-item v-if="tableData.hasOwnProperty('searchProp') || tableData.hasOwnProperty('searchVal')">
         <el-select v-model="tableData.searchProp" placeholder="请选择搜索字段" size="small">
           <el-option v-for="(item,index) in tableData.column" :label="item.label" :value="item.prop" :key="index" v-if="item.searchProp != false"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item>
+      <el-form-item v-if="tableData.hasOwnProperty('searchProp') || tableData.hasOwnProperty('searchVal')">
         <el-input placeholder="请输入搜索内容" size="small" v-model="tableData.searchVal"></el-input>
       </el-form-item>
-      <el-form-item>
+      <el-form-item v-if="tableData.hasOwnProperty('searchProp') || tableData.hasOwnProperty('searchVal')">
         <el-button type="success" icon="el-icon-search" size="small" @click="searchTab">搜索</el-button>
       </el-form-item>
       <el-form-item v-for="(item,index) in tableData.handleType" :key="index" v-if="item.hasOwnProperty('hasPermissions')" v-has="[item.hasPermissions]">
@@ -52,6 +52,7 @@
             <el-option v-for="(i,d) in item.DownData" :key="d" :label="i[item.showDownField]" :value="i[item.showDownField]"></el-option>
           </el-select>
           <el-date-picker v-if="item.type === 'datetime'" :disabled="item.disabled" v-model="item.value" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期时间"></el-date-picker>
+          <el-date-picker v-if="item.type === 'date'" :disabled="item.disabled" v-model="item.value" type="date" value-format="yyyy-MM-dd" placeholder="选择日期"></el-date-picker>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
