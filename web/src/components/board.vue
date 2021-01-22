@@ -203,7 +203,7 @@
                   <th width="100">结果</th>
                 </tr>
                 <tr v-for="(item,index) in operations">
-                  <td>{{ item.UserNo }}</td>
+                  <td>{{ item.Name }}</td>
                   <td>{{ item.YunWeiTime }}</td>
                   <td>{{ item.Position }}</td>
                   <td>{{ item.WNumber }}</td>
@@ -740,7 +740,7 @@
             that.operations = []
             res.data.data.rows.forEach(item =>{
               that.operations.push({
-                UserNo:item.UserNo,
+                Name:item.Name,
                 YunWeiTime:moment(item.YunWeiTime).format("YYYY-MM-DD"),
                 Position:item.Position,
                 WNumber:item.WNumber,
