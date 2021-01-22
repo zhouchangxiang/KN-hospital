@@ -66,7 +66,7 @@
           </el-form>
           <span slot="footer" class="dialog-footer">
             <el-button @click="TableData.dialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="save">保存</el-button>
+            <el-button type="primary" @click="sendMail">保存</el-button>
           </span>
         </el-dialog>
       </div>
@@ -215,7 +215,6 @@
                 message: res.data.message
               });
               this.getTableData()
-              this.sendMail()
               this.TableData.dialogVisible = false
             }else{
               this.$message({
@@ -246,7 +245,6 @@
                 message: res.data.message
               });
               this.getTableData()
-              this.sendMail()
               this.TableData.dialogVisible = false
             }else{
               this.$message({
@@ -271,6 +269,7 @@
               type: 'success',
               message: res.data.message
             });
+            this.save()
           }else{
             this.$message({
               type: 'info',
