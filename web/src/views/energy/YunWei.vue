@@ -260,8 +260,10 @@
         }
       },
       sendMail(){
+        var mail = []
+        mail.push(this.TableData.field.Mail)
         var params = {
-          mail:this.TableData.field.Mail,
+          mail:JSON.stringify(mail)
         }
         this.axios.post("/api/send_mail",this.qs.stringify(params)).then(res =>{
           if(res.data.code === "200"){
