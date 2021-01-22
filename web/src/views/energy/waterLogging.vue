@@ -194,7 +194,7 @@
           <el-form-item>
             <p>
               <label class="floatLeft marginRight">日期</label>
-              <el-input v-model="fieldList.A15" style="width: auto;float: left;"></el-input>
+              <el-date-picker v-model="fieldList.A15" type="date" value-format="yyyy-MM-dd" placeholder="选择日期" size="small"></el-date-picker>
             </p>
           </el-form-item>
           <el-form-item>
@@ -277,11 +277,30 @@
       add(){
         this.isFill = true
         this.fillType = "添加"
+        this.fieldList = {
+          A1:"",
+          A2:"",
+          A3:"",B3:"", C3:"", D3:"", E3:"", F3:"", G3:"", H3:"", I3:"",
+          A4:"",B4:"", C4:"", D4:"", E4:"", F4:"", G4:"", H4:"", I4:"",
+          A5:"",B5:"",C5:"",
+          A6:"",B6:"",C6:"",
+          A8:"",
+          A9:"",B9:"", C9:"", D9:"", E9:"", F9:"", G9:"", H9:"", I9:"",
+          A10:"",B10:"",
+          A11:"",B11:"",
+          A12:"",
+          A13:"",B13:"",C13:"",
+          A14:"",
+          A15:"",
+        }
       },
       edit(index,row){
         this.isFill = true
         this.fillType = "修改"
         this.row = row
+        for(var i in row){
+          this.fieldList[i] = row[i]
+        }
       },
       save(){
         let that = this
@@ -306,7 +325,6 @@
                 message: res.data.message
               });
             }
-            this.TableData.dialogVisible = false
           },res =>{
             console.log("请求错误")
           })
@@ -332,7 +350,6 @@
                 message: res.data.message
               });
             }
-            this.TableData.dialogVisible = false
           },res =>{
             console.log("请求错误")
           })

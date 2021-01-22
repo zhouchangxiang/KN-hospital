@@ -1,14 +1,14 @@
 <template>
   <el-row>
     <el-col :span="24">
+      <el-form :inline="true">
+        <el-form-item label="记录日期：">
+          <el-date-picker v-model="searchDate" type="date" value-format="yyyy-MM-dd" placeholder="选择日期" size="small" @change="getTableData(),getNoCleanTableData()"></el-date-picker>
+        </el-form-item>
+      </el-form>
       <div class="page-title">
         <span style="margin-left: 10px;" class="text-size-normol">清洗记录</span>
       </div>
-      <el-form :inline="true">
-        <el-form-item label="记录日期：">
-          <el-date-picker v-model="searchDate" type="date" value-format="yyyy-MM-dd" placeholder="选择日期" size="small"></el-date-picker>
-        </el-form-item>
-      </el-form>
       <div class="platformContainer">
         <tableView :tableData="TableData" @getTableData="getTableData"></tableView>
       </div>
@@ -36,7 +36,7 @@
             {label:"ID",prop:"ID",type:"input",value:"",disabled:true,showField:false,searchProp:false},
             {label:"日期",prop:"Time",type:"date",value:""},
             {label:"具体位置",prop:"Position",type:"input",value:""},
-            {label:"盘管台数",prop:"PanAmount",type:"datetime",value:""},
+            {label:"盘管台数",prop:"PanAmount",type:"input",value:""},
             {label:"清洗消毒回风口过滤网及台数",prop:"HuiFengAmount",type:"input",value:""},
             {label:"清洗消毒送风口个数",prop:"SongFengAmount",type:"input",value:""},
             {label:"托水盘清洗加药台数",prop:"TuoPanAmount",type:"input",value:""},
@@ -64,7 +64,7 @@
             {label:"ID",prop:"ID",type:"input",value:"",disabled:true,showField:false,searchProp:false},
             {label:"日期",prop:"Time",type:"date",value:""},
             {label:"具体位置",prop:"Position",type:"input",value:""},
-            {label:"设备编号",prop:"EquipmentNo",type:"datetime",value:""},
+            {label:"设备编号",prop:"EquipmentNo",type:"input",value:""},
           ],
           data:[],
           limit:5,

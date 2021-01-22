@@ -195,7 +195,7 @@
       },
       save(){
         let that = this
-        if(this.fillType === "添加"){
+        if(this.TableData.dialogTitle === "添加"){
           var params = {
             tableName:this.TableData.tableName,
             ID:this.TableData.field.ID,
@@ -225,7 +225,7 @@
           },res =>{
             console.log("请求错误")
           })
-        }else if(this.fillType === "修改"){
+        }else if(this.TableData.dialogTitle === "修改"){
           var params = {
             tableName:this.TableData.tableName,
             ID:this.TableData.field.ID,
@@ -258,6 +258,7 @@
         }
       },
       sendMail(){
+        let that = this
         var mail = []
         mail.push(this.TableData.field.Mail)
         var params = {
@@ -269,7 +270,7 @@
               type: 'success',
               message: res.data.message
             });
-            this.save()
+            that.save()
           }else{
             this.$message({
               type: 'info',
