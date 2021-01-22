@@ -26,8 +26,9 @@ app = Flask(__name__)
 # app.config['MAIL_PORT'] = 465
 # app.config['MAIL_USE_SSL'] = True
 # app.config['MAIL_USE_TLS'] = False
-# app.config['MAIL_USERNAME'] = '1975436224@qq.com'
-# app.config['MAIL_PASSWORD'] = 'ojmaofijpvkcfaac'
+# app.config['MAIL_USERNAME'] = '448144775@qq.com'
+# app.config['MAIL_PASSWORD'] = 'keofaicqcoqzcaaj'
+# app.config['MAIL_PASSWORD'] = 'kvoedqjfwbdsjife'
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'ruiiiecemxbaebgh'
@@ -39,8 +40,8 @@ app.config.update(
     MAIL_PROT=465,
     MAIL_USE_TLS=True,
     MAIL_USE_SSL=False,
-    MAIL_USERNAME='1975436224@qq.com',
-    MAIL_PASSWORD='ojmaofijpvkcfaac',
+    MAIL_USERNAME='448144775@qq.com',
+    MAIL_PASSWORD='keofaicqcoqzcaaj',
     MAIL_DEBUG=True
 )
 
@@ -108,9 +109,9 @@ def error_handler(e):
     return json.dumps({'code': '2000', 'msg': result}, cls=MyEncoder, ensure_ascii=False)
 
 
-@app.route('/send_mail')
+@app.route('/send_mail', methods=['POST'])
 def email_send_charactor():
-    message = Message("hello flask-mail", sender="1975436224@qq.com", recipients=["2563814081@qq.com"]
+    message = Message("hello flask-mail", sender="448144775@qq.com", recipients=["minwork0926@163.com"]
                       )
     message.body = 'flask-mail测试代码'
     try:
