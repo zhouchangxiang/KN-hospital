@@ -51,7 +51,7 @@
           <el-col :span="24">
             <div :style="selfHeight" class="aside-menu">
             <el-menu class="menu-ul" :collapse="menuIsCollapse">
-              <el-menu-item @click="$router.push('/home')"><i class="el-icon-office-building"></i><span slot="title">智慧能源</span></el-menu-item>
+              <el-menu-item @click="$router.push('/home')"><i class="el-icon-office-building"></i><span slot="title">智慧能源管理</span></el-menu-item>
             </el-menu>
             <el-menu class="menu-ul" :default-active="defaultActiveUrl" :collapse="menuIsCollapse" :router="true" @select="menuSelect">
               <template v-for="item in mainMenu" :index="item.url">
@@ -97,14 +97,14 @@
         isFullScreen:false, //是否全屏
         mainMenu:[
           {title: "总控模式", url: "/ControlMode", icon:"el-icon-s-operation"},
-          {title: "资产管理", icon:"fa fa-wrench",children:[
+          {title: "全生命周期管理", icon:"fa fa-wrench",children:[
               {title:"资产列表", url: "/IntelligentMaintenance"},
               {title:"保养计划", url: "/eqMaintenance"},
             ]
           },
           {title: "按需配能", url: "/EqDetails", icon:"el-icon-files"},
-          {title: "维护中心", icon:"el-icon-set-up",children:[
-              {title:"运维大师", url: "/YunWei"},
+          {title: "运维大师", icon:"el-icon-set-up",children:[
+              {title:"设备运行管理", url: "/YunWei"},
               {title:"空调维保", url: "/KTmaintenance"},
               {title:"水处理工作记录", url: "/waterLogging"},
               {title:"公告管理", url: "/Notice"},
