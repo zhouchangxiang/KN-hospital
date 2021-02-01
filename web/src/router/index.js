@@ -32,12 +32,12 @@ export default new Router({
       redirect:'/home', //index主页默认加载home页面
       children:[
         {path:'/home',name:'home',meta:{ title:'工作台'},component:Home},
-        {path:'/IntelligentMaintenance',name:'IntelligentMaintenance',meta:{ title:'资产管理'},component:IntelligentMaintenance},
+        {path:'/IntelligentMaintenance',name:'IntelligentMaintenance',meta:{ title:'资产列表'},component:IntelligentMaintenance},
         {path:'/eqMaintenance',name:'eqMaintenance',meta:{ title:'智能维保'},component:eqMaintenance},
         {path:'/ServiceDiagnosis',name:'ServiceDiagnosis',meta:{ title:'服务诊断'},component:ServiceDiagnosis},
         {path:'/DataReport',name:'DataReport',meta:{ title:'数据报表'},component:DataReport},
         {path:'/ControlMode',name:'ControlMode',meta:{ title:'总控模式'},component:ControlMode},
-        {path:'/YunWei',name:'YunWei',meta:{ title:'运维大师'},component:YunWei},
+        {path:'/YunWei',name:'YunWei',meta:{ title:'设备运行管理'},component:YunWei},
         {path:'/KTmaintenance',name:'KTmaintenance',meta:{ title:'空调维保'},component:KTmaintenance},
         {path:'/waterLogging',name:'waterLogging',meta:{ title:'水处理工作记录'},component:waterLogging},
         {path:'/EqDetails',name:'EqDetails',meta:{ title:'按需配能'},component:EqDetails},
