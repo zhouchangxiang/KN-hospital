@@ -211,9 +211,9 @@ def exportx(start_time, end_time, energy_type):
             col += 1
         sql = ''
         if energy_type == '电':
-            sql = "select AreaName,Address, sum(IncremenValue) as value from IncrementElectricTable where CollectionDate between"+ start_time + " and " + end_time + " group by Address"
+            sql = "select AreaName,Address,sum(IncremenValue) as value,Unit, from IncrementElectricTable where CollectionDate between"+ start_time + " and " + end_time + " group by Address"
         if energy_type == '水':
-            sql = "select AreaName,Address, IncremenValue as value from IncrementWaterTable where CollectionDate between" + start_time + " and " + end_time + " order by CollectionDate desc limit 2"
+            sql = "select AreaName,Address,sum(IncremenValue) as value,Unit, from IncrementWaterTable where CollectionDate between" + start_time + " and " + end_time + " group by AreaName"
         all_data = db_session.execute(sql).fetchall()
         print(all_data)
         i = 1
@@ -226,10 +226,10 @@ def exportx(start_time, end_time, energy_type):
                 if cum == '能耗值':
                     value = '%.2f' % float(ta[2]) if ta[2] is not None else '0.0'
                     worksheet.write(i, columns.index(cum), value)
-                if cum == '单位' and energy_type == '电':
-                    worksheet.write(i, columns.index(cum), 'KW/h')
-                if cum == '单位' and energy_type == '水':
-                    worksheet.write(i, columns.index(cum), 'm³')
+                if cum == '单位':
+                    worksheet.write(i, columns.index(cum), ta[3])
+                # if cum == '单位' and energy_type == '水':
+                #     worksheet.write(i, columns.index(cum), 'm³')
                 if cum == '开始时间':
                     worksheet.write(i, columns.index(cum), request.values.get('start_time'))
                 if cum == '结束时间':
