@@ -248,8 +248,10 @@ class YunWei(Base):
     ID = Column(Integer, primary_key=True, autoincrement=True, nullable=True)
     # 设备编号
     EquipmentNo = Column(Unicode(32), nullable=True)
-    # 人员编号
-    UserNo = Column(Unicode(32), nullable=True)
+    # 人员
+    Name = Column(Unicode(32), nullable=True)
+    # 邮箱
+    Mail = Column(Unicode(32), nullable=True)
     # 时间
     YunWeiTime = Column(Unicode(32), nullable=True, default=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
     # 维护位置

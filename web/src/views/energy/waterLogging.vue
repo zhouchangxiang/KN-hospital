@@ -6,20 +6,22 @@
       </div>
       <el-form :inline="true" v-if="!isFill">
         <el-form-item label="记录日期：">
-          <el-date-picker v-model="searchDate" type="date" value-format="yyyy-MM-dd" placeholder="选择日期" size="small"></el-date-picker>
+          <el-date-picker v-model="searchDate" type="date" value-format="yyyy-MM-dd" placeholder="选择日期" size="small" @change="getTableData"></el-date-picker>
         </el-form-item>
+      </el-form>
+      <el-form :inline="true" v-if="!isFill">
         <el-form-item>
           <el-button type="primary" size="mini" @click="add">添加</el-button>
         </el-form-item>
       </el-form>
       <div class="platformContainer" v-if="!isFill">
-        <el-table :data="tableData.data" size="small" border ref="multipleTable" @selection-change="handleSelectionChange">
-          <el-table-column type="selection"></el-table-column>
+        <el-table :data="tableData.data" size="small" border ref="multipleTable">
           <el-table-column prop="ID" label="ID"></el-table-column>
           <el-table-column prop="A15" label="日期"></el-table-column>
-          <el-table-column label="操作" fixed="right" width="160">
+          <el-table-column label="操作" fixed="right" width="230">
             <template slot-scope="scope">
-              <el-button size="mini" type="info" @click="edit(scope.$index, scope.row)">修改</el-button>
+              <el-button size="mini" type="primary" @click="see(scope.$index, scope.row)">查看</el-button>
+              <el-button size="mini" type="warning" @click="edit(scope.$index, scope.row)">修改</el-button>
               <el-button size="mini" type="danger" @click="del(scope.$index, scope.row)">删除</el-button>
             </template>
           </el-table-column>
@@ -202,6 +204,174 @@
           </el-form-item>
         </el-form>
       </div>
+      <el-dialog title="水处理工作记录单" :visible.sync="tableData.dialogVisible" :close-on-click-modal="false" width="70%">
+        <el-form :model="fieldList">
+          <el-form-item>
+            <p><label class="floatLeft marginRight">甲方单位名称：</label><span class="color-darkblue">{{ fieldList.A1 }}</span></p>
+          </el-form-item>
+          <el-form-item>
+            <p>1.冷却水系统</p>
+            <p>（1）水处理工作内容：<span class="color-darkblue">{{ fieldList.A2 }}</span></p>
+          </el-form-item>
+          <el-form-item>
+            <p>（2）水处理药剂投加</p>
+            <table class="orderTable">
+              <tr>
+                <td>NF系列</td>
+                <td>7001</td>
+                <td>8002</td>
+                <td>8005</td>
+                <td>8006</td>
+                <td>8010</td>
+                <td>8020</td>
+                <td>8022</td>
+                <td>8026</td>
+                <td>8036</td>
+              </tr>
+              <tr>
+                <td>投加</td>
+                <td><span class="color-darkblue">{{ fieldList.A2 }}</span></td>
+                <td><span class="color-darkblue">{{ fieldList.B3 }}</span></td>
+                <td><span class="color-darkblue">{{ fieldList.C3 }}</span></td>
+                <td><span class="color-darkblue">{{ fieldList.D3 }}</span></td>
+                <td><span class="color-darkblue">{{ fieldList.E3 }}</span></td>
+                <td><span class="color-darkblue">{{ fieldList.F3 }}</span></td>
+                <td><span class="color-darkblue">{{ fieldList.G3 }}</span></td>
+                <td><span class="color-darkblue">{{ fieldList.H3 }}</span></td>
+                <td><span class="color-darkblue">{{ fieldList.I3 }}</span></td>
+              </tr>
+              <tr>
+                <td>NF系列</td>
+                <td>9002</td>
+                <td>9008</td>
+                <td>9016</td>
+                <td>9017</td>
+                <td>9009</td>
+                <td>9010</td>
+                <td>9004B</td>
+                <td>9004A</td>
+                <td>9005</td>
+              </tr>
+              <tr>
+                <td>投加</td>
+                <td><span class="color-darkblue">{{ fieldList.A4 }}</span></td>
+                <td><span class="color-darkblue">{{ fieldList.B4 }}</span></td>
+                <td><span class="color-darkblue">{{ fieldList.C4 }}</span></td>
+                <td><span class="color-darkblue">{{ fieldList.D4 }}</span></td>
+                <td><span class="color-darkblue">{{ fieldList.E4 }}</span></td>
+                <td><span class="color-darkblue">{{ fieldList.F4 }}</span></td>
+                <td><span class="color-darkblue">{{ fieldList.G4 }}</span></td>
+                <td><span class="color-darkblue">{{ fieldList.H4 }}</span></td>
+                <td><span class="color-darkblue">{{ fieldList.I4 }}</span></td>
+              </tr>
+            </table>
+          </el-form-item>
+          <el-form-item>
+            <p>
+              <label class="floatLeft marginRight">（3）清洗冷却塔盘</label>
+              <span class="color-darkblue">{{ fieldList.A5 }}</span>
+              <label class="floatLeft marginRight">，</label>
+              <label class="floatLeft marginRight">取冷却水样</label>
+              <span class="color-darkblue">{{ fieldList.B5 }}</span>
+              <label class="floatLeft marginRight">，冷凝器单台清洗</label>
+              <span class="color-darkblue">{{ fieldList.C5 }}</span>
+            </p>
+          </el-form-item>
+          <el-form-item>
+            <p>
+              <label class="floatLeft marginRight">（4）冬季湿保：通炮</label>
+              <span class="color-darkblue">{{ fieldList.A6 }}</span>
+              <label class="floatLeft marginRight">，折Y隔，端盖保养</label>
+              <span class="color-darkblue">{{ fieldList.B6 }}</span>
+              <label class="floatLeft marginRight">，冷却系统湿保</label>
+              <span class="color-darkblue">{{ fieldList.C6 }}</span>
+            </p>
+          </el-form-item>
+          <el-form-item>
+            <p>2.冷冻水系统</p>
+            <p>（1）水处理工作内容<span class="color-darkblue">{{ fieldList.A8 }}</span></p>
+          </el-form-item>
+          <el-form-item>
+            <p>（2）水处理药剂投加</p>
+            <table class="orderTable">
+              <tr>
+                <td>NF系列</td>
+                <td>7001</td>
+                <td>8002</td>
+                <td>8010</td>
+                <td>9004B</td>
+                <td>9004A</td>
+                <td>9010</td>
+                <td>9015</td>
+                <td>9005</td>
+                <td>9007</td>
+              </tr>
+              <tr>
+                <td>投加</td>
+                <td><span class="color-darkblue">{{ fieldList.A9 }}</span></td>
+                <td><span class="color-darkblue">{{ fieldList.B9 }}</span></td>
+                <td><span class="color-darkblue">{{ fieldList.C9 }}</span></td>
+                <td><span class="color-darkblue">{{ fieldList.D9 }}</span></td>
+                <td><span class="color-darkblue">{{ fieldList.E9 }}</span></td>
+                <td><span class="color-darkblue">{{ fieldList.F9 }}</span></td>
+                <td><span class="color-darkblue">{{ fieldList.G9 }}</span></td>
+                <td><span class="color-darkblue">{{ fieldList.H9 }}</span></td>
+                <td><span class="color-darkblue">{{ fieldList.I9 }}</span></td>
+              </tr>
+            </table>
+          </el-form-item>
+          <el-form-item>
+            <p>
+              <label class="floatLeft marginRight">（3）取冷冻水样</label>
+              <span class="color-darkblue">{{ fieldList.A10 }}</span>
+              <label class="floatLeft marginRight">，测冷冻水PH</label>
+              <span class="color-darkblue">{{ fieldList.B10 }}</span>
+            </p>
+          </el-form-item>
+          <el-form-item>
+            <p>
+              <label class="floatLeft marginRight">放冷冻水排气</label>
+              <span class="color-darkblue">{{ fieldList.A11 }}</span>
+              <label class="floatLeft marginRight">，折Y隔</label>
+              <span class="color-darkblue">{{ fieldList.B11 }}</span>
+            </p>
+          </el-form-item>
+          <el-form-item>
+            <p>
+              <label class="floatLeft marginRight">3、其他工作内容：送水样报告单</label>
+              <span class="color-darkblue">{{ fieldList.A12 }}</span>
+            </p>
+          </el-form-item>
+          <el-form-item>
+            <p>
+              <label class="floatLeft marginRight">甲方意见</label>
+              <span class="color-darkblue">{{ fieldList.A13 }}</span>
+              <label class="floatLeft marginRight"> 现场评价</label>
+              <span class="color-darkblue">{{ fieldList.B13 }}</span>
+              <label class="floatLeft marginRight"> 甲方人员</label>
+              <span class="color-darkblue">{{ fieldList.C13 }}</span>
+            </p>
+          </el-form-item>
+          <el-form-item>
+            <p>
+              <label class="floatLeft marginRight">乙方施工人员</label>
+              <span class="color-darkblue">{{ fieldList.A14 }}</span>
+            </p>
+          </el-form-item>
+          <el-form-item>
+            <p>
+              <label class="floatLeft marginRight">日期</label>
+              <span class="color-darkblue">{{ fieldList.A15 }}</span>
+            </p>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" size="small" @click="save">保存</el-button>
+          </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="tableData.dialogVisible = false">取 消</el-button>
+        </span>
+      </el-dialog>
     </el-col>
   </el-row>
 </template>
@@ -217,7 +387,7 @@
           limit:5,
           offset:1,
           total:0,
-          multipleSelection: [],
+          dialogVisible:false,
         },
         isFill:false,
         fillType:"",
@@ -271,9 +441,6 @@
         this.tableData.offset = offset
         this.getTableData()
       },
-      handleSelectionChange(val){ //选择行数
-        this.tableData.multipleSelection = val;
-      },
       add(){
         this.isFill = true
         this.fillType = "添加"
@@ -292,6 +459,12 @@
           A13:"",B13:"",C13:"",
           A14:"",
           A15:"",
+        }
+      },
+      see(index,row){
+        this.tableData.dialogVisible = true
+        for(var i in row){
+          this.fieldList[i] = row[i]
         }
       },
       edit(index,row){
@@ -404,7 +577,6 @@
   .orderTable td {
     border-width: 1px;
     padding: 0 5px;
-    white-space: nowrap;
     border-style: solid;
     border-color: #666666;
     background-color: #ffffff;

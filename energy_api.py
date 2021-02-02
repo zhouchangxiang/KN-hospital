@@ -134,7 +134,7 @@ def energys():
                 value = '%.2f' % result[2] if result[2] is not None else '0.0'
                 data.append({"AreaName": result[0], "Address": result[1], "Value": value, "StartTime": request.values.get('start_time'), "EndTime": request.values.get('end_time'), "Unit": "KW/h"})
         else:
-            sql = f'select AreaName,Address, IncremenValue as value from IncrementWaterTable where CollectionDate between {start_time} and {end_time} order by CollectionDate desc limit 2'
+            sql = f'select AreaName,Address, sum(IncremenValue) as value from IncrementWaterTable where CollectionDate between {start_time} and {end_time} group by AreaName'
             results = db_session.execute(sql).fetchall()
             db_session.close()
             # print(results)

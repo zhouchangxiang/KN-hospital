@@ -3,11 +3,12 @@ import time
 import redis
 from datetime import datetime, date, timedelta
 
-from database.db_operate import REDIS_PASSWORD, REDIS_HOST, REDIS_TABLENAME
+# from database.db_operate import REDIS_PASSWORD, REDIS_HOST, REDIS_TABLENAME
 from common.asd import db_session
 
-redis_coon = redis.Redis(host=REDIS_HOST, password=REDIS_PASSWORD, decode_responses=True)
-
+# redis_coon = redis.Redis(host=REDIS_HOST, password=REDIS_PASSWORD, decode_responses=True)
+redis_coon = redis.Redis(host='127.0.0.1', password='liaicheng*521', decode_responses=True)
+REDIS_TABLENAME = 'data_realtime'
 
 while True:
     # 计算每日预估能耗nage
@@ -32,11 +33,12 @@ while True:
         data = float(132900) - float('%.2f' % result1[0]['value'])
         value = float(save_energy) + float(data)
         redis_coon.hset(REDIS_TABLENAME, 'save_energy', data)
+        redis_coon.hset(REDIS_TABLENAME, 'save_energy_time', datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     # if result2[0]['value'] is not None:
     #     print(result2[0]['value'])
     #     redis_coon.hset(REDIS_TABLENAME, 'yesterday_energy', result2[0]['value'])
     # if result3[0]['value'] is not None:
     #     print(result3[0]['value'])
-    #     redis_coon.hset(REDIS_TABLENAME, 'yesterday_total_energy', result3[0]['value'])
+    #     redis_coon.hset(REDIS_TABLENAME, 'yesterday_total_energy', result3[0]['value'])from
         print(value)
     time.sleep(604800)

@@ -111,16 +111,15 @@ def error_handler(e):
 
 @app.route('/send_mail', methods=['POST'])
 def email_send_charactor():
-    message = Message("hello flask-mail", sender="448144775@qq.com", recipients=["minwork0926@163.com"]
-                      )
-    message.body = 'flask-mail测试代码'
+    recipients = json.loads(request.values.get("mail"))
+    message = Message("康宁医院运维任务", sender="448144775@qq.com", recipients=recipients)
+    message.body = '您有一份新的运维任务，详情登录系统查看'
     try:
         mail.send(message)
-        print('8' * 10)
-        return '发送成功，请注意查收~'
+        return json.dumps({"code": "200", "message": "发送成功，请注意查收~"})
     except Exception as e:
         print(e)
-        return str(e)
+        return json.dumps({"code": "201", "message": "发送失败，请检查邮箱格式是否正确"})
 
 
 if __name__ == '__main__':
