@@ -50,7 +50,7 @@ def my_log(e):
     file_path = os.path.join(root_path, 'run_log\\logs.txt')
     call_func = sys._getframe().f_back.f_code.co_name
     # user = login_user if login_user is None else 'no login'
-    with open(file_path, 'a') as f:
+    with open(file_path, 'a', encoding='utf-8') as f:
         print(f'{datetime.datetime.now()} -- {call_func} --- {e}' + "\n\n")
         f.write(f'{datetime.datetime.now()} -- {call_func} --- {e}' + "\n\n")
         f.close()
