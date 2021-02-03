@@ -211,9 +211,9 @@ def exportx(start_time, end_time, energy_type):
             col += 1
         sql = ''
         if energy_type == '电':
-            sql = "select AreaName,Address,sum(IncremenValue) as value,Unit, from IncrementElectricTable where CollectionDate between"+ start_time + " and " + end_time + " group by Address"
+            sql = "select AreaName,Address,sum(IncremenValue) as value,Unit from IncrementElectricTable where CollectionDate between"+ start_time + " and " + end_time + " group by Address"
         if energy_type == '水':
-            sql = "select AreaName,Address,sum(IncremenValue) as value,Unit, from IncrementWaterTable where CollectionDate between" + start_time + " and " + end_time + " group by AreaName"
+            sql = "select AreaName,Address,sum(IncremenValue) as value,Unit from IncrementWaterTable where CollectionDate between" + start_time + " and " + end_time + " group by AreaName"
         all_data = db_session.execute(sql).fetchall()
         print(all_data)
         i = 1
