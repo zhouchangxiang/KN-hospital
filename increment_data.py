@@ -14,7 +14,7 @@ REDIS_TABLENAME = 'data_realtime'
 while True:
     try:
         print('开始写入增量数据')
-        # address = db_session.query(TagDetail).filter_by(Address='COM1.WATER9F.今日累积流量').all()
+        # address = db_session.query(TagDetail).filter_by(Address='COM1.LIGHT10F.总有功电量').all()
         address = db_session.query(TagDetail).all()
         for tag in address:
             print(tag.Address)
@@ -44,7 +44,7 @@ while True:
                             redis_coon.hset(REDIS_TABLENAME, tag.Address + '_old_time',
                                             datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
                     else:
-                        redis_coon.hset(REDIS_TABLENAME, tag.Address + '_old', '0')
+                        redis_coon.hset(REDIS_TABLENAME, tag.Address + '_old', '0.0')
                 else:
                     pass
         print('结束写入增量数据')
