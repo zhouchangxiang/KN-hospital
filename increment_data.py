@@ -16,8 +16,8 @@ while True:
         print('开始写入增量数据')
         old_date = redis_coon.hget(REDIS_TABLENAME, 'old_date')
         now_date = datetime.now().strftime('%Y-%m-%d')
-        # address = db_session.query(TagDetail).filter_by(Address='COM1.WATER9F.今日累积流量').all()
-        address = db_session.query(TagDetail).all()
+        address = db_session.query(TagDetail).filter_by(Address='COM1.WATER9F.今日累积流量').all()
+        # address = db_session.query(TagDetail).all()
         for tag in address:
             print(tag.Address)
             data = redis_coon.hget(REDIS_TABLENAME, tag.Address)
@@ -38,7 +38,7 @@ while True:
                                         datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
                     else:
                         pass
-            elif tag.Type == '水表' and old_date == now_date:
+            elif tag.Type == '水表':
                 old_data = redis_coon.hget(REDIS_TABLENAME, tag.Address + '_old')
                 value = float(data) - float(old_data)
                 if value > 0.0:
