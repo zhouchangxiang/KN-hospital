@@ -2,3 +2,7 @@
 
 2021-02-03 09:44:49.725324 -- <module> --- (pymysql.err.InternalError) (1054, "Unknown column 'EquipmnetID' in 'field list'") [SQL: 'INSERT INTO `IncrementElectricTable` (`IncremenValue`, `IncremenType`, `Unit`, `EquipmnetID`, `Address`, `CollectionDate`, `AreaName`) VALUES (%(IncremenValue)s, %(IncremenType)s, %(Unit)s, %(EquipmnetID)s, %(Address)s, %(CollectionDate)s, %(AreaName)s)'] [parameters: {'IncremenValue': '64.0', 'IncremenType': '电', 'Unit': 'KW/h', 'EquipmnetID': None, 'Address': 'COM2.KT9F.总有功电量', 'CollectionDate': '2021-02-03 09:44:49', 'AreaName': '空调智能电表9F'}]
 
+2021-03-03 14:26:02.350593 -- <module> --- not all arguments converted during string formatting
+
+2021-03-24 14:59:05.378934 -- <module> --- not all arguments converted during string formatting
+

@@ -1,5 +1,6 @@
 <template>
   <div class="boardContent">
+    <a href="http://localhost:9600/views/index.html#" style="position: absolute;right: 100px;top: 50px;font-size: 36px;display:block;background:rgba(0, 159, 201, 0.4);padding:16px 35px;text-decoration: none;border-radius: 8px;" class="pingfang white">安防</a>
     <div class="main">
 			<div id="header">
 				<div class="header_left header_div pingfang white font48">
@@ -191,7 +192,7 @@
 						<div class="ywds right_item">
 							<p><img src="img/ring.png" alt="">
 								<span class="pingfang white font48"><span style="color: #11f6e7;margin-right: 20px;" class="el-icon-collection-tag"></span>运维大师</span>
-                <a href="javascript:;" class="pingfang white font48" style="float:right; text-decoration: none;" @click="$router.push('/Index')">去维护</a>
+                <a href="javascript:;" @click="$router.push('/Index')" style="float:right;font-size: 36px;display:block;background:rgba(0, 159, 201, 0.4);padding:16px 35px;text-decoration: none;border-radius: 8px;" class="pingfang white">智慧运维</a>
               </p>
 						  <table border="2" v-if="operations.length">
                 <tr>
@@ -760,6 +761,7 @@
 <style scoped>
   @import "../assets/board.css";
   .boardContent{
+    position: relative;
     width: 5760px;
 	  height: 3240px;
     background: url("../assets/img/bg.png");

@@ -23,7 +23,7 @@ def is_leap_year(year):
     :param year: 年份
     :return: True 闰年， False 平年
     """
-    if year % 4 == 0 and year % 100 != 0 or year % 400 == 0:
+    if int(year) % 4 == 0 and int(year) % 100 != 0 or int(year) % 400 == 0:
         return True
     return False
 
