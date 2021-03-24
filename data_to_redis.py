@@ -225,6 +225,10 @@ while True:
                 ]
         json_data = json.dumps(data, ensure_ascii=False)
         redis_coon.hset(REDIS_TABLENAME, 'indicator', json_data)
+        start_m = datetime.now().strftime("%Y-%m-01 00:00:00")
+        end_m = datetime.now().strftime("%Y-%m-01 00:00:00")
+        # 当前月用电量总和
+        now_month_sql = f'select sum(IncremenValue) as value from IncrementElectricTable and CollectionDate between {start_m} and {end_m} '
         # 楼层实时用能数据
         L_tags = [['COM2.KT1F.总有功电量', 'COM2.LIGHT1F.总有功电量'], ['COM2.KT2F.总有功电量', 'COM2.LIGHT2F.总有功电量'],
                   ['COM2.KT3F.总有功电量', 'COM2.LIGHT3F.总有功电量'], ['COM2.KT4F.总有功电量', 'COM2.LIGHT4F.总有功电量'],
